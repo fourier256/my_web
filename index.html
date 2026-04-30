@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Page</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #0077cc;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: #0077cc;
+      color: white;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Test Page</h1>
+    <p>이 페이지는 Vercel 테스트용으로 사용하세요.</p>
+    <p>오늘 날짜: <span id="date"></span></p>
+    <button id="btn">클릭해서 메시지 변경</button>
+  </div>
+
+  <script>
+    // 오늘 날짜 표시
+    document.getElementById("date").textContent = new Date().toLocaleDateString("ko-KR");
+
+    // 버튼 클릭 이벤트
+    document.getElementById("btn").addEventListener("click", () => {
+      document.getElementById("btn").textContent = "테스트 완료!";
+    });
+  </script>
+</body>
+</html>
