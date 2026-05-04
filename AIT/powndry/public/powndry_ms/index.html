@@ -15,35 +15,37 @@
   <link rel="icon" type="image/png" sizes="16x16" href="icon16.png">
   <style>
     html, body {
-      margin: 0;
-      padding: 0;
-      background-color: #000;
-      overflow: hidden;
-      font-family: Verdana;
-      width: 100%;
-      height: 100%;
-      min-height: -webkit-fill-available;
+        margin: 0;
+        padding: 0;
+        background-color: #000;
+        overflow: hidden;
+        font-family: Verdana;
+        width: 100%;
+        height: 100dvh;
+        min-height: -webkit-fill-available;
     }
     .noselect {
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
     }
     #canvaswrapper {
-      text-align: center;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+        text-align: center;
+        position: fixed;
+        top: env(safe-area-inset-top);
+        left: env(safe-area-inset-left);
+        right: env(safe-area-inset-right);
+        bottom: env(safe-area-inset-bottom);
+        width: auto;
+        height: auto;
     }
     canvas {
-      display: block;
-      width: 100% !important;
-      height: 100% !important;
+        display: block;
+        width: 100% !important;
+        height: 100% !important;
     }
   </style>
   <style>
@@ -59,7 +61,7 @@
   </script>
   <script type="text/javascript">
     var orientation = 'portrait';
-    var aspect = '2x1';
+    var aspect = 'free';
     var ms_libs = [];
     window.skip_service_worker = true;
     window.exported_project = true;
@@ -84,67 +86,48 @@
 //
 //   window.player.exec("player.position_x = 50",function(result) { console.log(result) ; }) ;
 //
+
+// ✅ load 이벤트 밖에서 바로 등록
+window.addEventListener('message', function(event) {
+    if (!event.data || typeof event.data !== 'object') return;
+
+    switch (event.data.type) {
+        case 'AD_SUPPORT_STATUS':
+            window._adSupported = event.data.isSupported;
+            break;
+        case 'AD_DONE':
+        case 'AD_FAILED':
+            if (window._pendingSlot) {
+                const { index, is_new } = window._pendingSlot;
+                window._pendingSlot = null;
+                window.player.call("init_simulation", [index, is_new]);
+                window.player.call("set_game_state_simulation", []);
+            }
+            break;
+    }
+});
+
+// player 초기화만 담당
 window.addEventListener("load", function() {
     window.player = new Player(function(event) {
         if (event.name == "started") {
-            // signal that the game is started
         }
         else if (event.name == "log") {
-            // console.info(event.data) ;
         }
     });
     document.body.focus();
-
-    // ✅ 추가: React로부터 광고 결과 수신
-    window.addEventListener('message', function(event) {
-        if (!event.data || typeof event.data !== 'object') return;
-
-        switch (event.data.type) {
-            // React가 광고 지원 여부를 알려줌 (앱 초기화 시)
-            case 'AD_SUPPORT_STATUS':
-                window._adSupported = event.data.isSupported;
-                break;
-
-            // 광고가 정상적으로 끝남 (보상 획득 or 그냥 닫힘)
-            case 'AD_DONE':
-                if (window._pendingSlot) {
-                    const { index, is_new } = window._pendingSlot;
-                    window._pendingSlot = null;
-                    init_simulation(index, is_new);
-                    g_game_state = "simulation";
-                }
-                break;
-
-            // 광고 실패 (로드 안 됨 등) → 그냥 게임 진입
-            case 'AD_FAILED':
-                if (window._pendingSlot) {
-                    const { index, is_new } = window._pendingSlot;
-                    window._pendingSlot = null;
-                    init_simulation(index, is_new);
-                    g_game_state = "simulation";
-                }
-                break;
-        }
-    });
 });
 
-//window.addEventListener("load",function() {
-//  window.player = new Player(function(event) {
-//    if (event.name == "started") {
-//      // signal that the game is started
-//    }
-//    else if (event.name == "log") {
-//      // console.info(event.data) ;
-//    }
-//  }) ;
-//  document.body.focus() ;
-//}) ;
+
 
 </script><script id="code" type="text/x-microscript">
 
 // =====================================================================
 // File 4: drawing.js
 // =====================================================================
+function set_game_state_simulation() {
+    g_game_state = "simulation";
+}
 
 function draw_world() {
     // 1. 일반 1x1 재료들을 먼저 그립니다.
@@ -366,26 +349,19 @@ function update_main_menu() {
     ];
 
     for (let i = 0; i < positions.length; i++) {
-        const pos = positions[i]; // ✅ for 루프 안에서 선언 (스코프 버그 수정)
-
+        const pos = positions[i];
         if (Math.abs(mouse.x - pos[0]) < box_w / 2 &&
             Math.abs(mouse.y - pos[1]) < box_h / 2) {
 
             const is_new = g_save_slots[i] == null;
-
-            if (window._adSupported) {
-                // ✅ 슬롯 정보 저장 후 React에 광고 요청
-                window._pendingSlot = { index: i, is_new };
-                window.parent.postMessage({ type: 'SHOW_AD' }, '*');
-            } else {
-                // 광고 미지원 환경 → 바로 게임 진입
-                init_simulation(i, is_new);
-                g_game_state = "simulation";
-            }
+            window._pendingSlot = { index: i, is_new };
+            window.parent.postMessage({ type: 'SHOW_AD' }, '*');
             break;
         }
     }
 }
+
+
 
 function draw_main_menu() {
     draw_pixel_text("POWNDRY", 0, screen.height / 2 - 80, 6, "#FFF");
