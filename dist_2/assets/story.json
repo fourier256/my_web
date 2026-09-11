@@ -1,0 +1,391 @@
+{
+  "scriptVersion": "1.0.0",
+  "projectId": "garu_tetris_story",
+  "title": "가루 재난 관리국",
+  "locale": "ko-KR",
+  "characterName": {
+    "bitnari": "<span style='color:#3FE0C5'>빛나리</span>",
+    "dr_hailmary": "<span style='color:#ff6B6B'>Dr.헤일메리</span>",
+    "newbie": "<span style='color:#B79CFF'>신뉴비</span>",
+    "krong": "<span style='color:#8FE04F'>크롱</span>",
+    "kkrong": "<span style='color:#C9A24B'>크크롱</span>"
+  },
+  "characterStateAssets": {
+    "bitnari": {
+      "grin": "bitnari_grin",
+      "angry": "bitnari_angry",
+      "thinking": "bitnari_serious",
+      "smile": "bitnari_smile",
+      "neutral": "bitnari_neutral",
+      "serious": "bitnari_serious",
+      "shocked": "bitnari_shocked",
+      "sad": "bitnari_sad"
+    },
+    "dr_hailmary": {
+      "neutral": "dr_hailmary_neutral",
+      "serious": "dr_hailmary_serious",
+      "smirk": "dr_hailmary_smirk",
+      "soft_smile": "dr_hailmary_soft_smile",
+      "thinking": "dr_hailmary_thinking",
+      "shocked": "dr_hailmary_shocked"
+    },
+    "newbie": {
+      "neutral": "newbie_neutral",
+      "nervous": "newbie_nervous",
+      "worried": "newbie_nervous",
+      "awkward_smile": "newbie_awkward_smile",
+      "shocked": "newbie_shocked",
+      "teary": "newbie_teary",
+      "determined": "newbie_nutral",
+      "angry": "newbie_angry",
+      "powder_awkward_smile": "newbie_powder_awkward_smile",
+      "powder_shocked": "newbie_powder_shocked"
+    },
+    "krong": {
+      "hostile": "krong_hostile",
+      "angry": "krong_angry"
+    },
+    "kkrong": {
+      "cold": "kkrong_cold",
+      "mocking": "kkrong_mocking",
+      "angry": "kkrong_mocking",
+      "damaged": "kkrong_damaged",
+      "hostile": "kkrong_mocking",
+      "gun": "kkrong_gun"
+    }
+  },
+  "dlog_bg": {
+    "dlog_stage_1": "bg_city_morning_cleanup",
+    "dlog_stage_2": "bg_downtown_heavy_dust",
+    "dlog_stage_3": "bg_rooftop_observation",
+    "dlog_stage_4": "bg_highpoint_clear_sky",
+    "dlog_stage_5": "bg_underground_entry",
+    "dlog_stage_6": "bg_underground_facility_wide",
+    "dlog_stage_7": "bg_dust_launcher_core",
+    "dlog_stage_8": "bg_guard_corridor",
+    "dlog_stage_9": "bg_reptilian_core",
+    "dlog_stage_10_1": "bg_final_core",
+    "dlog_stage_10_2": "bg_final_core",
+    "dlog_stage_10_3": "bg_final_core",
+    "dlog_ending": "bg_lab_after_battle"
+  },
+  "game_stage": [
+    { "id": "stage_01", "action": "start_dialog__dlog_stage_2" },
+    { "id": "stage_02", "action": "start_dialog__dlog_stage_3" },
+    { "id": "stage_03", "action": "start_dialog__dlog_stage_4" },
+    { "id": "stage_04", "action": "start_dialog__dlog_stage_5" },
+    { "id": "stage_05", "action": "start_dialog__dlog_stage_6" },
+    { "id": "stage_06", "action": "start_dialog__dlog_stage_7" },
+    { "id": "stage_07", "action": "start_dialog__dlog_stage_8" },
+    { "id": "stage_08", "action": "start_dialog__dlog_stage_9" },
+    { "id": "stage_09", "action": "start_dialog__dlog_stage_10_1" }
+  ],
+  "eventScene": [
+    {
+      "id": "opening",
+      "action": "start_dialog__dlog_stage_1",
+      "cut": [
+        {"illust": "opening_01", "mix": "fade_out_in", "dialog": "서기 <span style='font-size:1.15em'>203X년</span>,\n인류는 <span style='font-size:1.15em;color:#ff6b6b'>절멸의 위기</span>를 맞이한다."},
+        {"illust": "opening_02", "mix": "fade_out_in", "dialog": "하늘에서 떨어지는 무수한 <span style='color:#e0c46b'>가루 덩어리</span>,\n그 것은 모든 문명의 이기를 뒤덮었다."},
+        {"illust": "opening_03", "mix": "fade_out_in", "dialog": "하지만, 언제나 그렇듯, 인류는 \n<span style='font-size:1.2em;color:#3FE0C5'>생존을 위해 투쟁한다.</span>"},
+        {"illust": "opening_04", "mix": "fade_out_in", "dialog": "<span style='color:#FFFFFF'>나는 빛나리, 가루재난관리국 현장 요원.\n우라질 가루를 치우고 반드시 <span style='font-size:1.5em'>퇴근</span> 하리라.</span>"}
+      ]
+    },
+    {
+      "id": "newbie_die",
+      "action": "start_dialog__dlog_stage_10_2",
+      "cut": [
+        {"illust": "newbie_die_01", "mix": "red_in", "sfx": "beam", "dialog": "<span style='color:#B79CFF'>서, 선배님! <span style='font-size:1.35em'>끄악!</span></span>"},
+        {"illust": "newbie_die_01", "mix": "fade_out_in", "dialog": "<span style='color:#3FE0C5;font-size:1.3em'>뉴비! 아, 안돼!!</span>"},
+        {"illust": "newbie_die_02", "mix": "dissolve", "dialog": "<span style='color:#B79CFF'>선배님, 이 번에는 무섭다고 <span style='font-size:1.15em'>피하지 않았어요.</span></span>"},
+        {"illust": "newbie_die_02", "mix": "dissolve", "dialog": "<span style='color:#B79CFF;font-size:0.8em'>A 고과... 주실 꺼죠?</span>"},
+        {"illust": "newbie_die_03", "mix": "fade_out_in", "dialog": "<span style='color:#3FE0C5;font-size:1.3em'>뉴...뉴비...!</span>"}
+      ]
+    },
+    {
+      "id": "bitnari_sword",
+      "action": "start_dialog__dlog_stage_10_3",
+      "cut": [
+        {"illust": "bitnari_sword_01", "mix": "fade_out_in", "sfx": "charge", "dialog": "<span style='color:#3FE0C5'>아아, 이 서늘하고 묵직한 감각. <span style='font-size:1.15em'>2년만</span>이구만.</span>"},
+        {"illust": "bitnari_sword_02", "mix": "red_in", "dialog": "<span style='color:#3FE0C5'><span style='font-size:1.3em;color:#ff6b6b'>&lt;검성&gt; 빛나리</span>로 돌아 갈 때다.</span>"},
+        {"illust": "bitnari_sword_03", "mix": "fade_out_in", "sfx": "slash", "dialog": "<span style='color:#3FE0C5;font-size:1.4em'>벽 력 일 섬</span>"}
+      ]
+    },
+    {
+      "id": "miss_newbie",
+      "action": "start_dialog__dlog_ending",
+      "cut": [
+        {"illust": "miss_newbie_01", "mix": "dissolve", "dialog": "그렇게 길고 긴 싸움이 막을 내렸다."},
+        {"illust": "miss_newbie_02", "mix": "fade_out_in", "dialog": "<span style='color:#3FE0C5'>보고있니, 신뉴비? 그 곳은 좀 어때?</span>"},
+        {"illust": "miss_newbie_03", "mix": "fade_out_in", "dialog": "<span style='color:#3FE0C5;font-size:1.4em'>신뉴비... 신뉴비이이이이이!!!</span>"}
+      ]
+    },
+    {
+      "id": "ending",
+      "action": "go_to_menu",
+      "cut": [
+        {"illust": "ending_01", "mix": "dissolve", "dialog": "<span style='color:#B79CFF'>서, 선배님, 그렇게 껴안으시면 가루가 묻어요!</span>"},
+        {"illust": "ending_01", "mix": "fade_out_in", "dialog": "<span style='color:#3FE0C5'>마! 우리 신참꺼는 괜찮다 아카나. <span style='font-size:1.15em'>이리 온나!</span></span>"},
+        {"illust": "ending_02", "mix": "fade_out_in", "dialog": "<span style='font-size:1.2em'>가루재난관리국 - 끝 -</span>"}
+      ]
+    }
+  ],
+  "scenes": [
+    {
+      "id": "dlog_stage_1",
+      "location": "제1 청소구역",
+      "action": "start_game__stage_01",
+      "bgm": "bgm_funny",
+      "dialogue": [
+        { "char": "bitnari", "state": "angry", "talk": "콜록, 퉤! 으… 박사님! 좌표 <span style='color:#ff6b6b'>제대로</span> 찍은 거 맞아요?\n공기 반, 가루 반이라 숨 쉴 때마다 \n<span style='font-size:1.15em'>모래 씹는 맛</span>이 난다고요!" },
+        { "char": "dr_hailmary", "state": "neutral", "talk": "좌표는 오차 없이 정확해.\n불평할 시간에 바이저 필터나 <span style='font-size:1.15em'>3단</span>으로 올리렴. \n폐에 쌓여서 굳기 전에 말이야." },
+        { "char": "bitnari", "state": "thinking", "talk": "참나, 위로 한번 따뜻하네. \n그나저나 이 꼴 좀 보소.\n도시 전체가 엉망진창 무슨 <span style='color:#e0c46b'>가루 축제</span>라도 났노." },
+        { "char": "dr_hailmary", "state": "serious", "talk": "단순한 분진이 아니야. \n방금 채취된 샘플 데이터를 분석했는데…\n분자 구조가 비정상적으로 각이 져 있어."},
+        { "char": "dr_hailmary", "state": "serious", "talk": " 때문에 자기들끼리 결속해서 일정한 '<span style='color:#e0c46b'>블록 형태</span>'를 이루는 거야."},
+        { "char": "bitnari", "state": "thinking", "talk": "블록? 하, 자연물이 이딴 식으로 모나게 굳는다고요?\n누가 봐도 \n'<span style='font-size:1.15em color:#ff6b6b'>나 수상한 놈이 뿌렸소</span>' 광고하는 꼴이구만." },
+        { "char": "dr_hailmary", "state": "serious", "talk": "맞아. <span style='color:#ff6b6b'>인위적인 테러</span> 가능성이 높아.\n가루가 일정 높이 이상 쌓이면 고체화 압력이 폭발해서 일대 구역 전체가 <span style='font-size:1.15em;color:#ff6b6b'>생매장</span>당할 거다." },
+        { "char": "bitnari", "state": "neutral", "talk": "요약하자면 가루는 정체불명, 냅두면 터지고,\n결국 현장에서 몸으로 때우는 건 또 나 <span style='color:#3FE0C5'>빛나리</span>다… \n이거죠?" },
+        { "char": "dr_hailmary", "state": "neutral", "talk": "…요약 능력 하나는 늘 <span style='font-size:1.15em'>최상위권</span>이군." },
+        { "char": "bitnari", "state": "angry", "talk": "말해 뭐해요!\n멀쩡한 도시에 장난친 놈은 \n<span style='font-size:1.15em color:#ff6b6b'>거제 불주먹</span>으로 강냉이를 털어버릴 테니까," },
+        { "char": "bitnari", "state": "angry", "talk": "일단 이 지저분한 것들부터 \n<span style='font-size:1.5em'>싹 갈아엎을깁니더!</span>" },
+        { "char": "dr_hailmary", "state": "serious", "talk": "단, 무작정 흡입하면 노즐 막혀.\n<span style='color:#e0c46b'>같은 색깔</span>의 가루를 수평으로 <span style='color:#e0c46b'> 빈틈없이 맞춰서 채워.\n압축 한계를 넘기면 스스로 붕괘하니까." },
+        { "char": "bitnari", "state": "grin", "talk": "줄 맞춰서 싹 지워버리면 된다 이거죠? \n<span style='font-size:1.15em'>오케이!</span> 제1구역 클린 작전, \n<span style='font-size:1.2em'>거침없이 시작합니다!</span>" }
+      ]
+    },
+    {
+      "id": "dlog_stage_2",
+      "location": "제2 청소구역",
+      "action": "start_game__stage_02",
+      "bgm": "bgm_funny",
+      "dialogue": [
+        { "char": "bitnari", "state": "neutral", "talk": "어이, 거기 달달달 떨고 있는 보라 머리!\n네가 오늘 본부에서 보낸다는 그 <span style='color:#B79CFF'>신참</span>이가?" },
+        { "char": "newbie", "state": "nervous", "talk": "<span style='font-size:1.2em'>히익?!</span> 네, 네엣! \n오늘 자로 현장 2팀에 배치받은 <span style='color:#B79CFF'>신뉴비</span>입니다아…!" },
+        { "char": "newbie", "state": "nervous", "talk": "죄, 죄송합니다! 제가 원래도 겁이 많은데 현장이 무서워서…" },
+        { "char": "bitnari", "state": "grin", "talk": "마, 죄송할 건 없고.\n근데 손을 무슨 <span style='font-size:1.15em'>진동벨</span>마냥 떨고 앉았노." },
+        { "char": "newbie", "state": "teary", "talk": "그, 그치만 선배님…!\n가루가 <span style='font-size:1.15em'>무릎까지</span> 차오르고 있다고요!\n저거 피부에 닿으면 <span style='color:#ff6b6b'>살점이 녹아내린다</span>거나… 막 몸이 가루가 돼버리는 건 아니죠…?" },
+        { "char": "bitnari", "state": "neutral", "talk": "살점이 녹을지 어떨지는 모르지만 한가지 확실한 건, \n쫄아서 멍때리고 있다가는이 \n<span style='color:#ff6b6b'>가루 더미에 파묻혀서 폐기 될끼다!</span>" },
+        { "char": "newbie", "state": "teary", "talk": "<span style='font-size:1.2em'>으아앙</span>, 전혀 1도 안심이 안 되는 설명이에요…!" },
+        { "char": "dr_hailmary", "state": "neutral", "talk": "잡담은 거기까지.\n모니터링 수치 확인 하렴.\n상황이 좀 <span style='color:#e0c46b'>흥미로워</span>졌어." },
+        { "char": "bitnari", "state": "thinking", "talk": "박사님 표정 보니까 또 불안해지는데,\n이번엔 또 뭡니꺼?" },
+        { "char": "dr_hailmary", "state": "serious", "talk": "2구역의 낙하 궤적과 인구 데이터를 검증했단다.\n이 가루… 정확히 '<span style='color:#ff6b6b'>사람 통행량이 가장 많은 번화가</span>' 중심 좌표에만 집중 투하되고 있어." },
+        { "char": "newbie", "state": "shocked", "talk": "사, 사람 많은 데만 골라서요…?! 그럼 진짜로 누군가 악의를 품고 지상에 <span style='color:#ff6b6b'>테러</span>를…" },
+        { "char": "dr_hailmary", "state": "serious", "talk": "그래. 군중을 가두고 <span style='color:#ff6b6b'>압사</span>시키려는 설계형 침식이야.\n우연의 일치라고 보기엔 좌표 오차는 0.03% 미만." },
+        { "char": "bitnari", "state": "thinking", "talk": "하! 사람 많은 데만 콕 집어서 훼방을 놨다고?\n인싸들 북적북적 노는 꼴이 그렇게 보기 싫었나?" },
+        { "char": "dr_hailmary", "state": "shocked", "talk": "공간이 좁아 가루가 차오르는 속도가 <span style='font-size:1.15em'>두 배</span>다.\n신참, 멍 때리지 말고 빛나리 요원을 보조 하도록." },
+        { "char": "newbie", "state": "teary", "talk": "저 방금 배속돼서 매뉴얼도 다 못 읽었는데요…!\n<span style='font-size:1.15em'>엄마, 나 벌써 집에 가고 싶어…!</span>" },
+        { "char": "bitnari", "state": "smile", "talk": "신참, 이 언니야만 <span style='font-size:1.15em'>딱 믿어라</span> 마!\n내 등짝 딱 붙어있으면 위로 가루 쏟아지기 전에 \n<span style='font-size:1.15em'>싹 쓸어버린다!</span>" }
+      ]
+    },
+    {
+      "id": "dlog_stage_3",
+      "location": "상공 대기 조사 구역",
+      "action": "start_game__stage_03",
+      "bgm": "bgm_funny",
+      "dialogue": [
+        { "char": "bitnari", "state": "shocked", "talk": "콜록! 와, 위로 올라오니까 숨 쉬기가 더 빡세네!\n박사님, 공중에 떠 있는 이 구름 덩어리들… \n설마 다 <span style='color:#e0c46b'>가루</span>입니까?" },
+        { "char": "dr_hailmary", "state": "serious", "talk": "데이터 필터링 끝났어. 결론부터 말할게.\n이건 대기 상층부의 온도와 습도를 기폭제로 삼아 \n압축되는 '<span style='color:#ff6b6b'>가루 폭풍의 전조</span>'란다." },
+        { "char": "newbie", "state": "worried", "talk": "<span style='font-size:1.2em'>히익…!</span> 가, 가루 폭풍이요?!\n그럼 하늘에서 저 네모난 블록들이 <span style='font-size:1.15em'>우박처럼</span> 쏟아져 내린다는 건가요?!" },
+        { "char": "dr_hailmary", "state": "neutral", "talk": "우박보다 <span style='color:#ff6b6b'>악질</span>이지. 고고도에서 엉겨 붙어 거대한 덩어리를 형성한 뒤 수직으로 낙하해.\n<span style='color:#ff6b6b'>하지만 진짜 문제는 따로 있단다.</span>" },
+        { "char": "bitnari", "state": "serious", "talk": "어휴, 또 또오 저 재수 없는 소리!\n그 말 나오면 백 퍼센트 <span style='font-size:1.15em'>내가 개고생</span>\n하는 패턴인데 우야노..." },
+        { "char": "dr_hailmary", "state": "smirk", "talk": "눈치가 빠르네.\n자연 상태의 대기에서는 이런 인공 입자가 스스로 상승할 수 없어." },
+        { "char": "dr_hailmary", "state": "smirk", "talk": "공중에서 발생한 게 아니라 <span style='color:#ff6b6b'>훨씬 깊은 곳</span>에서 고열로 쏘아 올린 분사원이 존재한다는 뜻이지." },
+        { "char": "newbie", "state": "awkward_smile", "talk": "쏘아 올렸다고요…?!\n그, 그럼 공장 굴뚝 같은 곳인가요?" },
+        { "char": "dr_hailmary", "state": "serious", "talk": "굴뚝 수준의 압력이 아니야.\n지하 암반층을 뚫고 쏘아 올릴 정도의 <span style='color:#ff6b6b'>초고압</span>.\n그러니까 <span style='font-size:1.15em'>대포 같은 시설</span>이 확실해." },
+        { "char": "bitnari", "state": "serious", "talk": "땅 파서 쏘아 올릴 노력으로 <span style='font-size:1.5em'>아파트나 짓지!</span>\n<span style='font-size:0.75em'>나는 언제 분양 받아서 무주택자 탈출하노...</span>" },
+        { "char": "dr_hailmary", "state": "smirk", "talk": "빛나리 요원,\n그 건 네 <span style='font-size:1.5em'>노오오력</span>으로 해결해야 할 문제란다." }
+      ]
+    },
+    {
+      "id": "dlog_stage_4",
+      "location": "고층 관측 지점",
+      "action": "start_game__stage_04",
+      "bgm": "bgm_funny",
+      "dialogue": [
+        { "char": "bitnari", "state": "neutral", "talk": "상공 스캔 완료! 하늘은 멀쩡하네.\n구름도 햇빛도 그대로고,\n위쪽엔 <span style='color:#e0c46b'>아무런 발사 장치</span>도 안 보입니다!" },
+        { "char": "newbie", "state": "awkward_smile", "talk": "다, 다행이에요…\n하늘에 거대 우주선 같은 게 떠 있는 줄 알고 \n<span style='font-size:1.5em'>지릴 뻔</span>했어요…" },
+        { "char": "bitnari", "state": "neutral", "talk": "그건 좀 곤란하다.\n이 언니야가 속옷까지 빨아주기는 힘들데이.." },
+        { "char": "dr_hailmary", "state": "thinking", "talk": "안도하긴 일러.\n상공에 없다는 건 발원지가 '<span style='color:#ff6b6b'>발밑</span>'이라는 반증이니까." },
+        { "char": "dr_hailmary", "state": "thinking", "talk": "가루 입자 표면에서 <span style='color:#ff6b6b'>고열 플라스마 마찰 흔적</span>이 검출됐어." },
+        { "char": "bitnari", "state": "angry", "talk": "도시 밑바닥에 <span style='color:#ff6b6b'>비 인가 화기</span>가 숨겨져 있다 이거네?\n멀쩡한 아스팔트 밑에 그딴 흉물을 박아놓다니,\n<span style='font-size:1.25em'>지자체 허가는 받고 지었나 몰라!</span>" },
+        { "char": "dr_hailmary", "state": "thinking", "talk": "누군지 몰라도 벌금은 낭낭하게 내야겠어." },
+        { "char": "dr_hailmary", "state": "thinking", "talk": "도시 하수관로 최하층 폐쇄 구역의 진동 센서가 계속 요동치고 있어.\n이제 <span style='color:#ff6b6b'>땅속으로 직접</span> 들어 가야 해." },
+        { "char": "newbie", "state": "teary", "talk": "지, 지하요…?! 어둡고 축축하고 <span style='color:#ff6b6b'>바퀴벌레</span> 나올 것 같은 그 하수구요…?" },
+        { "char": "newbie", "state": "teary", "talk": "저 폐소공포증이랑 어둠공포증이랑... 또... <span style='font-size:1.15em'>벌레공포증 다 있는데요…!</span>" },
+        { "char": "bitnari", "state": "grin", "talk": "<span style='font-size:1.2em'>공포증 콜랙터냐!?</span> \n하지만 신참, 내가 <span style='font-size:1.15em'>지켜 줄 테니</span> 안심 하도록." },
+        { "char": "newbie", "state": "worried", "talk": "하지만 선배도 그냥 청소 요원이잖아요.\n<span style='font-size:0.85em'>전혀 안심이 안 되는걸요.</span>" },
+        { "char": "dr_hailmary", "state": "smirk", "talk": "걱정 안해도 돼 신뉴비 요원.\n빛나리는 네가 생각 하는 것 보다\n<span style='font-size:1.5em;color:#3FE0C5'>훨씬 강하단다.</span>" },
+        { "char": "bitnari", "state": "angry", "talk": "하모! <span style='font-size:1.15em'>거제 불주먹</span> 맛을 누가 보고싶나? 딱 대라 마!\n신참! <span style='font-size:1.15em'>퍼뜩 쫓아온나!</span>" }
+      ]
+    },
+    {
+      "id": "dlog_stage_5",
+      "location": "지하 진입로 확보",
+      "action": "start_game__stage_05",
+      "bgm": "bgm_tension",
+      "dialogue": [
+        { "char": "newbie", "state": "worried", "talk": "<span style='font-size:1.15em'>흐에엥…</span> 벽에서 이상한 기계음이 울려요…\n벽에 묻은 이 알록달록한 때들은 대체 뭐예요…?" },
+        { "char": "bitnari", "state": "serious", "talk": "때가 아니라 위로 뿜어져 나간 <span style='color:#e0c46b'>가루 찌꺼기</span>겠지.\n아래로 내려갈수록 바닥이 푹푹 꺼지걸? 이 정도면 <span style='font-size:1.15em'>모래 늪</span> 이라고 해도 믿겠어." },
+        { "char": "dr_hailmary", "state": "neutral", "talk": "가루 농도가 지상의 <span style='font-size:1.15em;color:#ff6b6b'>50배</span>를 초과했어.\n벽면의 탄흔과 긁힌 자국을 봐." },
+        { "char": "dr_hailmary", "state": "neutral", "talk": "전부 아래에서 위로 쏘아 올려진 반동 흔적이야.\n정확한 <span style='color:#ff6b6b'>도폭선</span> 위에 서 있어." },
+        { "char": "bitnari", "state": "grin", "talk": "좋아, 제대로 찾아 왔다 이 말이제?\n신참, 가루 안 들어가게 마스크 <span style='font-size:1.15em'>바짝 쪼매라.</span>" },
+        { "char": "newbie", "state": "nervous", "talk": "서, 선배님은 이런 무서운 곳에 들어오면서도\n<span style='font-size:1.15em'>시, 시, 심장이 안 떨리세요…?</span>" },
+        { "char": "bitnari", "state": "neutral", "talk": "나 같은 여린 소녀가 와 안 무섭겠노?\n그치만 내 청소 구역 개판 난 걸 보면…" },
+        { "char": "bitnari", "state": "angry", "talk": "<span style='font-size:1.2em;color:#ff6b6b'>빡치는 게 딱 세 배쯤 앞선다 아카나!?</span>" },
+        { "char": "dr_hailmary", "state": "shocked", "talk": "<span style='font-size:1.15em'>잠깐!</span> 전방 30미터, 거대한 공동 구역에서\n규칙적인 중장비 구동음과 함께…\n<span style='color:#ff6b6b'>생체 반응</span>이 감지돼." }
+      ]
+    },
+    {
+      "id": "dlog_stage_6",
+      "location": "지하 공동 구역",
+      "action": "start_game__stage_06",
+      "bgm": "bgm_tension",
+      "dialogue": [
+        { "char": "bitnari", "state": "shocked", "talk": "<span style='font-size:1.15em'>…와, 기가 차서 헛웃음도 안 나오네.</span>\n이게 다 뭐꼬?" },
+        { "char": "bitnari", "state": "shocked", "talk": "도시 밑에 <span style='color:#e0c46b'>SF 기지</span>를 통째로 지어놨네?!" },
+        { "char": "dr_hailmary", "state": "serious", "talk": "거대 압축 탱크, 블록 성형기,\n그리고 고압 분사 파이프라인…" },
+        { "char": "dr_hailmary", "state": "serious", "talk": "도시 전체를 뒤덮은 가루를 \n<span style='color:#ff6b6b'>대량 생산하는 자동화 공장</span>이었어." },
+        { "char": "newbie", "state": "shocked", "talk": "<span style='font-size:1.15em'>히익…</span> 저기 통 안에 가루가 산더미처럼 쌓여서 부글부글 끓고 있어요…!" },
+        { "char": "bitnari", "state": "angry", "talk": "성실하게도 염병을 해놨네.\n누구는 분리수거 하려고 비닐 뜯고 난리를 치는데, 지하에서 <span style='font-size:1.15em'>가루 테러 머신을 풀가동해?!</span>" },
+        { "char": "dr_hailmary", "state": "thinking", "talk": "배관 주변 바닥에 긁힌 발자국을 봐.\n이 거대한 <span style='color:#ff6b6b'>발톱 자국</span>… <span style='font-size:1.15em'>인간의 규격이 아니야.</span>" },
+        { "char": "newbie", "state": "worried", "talk": "바, 발톱이요…?! <span style='color:#ff6b6b'>괴물</span>… 지저 괴물이 사는 건가요?!" },
+        { "char": "newbie", "state": "worried", "talk": "저 아까 얘기 못했는데\n지, 지저괴물 공포증도 있어요." },
+        { "char": "bitnari", "state": "smile", "talk": "괴물이든 외계인이든 상관없다!\n청소부 영역에 무단투기한 놈은 누구든 \n<span style='font-size:1.5em'>뚝배기를 깨주겠어!</span>" }
+      ]
+    },
+    {
+      "id": "dlog_stage_7",
+      "location": "분사 설비 구역",
+      "action": "start_game__stage_07",
+      "bgm": "bgm_tension",
+      "dialogue": [
+        { "char": "dr_hailmary", "state": "thinking", "talk": "메커니즘 파악이 완료 됐어.\n여기서 고밀도로 압축된 사각 입자들을 상공으로 발사하고," },
+        { "char": "dr_hailmary", "state": "thinking", "talk": "대기 중에서 팽창시켜 도시 위로 \n<span style='color:#ff6b6b'>비처럼 내리꽂는</span> 시스템이야." },
+        { "char": "dr_hailmary", "state": "thinking", "talk": "이런 기술력이라니, 정말 놀라워." },
+        { "char": "bitnari", "state": "thinking", "talk": "놀랍긴 개뿔, 그러니까,\n<span style='font-size:1.15em'>여기만 쳐 부수면 만사형통</span>이라, 이 말이죠?" },
+        { "char": "dr_hailmary", "state": "thinking", "talk": "빛나리 요원, 부수는 건 좋지만 좀 더 살펴보고 나서.\n인류의 위대한 진보를 위해 \n아주 잠깐이면 된단다." },
+        { "char": "dr_hailmary", "state": "serious", "talk": "이, 이 게 뭐지? 필터에 걸린 점액질에서 \n<span style='color:#8FE04F'>파충류 DNA</span>와 비늘 파편이 다량 검출됐어." },
+        { "char": "newbie", "state": "teary", "talk": "도, 도마뱀 인간…?! 악어 인간…?! 저 돌아갈래요… \n진짜 <span style='font-size:1.15em'>연봉 협상 다시</span> 해야 할 것 같아…\n<span style='color:#ff6b6b'>목숨 수당이 안 붙어 있어요…!</span>" },
+        { "char": "bitnari", "state": "smile", "talk": "피하기만 해서는 아무 것도 할 수 없어. \n그리고 월급 타령은 <span style='font-size:1.15em'>살아서 올라간 다음에!</span>\n저 쪽에서 소리가 난다, 신참, 내 뒤로 온나!" }
+      ]
+    },
+    {
+      "id": "dlog_stage_8",
+      "location": "경비 구역",
+      "action": "start_game__stage_08",
+      "bgm": "bgm_tension",
+      "dialogue": [
+        { "char": "krong", "state": "hostile", "talk": "크르르르… 침입자… 냄새…\n지상 것들… 청소부 따위가… <span style='font-size:1.15em'>감히 영역을 침범해…?</span>" },
+        { "char": "newbie", "state": "shocked", "talk": "<span style='font-size:1.3em'>으아악!! 지, 진짜 랩틸리언이다!!</span>\n말도 해!! 옷도 입었어!!" },
+        { "char": "krong", "state": "hostile", "talk": "크르르르… 이 건 너희 포유류룰 사냥해서 만든 용맹의 증거!"},
+        { "char": "bitnari", "state": "angry", "talk": "야, 도마뱀!\n네놈들이 지상에 가루를 뿌려댄 <span style='font-size:1.15em'>주범 맞제?!</span>" },
+        { "char": "krong", "state": "angry", "talk": "도마뱀 아니다, <span style='color:#8FE04F'><span style='font-size:1.15em'>크롱</span>이다</span>…" },
+        { "char": "krong", "state": "angry", "talk": "지상인… 끝없이 파고들었다…\n지하 자원 약탈… 터전 파괴…\n가루는 <span style='color:#ff6b6b'>정당한 응징</span>이다…!</span>" },
+        { "char": "dr_hailmary", "state": "neutral", "talk": "지하 개발로 인한 서식지 침범 보복 테러인가…\n크롱, 이런 걸 만들 정도의 지능이 있으면서 왜\n<span style='color:#e0c46b'>대화를 시도</span>하지 않은 거야?" },
+        { "char": "krong", "state": "hostile", "talk": "지도자 <span style='color:#C9A24B'>크크롱</span>이 말했다… \n인간들… 파괴적이다… 대화는 무 의미…" },
+        { "char": "bitnari", "state": "angry", "talk": "여기나 저기나 윗대가리들이 문제구만!?\n억울하면 구청에 민원을 넣든가 대화를 해야지," },
+        { "char": "bitnari", "state": "angry", "talk": "왜 무고한 시민들 머리 위에 <span style='font-size:1.15em'>가루 폭탄을 쏟아붓는데?!</span>" },
+        { "char": "krong", "state": "hostile", "talk": "인간들… 뼈째로 분쇄하여… 가루로 만들어주마… \n<span style='font-size:1.35em'>크로오오옹!</span>" },
+        { "char": "dr_hailmary", "state": "shocked", "talk": "대화가 통하는 상태가 아니야.\n빛나리, 크롱을 막아. 가루는 신참이 맡으렴!" },
+        { "char": "bitnari", "state": "grin", "talk": "<span style='font-size:1.15em'>옛썰!</span>\n신참, 뒤로 물러서서 가루를 처리 해!" },
+        { "char": "bitnari", "state": "grin", "talk": "나는 저 도마뱀 자식에게 \n<span style='font-size:1.15em'>불주먹 세례를 퍼부어주지!!</span>" }
+      ]
+    },
+    {
+      "id": "dlog_stage_9",
+      "location": "심장부",
+      "action": "start_game__stage_09",
+      "bgm": "bgm_tension",
+      "dialogue": [
+        { "char": "kkrong", "state": "cold", "talk": "크롱을 쓰러뜨리고 여기까지 기어오다니.\n제법이군, 나는 랩틸리언 지도자 <span style='font-size:1.15em'>크크롱</span>이다." },
+        { "char": "bitnari", "state": "angry", "talk": "네놈이 이 모든 일의 <span style='color:#ff6b6b'>원흉</span>이군!\n<span style='font-size:1.2em'>각오는 돼 있겠지!?</span>" },
+        { "char": "kkrong", "state": "cold", "talk": "크큭, 뻔한 질문이군 여기까지 왔으면 \n<span style='color:#ff6b6b'>목숨 정도는 걸었다고 봐도 좋겠지?</span>" },
+        { "char": "dr_hailmary", "state": "serious", "talk": "빛나리 요원, 저 기 <span style='color:#e0c46b'>메인 컨트롤러</span>가 있어.\n도시 전역의 가루 투하 좌표를 실시간으로 조작하는 콘솔이야." },
+        { "char": "kkrong", "state": "mocking", "talk": "<span style='font-size:1.2em'>크하하하!</span> 지상인들은 눈앞의 빌딩만 높일 줄 알았지, 발밑에 도사리는 위협은 꿈에도 몰랐겠지." },
+        { "char": "kkrong", "state": "mocking", "talk": "공포에 질려 가루 속에 파묻히는 꼴이야말로 \n가장 <span style='color:#ff6b6b'>아름다운 예술</span>이다!" },
+        { "char": "newbie", "state": "worried", "talk": "그, 그런 끔찍한 예술이 어디 있어요…!\n사람들이 얼마나 무서워하고 있는데…!" },
+        { "char": "kkrong", "state": "cold", "talk": "시끄럽다, 겁쟁이 계집아이!\n공포는 가장 빠르게 번지는 전염병!" },
+        { "char": "kkrong", "state": "cold", "talk": "이 분사핵이 터지는 순간 너희 도시는 완전히 지워지고 <span style='font-size:1.15em;color:#ff6b6b'>거대한 가루 무덤</span>이 될 것이다!" },
+        { "char": "dr_hailmary", "state": "neutral", "talk": "크크롱, 네 부하 크롱이 그러던데, \n네가 인간과 대화를 못 하게 했다고." },
+        { "char": "dr_hailmary", "state": "neutral", "talk": "이유가 뭐야? 왜 우리를 적개시 하는 거지? \n평화로운 협상의 의지는 없었나?" },
+        { "char": "kkrong", "state": "cold", "talk": "영웅은 난세에 태어나는 법.\n평화는 우리를 <span style='color:#ff6b6b'>나약하게</span> 만들 뿐 이다." },
+        { "char": "newbie", "state": "angry", "talk": "트, 틀렸어요 크크롱.\n공포를 뿌리고, 싸움을 벌이는 건 \n<span style='font-size:1.5em'>영웅이 아니에요.</span>" },
+        { "char": "newbie", "state": "angry", "talk": "평화 속에도 있다구요.\n싸움에서의 승리 못지 않은 \n<span style='font-size:1.5em'>드높은 승리</span>가!" },
+        { "char": "kkrong", "state": "cold", "talk": "시끄럽다. 너 같은 겁쟁이는 언제나 처럼\n저 초록대가리 뒤에 숨어서 벌벌 떨기나 해라." },
+        { "char": "bitnari", "state": "angry", "talk": "우리 신참은 겁쟁이 아니야!\n영웅놀이 하자고 뒤에 숨어서 작당이나 하는 \n<span style='font-size:1.5em'>네가 겁쟁이지!</span>" },
+        { "char": "dr_hailmary", "state": "shocked", "talk": "입 씨름 하는 사이에 가루가 쌓이고 있단다.\n둘 다, 일단 <span style='font-size:1.15em'>가루 먼저 치우도록 해!</span>" }
+      ]
+    },
+    {
+      "id": "dlog_stage_10_1",
+      "location": "최종 정화 구역",
+      "action": "start_cutscene__newbie_die",
+      "bgm": "bgm_badass",
+      "dialogue": [
+        { "char": "dr_hailmary", "state": "shocked", "talk": "출력 게이지 <span style='color:#ff6b6b'>오버플로우!</span>\n직격당하면 인류는 모조리 사각 분진으로 분해돼!" },
+        { "char": "dr_hailmary", "state": "shocked", "talk": "나리, 뉴비! 각각 양쪽 차단 밸브로 달려가서 \n<span style='font-size:1.15em'>비상 정지 벨브를 잠궈!</span>" },
+        { "char": "kkrong", "state": "mocking", "talk": "<span style='font-size:1.25em'>하하하! 늦었다!</span>\n분사핵의 리미터를 완전히 해제했다!\n인류의 종말을 일등석에서 감상 하도록." },
+        { "char": "newbie", "state": "angry", "talk": "아니, 늦지 않았어욧! 이번엔 <span style='font-size:1.25em'>도망 안 칠 거예요!</span>\n저도… 저도 당당한 \n<span style='color:#B79CFF'>가루재난관리국 정직원</span>이란 말이에요오오!!" },
+        { "char": "bitnari", "state": "neutral", "talk": "<span style='font-size:0.75em'>(정말 많이 성장 했구나, 신참.)\n(하지만 너는... 계약직이야.)</span>" },
+        { "char": "newbie", "state": "angry", "talk": "이제 이 것만 돌리면!!" },
+        { "char": "kkrong", "state": "mocking", "talk": "그렇게 둘 성 싶으냐!?" },
+        { "char": "newbie", "state": "shocked", "talk": "어…? 레버가 뻑뻑해서 안 돌아… <span style='font-size:1.2em'>앗?!</span>" },
+        { "char": "kkrong", "state": "gun", "talk": "<span style='color:#FF0000;font-size:1.35em'>죽어라!</span>" },
+        { "char": "bitnari", "state": "shocked", "talk": "<span style='font-size:1.35em'>신뉴비! 피해!!</span>" }
+      ]
+    },
+    {
+      "id": "dlog_stage_10_2",
+      "location": "최종 정화 구역",
+      "action": "start_cutscene__bitnari_sword",
+      "bgm": "bgm_badass",
+      "dialogue": [
+        { "char": "bitnari", "state": "sad", "talk": "야… 신참…! 가루 치우랬더니 왜 네가 가루가 되는데…!" },
+        { "char": "kkrong", "state": "gun", "talk": "<span style='font-size:1.2em'>와하하하!</span> 겁쟁이 계집은 가루로 만들어 버렸다!\n다음은 왈가닥 네 차례다, 크크롱!!" },
+        { "char": "bitnari", "state": "shocked", "talk": "저, 저 자식… 총을… <span style='color:#ff6b6b'>광선총</span>을 가지고 있어…!" },
+        { "char": "dr_hailmary", "state": "smirk", "talk": "빛나리, <span style='font-size:1.15em'>침착해!</span>\n여기서 크크롱을 막지 못하면 <span style='color:#ff6b6b'>인류는 끝장</span>이야!" },
+        { "char": "bitnari", "state": "shocked", "talk": "하, 하지만 박사님!\n아무리 거제 불주먹이라도 \n우예 '권법'으로 '<span style='font-size:1.15em'>Gun법</span>'을 이깁니까?!" },
+        { "char": "dr_hailmary", "state": "smirk", "talk": "아니. 권법이 아니다. \n<span style='font-size:1.2em;color:#3FE0C5'>&lt;검법&gt;</span>이다." },
+        { "char": "bitnari", "state": "thinking", "talk": "…예? 검법이요?" },
+        { "char": "dr_hailmary", "state": "smirk", "talk": "네 손에 그것… 그게 뭐지?" },
+        { "char": "bitnari", "state": "sad", "talk": "이건 그냥 <span style='font-size:0.85em'>먼지털이…</span>" },
+        { "char": "dr_hailmary", "state": "smirk", "talk": "확실한가? <span style='font-size:1.15em'>기억해라!</span>\n2년 전 거제를 피로 물들이던 그 시절을!" },
+        { "char": "bitnari", "state": "sad", "talk": "그래… 이건 <span style='font-size:1.15em;color:#3FE0C5'>먼지털이 따위가 아니야.</span>" }
+      ]
+    },
+    {
+      "id": "dlog_stage_10_3",
+      "location": "최종 정화 구역",
+      "action": "start_cutscene__miss_newbie",
+      "bgm": "bgm_sad",
+      "dialogue": [
+        { "char": "kkrong", "state": "damaged", "talk": "<span style='font-size:1.35em'>끄아아아악?!</span> 이 몸이 당하다니!" },
+        { "char": "bitnari", "state": "angry", "talk": "나는 살생을 그만 둔 몸.\n이대로 물러나면 <span style='font-size:1.15em'>목숨만은 살려주마.</span>" },
+        { "char": "kkrong", "state": "damaged", "talk": "기억해라… 우리는 반드시—" },
+        { "char": "dr_hailmary", "state": "neutral", "talk": "도망쳤네.\n후우, 피를 보지 않아서 다행이야.\n다시 그 <span style='color:#ff6b6b'>&lt;프로토콜&gt;</span>을 써야하나 싶었거든." },
+        { "char": "bitnari", "state": "sad", "talk": "다행히 이성을 잃기 전에 싸움이 끝났노." },
+        { "char": "bitnari", "state": "serious", "talk": "…그보다 박사님, 제 먼지털이 털이 다 빠졌는데 \n<span style='font-size:1.15em'>경비 청구 되죠?</span>" }
+      ]
+    },
+    {
+      "id": "dlog_ending",
+      "location": "지상 복구 후",
+      "action": "start_cutscene__ending",
+      "bgm": "bgm_funny",
+      "dialogue": [
+        { "char": "newbie", "state": "powder_awkward_smile", "talk": "네, 선배님. 부르셨나요?" },
+        { "char": "bitnari", "state": "shocked", "talk": "<span style='font-size:1.2em'>……?!</span>\n…뭔데?! <span style='font-size:1.15em'>귀신이가?! 유령이가?!</span>" },
+        { "char": "newbie", "state": "powder_awkward_smile", "talk": "아니요오… 저 살아난 것 같은데요…?\n자고 일어났더니 가루들이 막 달라붙어서 몸이 됐어요… <span style='font-size:0.85em'>헤헤.</span>" },
+        { "char": "bitnari", "state": "angry", "talk": "<span style='font-size:1.35em'>야아아아아아아--!!</span> 사람이 눈물 콧물 다 짜면서 추모 씬 찍고 있었는데\n갑자기 부활인데?! <span style='font-size:1.15em'>끄지라 마!</span>" },
+        { "char": "dr_hailmary", "state": "thinking", "talk": "호오… 테트리스 광선에 맞았을 때 신참의 신체 데이터가 가루 입자의 '<span style='color:#e0c46b'>블록 결속 메커니즘</span>'에 저장됐어." },
+        { "char": "dr_hailmary", "state": "thinking", "talk": "주변 잔존 가루를 흡수해 <span style='font-size:1.15em'>3D 프린팅</span>처럼 재구성된 거야." },
+        { "char": "bitnari", "state": "shocked", "talk": "어휴!! 뭔소리고!\n아니 신참 너, 꼬라지가 그게 뭐꼬?! <span style='font-size:1.15em'>만지면 부서질 것 같잖아!</span>" },
+        { "char": "newbie", "state": "powder_shocked", "talk": "앗! 선배님, 손 흔드니까 가루가 후드드득\n<span style='font-size:1.2em'>으아앙, 저 가루인간이 됐어요오…!</span>" },
+        { "char": "bitnari", "state": "sad", "talk": "아, <span style='font-size:1.15em'>가루 흘리지 마라고!</span>." },
+        { "char": "dr_hailmary", "state": "smirk", "talk": "<span style='color:#3FE0C5'>완벽한 불사신 노동력</span>의 탄생이군." },
+        { "char": "dr_hailmary", "state": "smirk", "talk": "복귀 기념 첫 임무다, \n네 발걸음 닿는 곳마다 가루가 떨어지니 \n떨어진 <span style='font-size:1.15em'>네 자신을 직접 치우도록.</span>" },
+        { "char": "newbie", "state": "powder_shocked", "talk": "<span style='font-size:1.2em'>으아앙, 너무해-!! 병가 쓸래요.</span>" },
+        { "char": "bitnari", "state": "smile", "talk": "몰랐나? 니 계약직이라 <span style='font-size:1.15em'>그런거 없어.</span>\n가루 안 떨어지게 살살 걸어서 이리 온나!" }
+      ]
+    }
+  ]
+}
