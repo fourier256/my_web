@@ -1,17 +1,662 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
-    />
-    <title>powder_control_sector</title>
-    <script type="module" crossorigin src="/assets/index-gTUYMQFV.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-B7ePlplW.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>2048 덱빌딩 던전</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; }
+  html,body { width:100%; height:100%; background:#000; overflow:hidden; font-family:"Segoe UI","Malgun Gothic",sans-serif; touch-action:none; overscroll-behavior:none; position:fixed; inset:0; }
+  #stage { position:absolute; top:50%; left:50%; width:1080px; height:1920px; transform-origin:center; background:#1c1726; overflow:hidden; }
+  #game { position:absolute; inset:0; background:linear-gradient(#241d33,#17121f); }
+
+  #topbar { position:absolute; top:0; left:0; width:100%; padding:16px 20px 6px; z-index:20; }
+  #bossName { font-size:26px; color:#eee; text-align:center; }
+  #bossName b { color:#ff8a5a; }
+  #bossHpBar { margin-top:8px; height:40px; background:#3a0d0d; border:4px solid #000; border-radius:20px; overflow:hidden; position:relative; }
+  #bossHpFill { height:100%; width:100%; background:linear-gradient(#ff4d4d,#a01818); transition:width .3s; }
+  #bossHpText { position:absolute; inset:0; text-align:center; line-height:40px; font-size:22px; font-weight:bold; color:#fff; text-shadow:0 2px 2px #000; }
+
+  #bossIntent { margin:12px auto 0; width:max-content; background:#0e0b16dd; border:3px solid #6a5a2a; border-radius:14px; padding:6px 20px;
+    display:flex; align-items:center; gap:10px; color:#fff; font-size:32px; font-weight:900; text-shadow:0 2px 3px #000; box-shadow:0 4px 10px #000a; }
+  #bossIntent.attack{ border-color:#c0392b; } #bossIntent.summon{ border-color:#8e44ad; } #bossIntent.destroy{ border-color:#e67e22; }
+  #bossIntent .iIcon{ font-size:36px; } #bossIntent .iVal{ color:#ffde59; }
+  @keyframes intentPulse{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.06);} }
+  #bossIntent.pulse{ animation:intentPulse 1.4s ease-in-out infinite; }
+
+  #bossArt { position:absolute; top:250px; left:0; width:100%; height:170px; z-index:4; display:flex; align-items:center; justify-content:center; pointer-events:none; }
+  #bossArt img { height:170px; image-rendering:pixelated; filter:drop-shadow(0 0 24px #ff3b0088) drop-shadow(0 8px 10px #000a); }
+  #bossArt.hurt img { filter:drop-shadow(0 0 14px #f00) brightness(1.8) sepia(1) hue-rotate(-40deg) saturate(6) !important; }
+  #bossArt.punch img { animation:punch .25s ease-out; }
+
+  #fieldWrap { position:absolute; left:50%; transform:translateX(-50%); }
+  #field { position:relative; background:#15111faa; border:4px solid #0e0b16; border-radius:16px; }
+  .fslot { position:absolute; background:#1d1830; border:2px solid #2a233e; border-radius:10px; }
+  .colOverlay { position:absolute; border-radius:12px; pointer-events:none; z-index:6; }
+  .colOverlay.atkLine { background:linear-gradient(#ff2b2b33,#ff2b2b11); border:3px dashed #ff4d4d; box-shadow:0 0 18px #ff2b2b55 inset; animation:pulseLine 1.2s ease-in-out infinite; }
+  @keyframes pulseLine{ 0%,100%{opacity:.5;} 50%{opacity:1;} }
+  .summonMark { position:absolute; z-index:9; display:flex; align-items:center; justify-content:center; font-size:64px; opacity:.75; pointer-events:none; animation:pulseLine 1.2s ease-in-out infinite; text-shadow:0 0 14px #8e44ad; }
+  .destroyMark { position:absolute; z-index:35; display:flex; align-items:center; justify-content:center; font-size:60px; pointer-events:none; animation:pulseLine 1s ease-in-out infinite; filter:drop-shadow(0 0 10px #e67e22); }
+
+  .enemy { position:absolute; border-radius:10px; transition:left .3s ease,top .3s ease; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .enemy img { width:96px; height:96px; image-rendering:pixelated; filter:drop-shadow(0 4px 6px #000a); }
+  .enemy .estat { display:flex; gap:6px; margin-top:2px; font-size:16px; font-weight:bold; color:#fff; text-shadow:0 1px 2px #000; }
+  .enemy .eatk{ color:#ff9a6a; } .enemy .ehpn{ color:#8affa0; }
+  .enemy .ehp { width:120px; height:14px; background:#4a0d0d; border:2px solid #000; border-radius:7px; margin-top:1px; position:relative; overflow:hidden; }
+  .enemy .ehpfill { height:100%; background:linear-gradient(#ff5a5a,#a01818); transition:width .2s; }
+
+  #colStats { position:absolute; left:50%; transform:translateX(-50%); z-index:8; display:flex; }
+  .colStat { text-align:center; font-size:26px; font-weight:900; text-shadow:0 2px 3px #000; color:#7ec8ff; }
+  @keyframes defHit{ 0%{transform:scale(1);color:#7ec8ff;} 30%{transform:scale(1.5);color:#fff;} 100%{transform:scale(1);color:#7ec8ff;} }
+  .colStat.defhit{ animation:defHit .4s; }
+  @keyframes defGain{ 0%{transform:scale(1);color:#7ec8ff;} 30%{transform:scale(1.6);color:#aef;} 100%{transform:scale(1);color:#7ec8ff;} }
+  .colStat.defgain{ animation:defGain .4s; }
+
+  #boardWrap { position:absolute; left:50%; transform:translateX(-50%); }
+  #board { position:relative; background:#241c14; border:4px solid #120d08; border-radius:16px; }
+  .bslot { position:absolute; background:#2e2519; border:2px solid #3d3020; border-radius:10px; transition:background .12s,border-color .12s,box-shadow .12s; }
+  .bslot.valid { background:#3f6a2e; border:3px solid #9cff5a; box-shadow:inset 0 0 20px #9cff5aaa, 0 0 12px #9cff5a88; }
+  .bslot.hover { background:#7cc44a; border-color:#eaffce; box-shadow:inset 0 0 26px #dfffb0, 0 0 20px #aef58c; }
+  .fcard { position:absolute; border-radius:10px; transition:left .16s ease,top .16s ease; display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(#efe6d6,#d9c9a8); border:4px solid #b89b6a; z-index:5; }
+  .fcard.atk { border-color:#c0392b; background:linear-gradient(#f3d9d2,#e0b3a8); }
+  .fcard.def { border-color:#2980b9; background:linear-gradient(#d2e2f3,#a8c6e0); }
+  .fcard .ficon { width:52px; height:52px; }
+  .fcard .fval { position:absolute; top:-10px; left:-10px; min-width:42px; height:42px; padding:0 4px; border-radius:21px; background:radial-gradient(#fff,#d8c088); color:#111; font-size:22px; font-weight:900; display:flex; align-items:center; justify-content:center; border:3px solid #0007; }
+  @keyframes spawnGrow{ 0%{transform:scale(0);} 70%{transform:scale(1.15);} 100%{transform:scale(1);} }
+  .fcard.spawning{ animation:spawnGrow .28s ease-out; }
+  @keyframes mergePunch{ 0%{transform:scale(1);} 45%{transform:scale(1.35);} 100%{transform:scale(1);} }
+  .fcard.merged{ animation:mergePunch .25s ease-out; z-index:12; }
+
+  @keyframes hitShake { 0%,100%{transform:translate(0,0);} 20%{transform:translate(-8px,4px);} 40%{transform:translate(8px,-4px);} 60%{transform:translate(-6px,2px);} 80%{transform:translate(6px,-2px);} }
+  .hurt { animation:hitShake .3s; }
+  .hurt img { filter:drop-shadow(0 0 10px #f00) brightness(1.8) sepia(1) hue-rotate(-40deg) saturate(6) !important; }
+  @keyframes punch { 0%{transform:scale(1);} 45%{transform:scale(1.3);} 100%{transform:scale(1);} }
+  .punch { animation:punch .25s ease-out; z-index:15; }
+  .slash { position:absolute; pointer-events:none; z-index:30; overflow:hidden; }
+  .slash::after { content:""; position:absolute; top:50%; left:-40%; width:180%; height:9px; background:linear-gradient(90deg,transparent,#fff,transparent); transform:translateY(-50%) rotate(-30deg); animation:slashGo .3s ease-out forwards; box-shadow:0 0 14px #fff; }
+  @keyframes slashGo { from{opacity:0; transform:translate(-40px,26px) rotate(-30deg);} 30%{opacity:1;} to{opacity:0; transform:translate(40px,-26px) rotate(-30deg);} }
+  @keyframes destroyFx { 0%{opacity:1;transform:scale(1) rotate(0);} 100%{opacity:0;transform:scale(1.4) rotate(20deg);} }
+  .destroying { animation:destroyFx .4s ease-out forwards; filter:brightness(2) sepia(1) hue-rotate(-30deg) saturate(4); }
+
+  #handZone { position:absolute; bottom:0; left:0; width:100%; height:470px; z-index:18; }
+  #hpBadge,#manaBadge { position:absolute; bottom:22px; width:135px; height:135px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:30px; font-weight:bold; color:#fff; text-shadow:0 2px 3px #000; border:5px solid #0008; z-index:25; }
+  #hpBadge { left:22px; background:radial-gradient(circle at 40% 35%,#ff6b6b,#8b0000); }
+  #manaBadge { right:22px; background:radial-gradient(circle at 40% 35%,#5aa0ff,#0a2a7a); }
+  #manaBadge #manaText{ font-size:26px; }
+  .badgeLabel { font-size:18px; opacity:.85; }
+  /* HP구슬 우하단 추가방어력 — 손패보다 위 */
+  #blockBadge { position:absolute; left:130px; bottom:20px; min-width:64px; height:64px; padding:0 8px; border-radius:20px;
+    background:radial-gradient(circle at 40% 35%,#8fd0ff,#1a5ec0); border:4px solid #0af8; z-index:300;
+    display:none; align-items:center; justify-content:center; gap:3px; font-size:30px; font-weight:900; color:#fff; text-shadow:0 2px 3px #000; box-shadow:0 4px 10px #000a; }
+  #blockBadge.show{ display:flex; }
+  @keyframes blockPulse{ 0%{transform:scale(1);} 40%{transform:scale(1.35);} 100%{transform:scale(1);} }
+  #blockBadge.bump{ animation:blockPulse .3s; }
+  #endTurnBtn { position:absolute; bottom:170px; right:22px; width:175px; height:76px; background:linear-gradient(#ffd166,#e0a020); border:4px solid #7a5a10; border-radius:16px; color:#3a2a00; font-size:26px; font-weight:900; z-index:26; box-shadow:0 5px 0 #7a5a10; display:flex; align-items:center; justify-content:center; }
+  #endTurnBtn:active { transform:translateY(4px); box-shadow:0 1px 0 #7a5a10; }
+  #deckPile { position:absolute; bottom:22px; right:170px; width:82px; height:108px; background:#2a2440; border:3px solid #5a5480; border-radius:10px; color:#ccc; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:20px; z-index:22; }
+
+  #hand { position:absolute; bottom:0; left:0; width:100%; height:300px; z-index:19; pointer-events:none; }
+  .hcard { position:absolute; left:50%; bottom:-30px; width:150px; height:215px; margin-left:-75px;
+    background:linear-gradient(#efe6d6,#d9c9a8); border:4px solid #b89b6a; border-radius:14px; box-shadow:0 6px 14px #000a;
+    display:flex; flex-direction:column; align-items:center; padding:8px 6px;
+    transform-origin:center 340px; pointer-events:auto; cursor:grab;
+    transition:transform .3s cubic-bezier(.2,.8,.3,1),opacity .3s; }
+  .hcard.atk{border-color:#c0392b;} .hcard.def{border-color:#2980b9;}
+  .hcard .hcost{ position:absolute; top:-12px; left:-12px; width:46px; height:46px; border-radius:50%; background:radial-gradient(#7fc0ff,#1a5ec0); color:#fff; font-size:22px; font-weight:bold; display:flex; align-items:center; justify-content:center; border:3px solid #fff8; }
+  .hcard .htier{ position:absolute; top:-12px; right:-10px; background:#3a2d18; color:#ffd166; font-size:15px; font-weight:bold; padding:3px 8px; border-radius:10px; border:2px solid #0007; }
+  .hcard .hicon{ width:66px; height:66px; margin-top:12px; }
+  .hcard .hname{ font-size:22px; font-weight:bold; color:#3a2d18; margin-top:6px; }
+  .hcard .hdesc{ font-size:12px; color:#5a4a30; text-align:center; margin-top:5px; line-height:1.25; }
+  .hcard.unaffordable{ filter:grayscale(.6) brightness(.75); }
+  .hcard.dragging{ transition:none !important; z-index:200; cursor:grabbing; box-shadow:0 14px 30px #000c; }
+
+  .dmgPop{ position:absolute; font-size:38px; font-weight:900; color:#ffde59; text-shadow:0 2px 4px #000,0 0 8px #f80; pointer-events:none; z-index:40; animation:popUp .8s ease-out forwards; }
+  @keyframes popUp{ 0%{opacity:1; transform:translateY(0) scale(.6);} 30%{transform:translateY(-20px) scale(1.2);} 100%{opacity:0; transform:translateY(-80px) scale(1);} }
+  #centerDmg{ position:absolute; top:820px; left:0; width:100%; text-align:center; z-index:55; pointer-events:none; }
+  #centerDmg span{ display:inline-block; font-size:110px; font-weight:900; color:#ff3030; text-shadow:0 4px 10px #000,0 0 20px #f00; opacity:0; }
+  #centerDmg.show span{ animation:centerDmgFx 1s ease-out; }
+  @keyframes centerDmgFx{ 0%{opacity:0;transform:scale(2.2);} 20%{opacity:1;transform:scale(1);} 75%{opacity:1;} 100%{opacity:0;transform:scale(1.1);} }
+  #redFlash{ position:absolute; inset:0; background:#f00; opacity:0; pointer-events:none; z-index:50; }
+  #redFlash.on{ animation:flashRed .45s; }
+  @keyframes flashRed{ 0%{opacity:0;} 30%{opacity:.5;} 100%{opacity:0;} }
+  #banner{ position:absolute; top:900px; width:100%; text-align:center; z-index:60; pointer-events:none; }
+  #banner span{ display:inline-block; font-size:64px; font-weight:900; color:#fff; text-shadow:0 4px 8px #000; opacity:0; }
+  #banner.show span{ animation:bannerPop 1.2s ease-out; }
+  @keyframes bannerPop{ 0%{opacity:0; transform:scale(2);} 20%{opacity:1; transform:scale(1);} 80%{opacity:1;} 100%{opacity:0;} }
+</style>
+</head>
+<body>
+<div id="stage"><div id="game">
+  <div id="topbar">
+    <div id="bossName">보스 · <b id="bossTitle">불타는 군주</b></div>
+    <div id="bossHpBar"><div id="bossHpFill"></div><div id="bossHpText"></div></div>
+    <div id="bossIntent"><span class="iIcon"></span><span class="iVal"></span></div>
+  </div>
+
+  <div id="bossArt"><img id="bossImg" src="" alt="boss"></div>
+
+  <div id="fieldWrap"><div id="field"></div></div>
+  <div id="colStats"></div>
+  <div id="boardWrap"><div id="board"></div></div>
+
+  <div id="handZone">
+    <div id="hpBadge"><span class="badgeLabel">HP</span><span id="hpText">30/30</span></div>
+    <div id="blockBadge">🛡<span id="blockText">0</span></div>
+    <div id="manaBadge"><span class="badgeLabel">마나</span><span id="manaText">12/12</span></div>
+    <div id="endTurnBtn">턴 종료</div>
+    <div id="deckPile">덱<br><span id="deckCount">9</span></div>
+  </div>
+  <div id="hand"></div>
+
+  <div id="banner"><span id="bannerText"></span></div>
+  <div id="centerDmg"><span id="centerDmgText"></span></div>
+  <div id="redFlash"></div>
+</div></div>
+
+<script>
+/* ===== 제스처 차단 ===== */
+document.addEventListener("touchstart", e=>{ if(e.touches.length>1) e.preventDefault(); }, {passive:false});
+document.addEventListener("touchmove",  e=>{ if(e.touches.length>1) e.preventDefault(); }, {passive:false});
+document.addEventListener("gesturestart",  e=>e.preventDefault());
+document.addEventListener("gesturechange", e=>e.preventDefault());
+document.addEventListener("gestureend",    e=>e.preventDefault());
+let lastTouchEnd=0;
+document.addEventListener("touchend", e=>{ const now=Date.now(); if(now-lastTouchEnd<=300) e.preventDefault(); lastTouchEnd=now; }, {passive:false});
+document.addEventListener("dblclick", e=>e.preventDefault());
+document.addEventListener("selectstart", e=>e.preventDefault());
+document.addEventListener("contextmenu", e=>e.preventDefault());
+document.addEventListener("wheel", e=>{ if(e.ctrlKey) e.preventDefault(); }, {passive:false});
+
+/* ===== 리소스 ===== */
+const MON="https://raw.githubusercontent.com/crawl/tiles/master/releases/Ancient/Oct-5-2010/dc-mon/";
+const ICON="https://raw.githubusercontent.com/game-icons/icons/master/";
+const BOSS_IMG=MON+"dragon.png";
+const SWORD=ICON+"lorc/pointy-sword.svg";
+const SHIELD=ICON+"sbed/shield.svg";
+const MON_FILES=["kobold.png","ogre.png","ooze.png","necromancer.png","naga.png","manticore.png","minotaur.png","cyclops.png"];
+const SUMMON_ATK=10, SUMMON_HP=30;
+const SLIDE_COST=2;
+
+const CARDS={
+  strike:  {key:"strike",  name:"타격",    val:4,  place:"atk", dmg:4,  desc:"해당 열에 4 데미지\n공격 4 배치"},
+  guard:   {key:"guard",   name:"방어",    val:4,  place:"def", block:2,desc:"추가 방어력 +2\n방어 4 배치"},
+  bash:    {key:"bash",    name:"강타",    val:8,  place:"atk", dmg:8,  desc:"해당 열에 8 데미지\n공격 8 배치"},
+  finisher:{key:"finisher",name:"마무리일격",val:16, place:"atk", dmg:32, destroy:true, desc:"해당 열에 32 데미지\n배치된 카드 파괴"},
+  survivor:{key:"survivor",name:"생존자",  val:16, place:"def", block:8, destroy:true, draw:1, desc:"추가 방어력 +8\n1장 드로우\n배치된 카드 파괴"},
+};
+function cardCost(def){ return def.val; }
+function coverNeed(def){ return def.val/2; }
+
+/* ===== 그리드 ===== */
+const FCOLS=4, FROWS=2, BCOLS=4, BROWS=4, CELL=140;
+const bx=c=>16+c*(CELL+16), by=r=>16+r*(CELL+16);
+const fx=c=>16+c*(CELL+16), fy=r=>16+r*(CELL+16);
+const BOARD_W=CELL*BCOLS+16*(BCOLS+1), BOARD_H=CELL*BROWS+16*(BROWS+1);
+const FIELD_W=CELL*FCOLS+16*(FCOLS+1), FIELD_H=CELL*FROWS+16*(FROWS+1);
+
+/* ===== 상태 ===== */
+/* colBlock: 배치효과 추가방어력(즉시). colDef: 턴종료 시 방어카드 숫자합으로 채워지는 열 방어력. */
+let field,board,deck,hand,discard,mana,maxMana,hp,maxHp,bossHp,bossMax,turnCount,colBlock,colDef,busy,bossIntent;
+const gameEl=document.getElementById("game"),
+      fieldEl=document.getElementById("field"), boardEl=document.getElementById("board"),
+      handEl=document.getElementById("hand"), colStatsEl=document.getElementById("colStats"),
+      bossIntentEl=document.getElementById("bossIntent");
+
+function resize(){ const s=Math.min(innerWidth/1080,innerHeight/1920); document.getElementById("stage").style.transform=`translate(-50%,-50%) scale(${s})`; }
+addEventListener("resize",resize); resize();
+function stageScale(){ return Math.min(innerWidth/1080,innerHeight/1920); }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} }
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+/* ===== 게임 시작 ===== */
+function newGame(){
+  field=Array.from({length:FROWS},()=>Array(FCOLS).fill(null));
+  board=Array.from({length:BROWS},()=>Array(BCOLS).fill(null));
+  deck=[]; ["strike","strike","strike","guard","guard","bash","bash","finisher","survivor"].forEach(k=>deck.push(k)); shuffle(deck);
+  hand=[]; discard=[];
+  hp=30; maxHp=30; bossMax=100; bossHp=100;
+  turnCount=0; colBlock=Array(BCOLS).fill(0); colDef=Array(BCOLS).fill(0); busy=false; bossIntent=null;
+  document.getElementById("bossImg").src=BOSS_IMG;
+  buildSlots();
+  for(let c=0;c<FCOLS;c++) if(Math.random()<0.5) spawnAt(0,c,true);
+  renderAll(); startTurn();
+}
+function buildSlots(){
+  fieldEl.style.width=FIELD_W+"px"; fieldEl.style.height=FIELD_H+"px";
+  boardEl.style.width=BOARD_W+"px"; boardEl.style.height=BOARD_H+"px";
+  fieldEl.innerHTML=""; boardEl.innerHTML="";
+  for(let r=0;r<FROWS;r++)for(let c=0;c<FCOLS;c++){
+    const f=document.createElement("div"); f.className="fslot";
+    f.style.left=fx(c)+"px"; f.style.top=fy(r)+"px"; f.style.width=CELL+"px"; f.style.height=CELL+"px";
+    fieldEl.appendChild(f);
+  }
+  for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){
+    const b=document.createElement("div"); b.className="bslot"; b.dataset.r=r; b.dataset.c=c;
+    b.style.left=bx(c)+"px"; b.style.top=by(r)+"px"; b.style.width=CELL+"px"; b.style.height=CELL+"px";
+    boardEl.appendChild(b);
+  }
+  document.getElementById("fieldWrap").style.top="440px";
+  const boardTop=440+FIELD_H+70;
+  document.getElementById("boardWrap").style.top=boardTop+"px";
+  colStatsEl.style.top=(boardTop-52)+"px"; colStatsEl.style.width=BOARD_W+"px"; colStatsEl.innerHTML="";
+  for(let c=0;c<BCOLS;c++){ const d=document.createElement("div"); d.className="colStat"; d.style.width=(CELL+16)+"px"; d.style.marginLeft=(c===0?16:0)+"px"; colStatsEl.appendChild(d); }
+}
+
+/* ===== 렌더 ===== */
+function renderAll(){ renderEnemies(); renderCards(); renderColStats(); updateHUD(); renderBlockBadge(); renderBossIntent(); }
+const manaText=document.getElementById("manaText"),hpText=document.getElementById("hpText"),
+ deckCount=document.getElementById("deckCount"),bossHpFill=document.getElementById("bossHpFill"),
+ bossHpText=document.getElementById("bossHpText"),blockBadge=document.getElementById("blockBadge"),blockText=document.getElementById("blockText");
+function updateHUD(){
+  manaText.textContent=`${mana}/${maxMana}`; hpText.textContent=`${Math.max(0,hp)}/${maxHp}`;
+  deckCount.textContent=deck.length;
+  bossHpFill.style.width=Math.max(0,bossHp/bossMax*100)+"%";
+  bossHpText.textContent=`${Math.max(0,bossHp)} / ${bossMax}`;
+  hand.forEach(c=>c.el.classList.toggle("unaffordable",+c.el.dataset.cost>mana));
+}
+function totalBlock(){ return colBlock.reduce((a,b)=>a+b,0); }
+function renderBlockBadge(bump){
+  const t=totalBlock(); blockText.textContent=t;
+  blockBadge.classList.toggle("show", t>0);
+  if(bump && t>0){ blockBadge.classList.remove("bump"); void blockBadge.offsetWidth; blockBadge.classList.add("bump"); }
+}
+function colAttack(c){ let a=0; for(let r=0;r<BROWS;r++){ const f=board[r][c]; if(f&&f.type==="atk") a+=f.val; } return a; }
+/* 열 방어력 총합 = 적용된 열 방어력(colDef) + 배치효과 추가방어력(colBlock) */
+function colDefTotal(c){ return colDef[c]+colBlock[c]; }
+/* 턴 중에는 colDef가 0. 표기는 colDefTotal */
+function renderColStats(){ for(let c=0;c<BCOLS;c++){ colStatsEl.children[c].textContent=`🛡${colDefTotal(c)}`; } }
+function renderEnemies(){
+  for(let r=0;r<FROWS;r++)for(let c=0;c<FCOLS;c++){
+    const e=field[r][c]; if(!e)continue;
+    if(!e.el){ const d=document.createElement("div"); d.className="enemy"; d.style.width=CELL+"px"; d.style.height=CELL+"px";
+      d.innerHTML=`<img src="${MON+e.file}" onerror="this.style.background='#c0392b'">
+        <div class="estat"><span class="eatk">🗡${e.atk}</span><span class="ehpn"></span></div>
+        <div class="ehp"><div class="ehpfill"></div></div>`;
+      fieldEl.appendChild(d); e.el=d; }
+    e.el.style.left=fx(c)+"px"; e.el.style.top=fy(r)+"px";
+    e.el.querySelector(".ehpfill").style.width=Math.max(0,e.hp/e.maxHp*100)+"%";
+    e.el.querySelector(".ehpn").textContent="❤"+Math.max(0,e.hp);
+  }
+}
+function renderCards(){
+  for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){
+    const f=board[r][c]; if(!f)continue;
+    if(!f.el){ const d=document.createElement("div"); d.className="fcard "+f.type; d.style.width=CELL+"px"; d.style.height=CELL+"px";
+      d.innerHTML=`<div class="fval">${f.val}</div><img class="ficon" src="${f.type==='atk'?SWORD:SHIELD}" style="filter:drop-shadow(0 0 3px #0008)" onerror="this.style.background='#888'">`;
+      boardEl.appendChild(d); f.el=d;
+    } else { f.el.querySelector(".fval").textContent=f.val; f.el.className="fcard "+f.type; f.el.querySelector(".ficon").src=f.type==='atk'?SWORD:SHIELD; }
+    f.el.style.left=bx(c)+"px"; f.el.style.top=by(r)+"px";
+  }
+}
+
+/* ===== 턴 ===== */
+function startTurn(){
+  turnCount++;
+  colBlock=Array(BCOLS).fill(0);
+  colDef=Array(BCOLS).fill(0);       // 열 방어력 턴 시작 시 0 초기화
+  maxMana=Math.min(40,12+(turnCount-1)*4); mana=maxMana;
+  spawnBoardTile();
+  decideBossIntent();                // 공격/소환/파괴 확정 (공격·소환은 이후 고정)
+  renderCards(); renderColStats(); renderBlockBadge(); updateHUD();
+  drawCards(5);
+}
+document.getElementById("endTurnBtn").addEventListener("click",endTurn);
+async function endTurn(){
+  if(busy)return; busy=true; hideBossIntent();
+  await defenseResolve();      // 방어 카드 순차 펀치 + 열 방어력 누적
+  await playerColumnResolve(); // 공격 카드 순차 펀치 + 공격
+  if(bossHp<=0){ win(); busy=false; return; }
+  refreshDestroyTarget();      // 파괴 대상만 최종 확정
+  clearBossMarks();
+  await discardHand();
+  await enemyPhase();
+  if(hp<=0){ lose(); busy=false; return; }
+  startTurn(); busy=false;
+}
+/* 턴 종료: 방어 카드가 순차 펀치하며 그 숫자만큼 열 방어력 누적 (2+4+8=14) */
+async function defenseResolve(){
+  for(let c=0;c<BCOLS;c++){
+    for(let r=0;r<BROWS;r++){
+      const f=board[r][c];
+      if(f&&f.type==="def"){
+        punch(f.el); colDef[c]+=f.val; defGainAnim(c); dmgPop(f.el,"+"+f.val+"🛡","#7ec8ff");
+        renderColStats(); await sleep(200);
+      }
+    }
+  }
+}
+/* 공격 카드 순차(하나씩) 펀치 후 열 공격 */
+async function playerColumnResolve(){
+  for(let c=0;c<BCOLS;c++){
+    for(let r=BROWS-1;r>=0;r--){
+      const f=board[r][c];
+      if(f&&f.type==="atk"){ punch(f.el); await sleep(150); dealToColumn(c,f.val); await sleep(200); if(bossHp<=0) return; }
+    }
+  }
+}
+function spawnBoardTile(){
+  const empties=[]; for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++) if(!board[r][c]) empties.push([r,c]);
+  if(!empties.length) return null;
+  const [r,c]=empties[Math.random()*empties.length|0];
+  board[r][c]={type:Math.random()<0.5?"atk":"def",val:2,el:null};
+  return [r,c];
+}
+
+/* ===== 부채꼴 손패 ===== */
+function layoutHand(){
+  const n=hand.length; if(n===0) return;
+  const centerX=540, baseBottom=-30;
+  const spread=Math.min(90, 560/Math.max(1,n));
+  const maxAngle=Math.min(8, 26/Math.max(1,n));
+  hand.forEach((h,i)=>{
+    if(h.el.classList.contains("dragging")) return;
+    const mid=(n-1)/2, off=i-mid;
+    const x=centerX + off*spread, angle=off*maxAngle, lift=Math.abs(off)*Math.abs(off)*4;
+    h.el.style.transition="transform .3s cubic-bezier(.2,.8,.3,1),left .3s,bottom .3s,opacity .3s";
+    h.el.style.left=x+"px"; h.el.style.bottom=(baseBottom - lift + 60)+"px";
+    h.el.style.transform=`translateX(-75px) rotate(${angle}deg)`; h.el.style.zIndex=100+i; h.el.style.opacity="1";
+  });
+}
+async function drawCards(n){
+  for(let i=0;i<n;i++){
+    if(hand.length>=8) break;
+    if(deck.length===0){ deck=discard.slice(); discard=[]; shuffle(deck); }
+    if(deck.length===0) break;
+    await drawOne(deck.pop());
+  }
+  layoutHand(); updateHUD();
+}
+function drawOne(key){
+  return new Promise(res=>{
+    const def=CARDS[key], cost=cardCost(def), el=document.createElement("div");
+    el.className="hcard "+def.place; el.dataset.cost=cost; el.dataset.key=key;
+    el.style.left="900px"; el.style.bottom="-260px"; el.style.opacity="0"; el.style.transform="translateX(-75px)";
+    el.innerHTML=`<div class="hcost">${cost}</div><div class="htier">${def.val}</div>
+      <img class="hicon" src="${def.place==='atk'?SWORD:SHIELD}" style="filter:drop-shadow(0 0 2px #000)" onerror="this.style.background='#ccc'">
+      <div class="hname">${def.name}</div><div class="hdesc">${def.desc.replace(/\n/g,"<br>")}</div>`;
+    handEl.appendChild(el);
+    const card={key,def,el}; el.__card=card; hand.push(card);
+    attachDrag(card);
+    requestAnimationFrame(()=>{ layoutHand(); });
+    updateHUD(); setTimeout(res,120);
+  });
+}
+async function discardHand(){
+  const copy=hand.slice(); hand.length=0;
+  const proms=copy.map(c=>{ discard.push(c.key);
+    c.el.style.transition="transform .38s,opacity .38s,bottom .38s";
+    c.el.style.bottom="640px"; c.el.style.opacity="0"; c.el.style.transform="translateX(-75px) rotate(25deg) scale(.6)";
+    return new Promise(r=>setTimeout(()=>{c.el.remove();r();},400)); });
+  await Promise.all(proms);
+}
+
+/* ===== 드래그 소환 ===== */
+function attachDrag(card){
+  const el=card.el; let ox,oy,dragging=false;
+  function pt(e){ return e.touches&&e.touches[0]?{x:e.touches[0].clientX,y:e.touches[0].clientY}:{x:e.clientX,y:e.clientY}; }
+  function down(e){
+    if(busy) return;
+    if(+el.dataset.cost>mana){ flashBadge("manaBadge"); return; }
+    dragging=true;
+    el.style.transition="none";
+    el.classList.add("dragging");
+    el.style.transform="translateX(-75px)";
+    ox=75; oy=100;
+    const s=stageScale(), st=document.getElementById("stage").getBoundingClientRect();
+    setPos(pt(e),s,st); highlightValid(card,true); e.preventDefault();
+  }
+  function setPos(p,s,st){
+    const lx=(p.x-st.left)/s, ly=(p.y-st.top)/s;
+    el.style.left=lx+"px"; el.style.bottom=(1920 - ly - (215-oy))+"px"; el.style.transform="translateX(-75px)";
+    const slot=slotUnder(p.x,p.y);
+    boardEl.querySelectorAll(".bslot").forEach(b=>b.classList.toggle("hover", !!(slot&&b.classList.contains("valid")&&+b.dataset.r===slot.r&&+b.dataset.c===slot.c)));
+  }
+  function move(e){ if(!dragging)return; const s=stageScale(), st=document.getElementById("stage").getBoundingClientRect(); setPos(pt(e),s,st); if(e.cancelable)e.preventDefault(); }
+  function up(e){
+    if(!dragging)return; dragging=false; el.classList.remove("dragging"); highlightValid(card,false);
+    const p=e.changedTouches?{x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY}:{x:e.clientX,y:e.clientY};
+    const slot=slotUnder(p.x,p.y);
+    if(slot && canPlace(card,slot.r,slot.c)) doPlace(card,slot.r,slot.c);
+    else layoutHand();
+  }
+  el.addEventListener("mousedown",down); addEventListener("mousemove",move); addEventListener("mouseup",up);
+  el.addEventListener("touchstart",down,{passive:false}); addEventListener("touchmove",move,{passive:false}); addEventListener("touchend",up);
+}
+function slotUnder(px,py){
+  const s=stageScale(), bw=boardEl.getBoundingClientRect();
+  const lx=(px-bw.left)/s, ly=(py-bw.top)/s;
+  for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++)
+    if(lx>=bx(c)&&lx<=bx(c)+CELL&&ly>=by(r)&&ly<=by(r)+CELL) return {r,c};
+  return null;
+}
+function canPlace(card,r,c){ const need=coverNeed(card.def); const t=board[r][c]; return t && t.val===need; }
+function highlightValid(card,on){
+  for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){
+    const slot=boardEl.querySelector(`.bslot[data-r="${r}"][data-c="${c}"]`);
+    slot.classList.toggle("valid", on&&canPlace(card,r,c)); if(!on)slot.classList.remove("hover");
+  }
+}
+function doPlace(card,r,c){
+  const cost=+card.el.dataset.cost;
+  if(mana<cost){ layoutHand(); return; }
+  mana-=cost;
+  const i=hand.indexOf(card); if(i>=0) hand.splice(i,1);
+  discard.push(card.key); card.el.remove(); layoutHand();
+  applyPlaceEffect(card.def,r,c,board[r][c]);
+  updateHUD();
+}
+function applyPlaceEffect(def,r,c,covered){
+  if(def.destroy){
+    if(def.dmg) dealToColumn(c,def.dmg);
+    if(def.block){ colBlock[c]+=def.block; renderBlockBadge(true); dmgPop(document.getElementById("blockBadge"),"+"+def.block+"🛡","#7ec8ff"); }
+    if(def.draw) drawCards(def.draw);
+    destroyCard(r,c);
+  } else {
+    if(covered && covered.el) covered.el.remove();
+    board[r][c]={type:def.place,val:def.val,el:null};
+    renderCards();
+    const nc=board[r][c];
+    if(nc.el){ nc.el.classList.add("spawning"); setTimeout(()=>nc.el&&nc.el.classList.remove("spawning"),300); }
+    if(def.dmg){ punch(nc.el); dealToColumn(c,def.dmg); }
+    if(def.block){ colBlock[c]+=def.block; renderBlockBadge(true); dmgPop(document.getElementById("blockBadge"),"+"+def.block+"🛡","#7ec8ff"); }
+  }
+  renderCards(); renderColStats(); renderBlockBadge();
+  refreshDestroyTarget();   // 파괴 대상 실시간 갱신
+}
+function destroyCard(r,c){ const t=board[r][c]; if(t){ if(t.el){ t.el.classList.add("destroying"); const el=t.el; setTimeout(()=>el.remove(),400);} board[r][c]=null; } }
+
+/* ===== 데미지 ===== */
+function dealToColumn(col,amt){
+  let target=null,tr=-1;
+  for(let r=FROWS-1;r>=0;r--){ if(field[r][col]){ target=field[r][col]; tr=r; break; } }
+  if(target){
+    target.hp-=amt; hurt(target.el); slashAt(fx(col),fy(tr),fieldEl); dmgPop(target.el,"-"+amt,"#ffde59");
+    if(target.hp<=0) killEnemy(target); renderEnemies();
+  } else { bossHp-=amt; bossHurt(); dmgPop(document.getElementById("bossArt"),"-"+amt,"#ffde59"); }
+  updateHUD();
+}
+function killEnemy(e){ for(let r=0;r<FROWS;r++)for(let c=0;c<FCOLS;c++) if(field[r][c]===e) field[r][c]=null;
+  if(e.el){ e.el.style.transition="transform .3s,opacity .3s"; e.el.style.transform="scale(0)"; e.el.style.opacity="0"; setTimeout(()=>e.el.remove(),300);} }
+/* 열 방어력(colDef) 우선 소모, 그 다음 추가방어력(colBlock) */
+function applyDamageToPlayer(dmg,c){
+  let remain=dmg, absorbed=0;
+  const useDef=Math.min(colDef[c],remain); colDef[c]-=useDef; remain-=useDef; absorbed+=useDef;
+  const useBlock=Math.min(colBlock[c],remain); colBlock[c]-=useBlock; remain-=useBlock; absorbed+=useBlock;
+  if(absorbed>0) defHitAnim(c);
+  renderBlockBadge();
+  if(remain>0){ hp-=remain; redFlash(); centerDmg(remain); }
+  else { dmgPop(document.getElementById("hpBadge"),"방어!","#7ec8ff"); }
+  renderColStats(); updateHUD();
+}
+
+/* ===== 적 페이즈 ===== */
+async function enemyPhase(){
+  showBanner("적의 턴"); await sleep(450);
+  for(let c=0;c<FCOLS;c++){ const e=field[FROWS-1][c]; if(e){ await enemyAttack(e,c); if(hp<=0)return; } }
+  for(let c=0;c<FCOLS;c++){ if(field[0][c] && !field[1][c]){ field[1][c]=field[0][c]; field[0][c]=null; } }
+  renderEnemies(); await sleep(300);
+  await bossAct(); if(hp<=0)return;
+  renderEnemies(); renderColStats(); await sleep(250);
+}
+async function enemyAttack(e,c){ punch(e.el); applyDamageToPlayer(e.atk,c); await sleep(350); }
+
+/* ===== 보스 인텐트 ===== */
+function fieldCount(){ let n=0; for(let r=0;r<FROWS;r++)for(let c=0;c<FCOLS;c++) if(field[r][c]) n++; return n; }
+function lowestAtkOpenCol(){ let best=-1,bestA=Infinity; for(let c=0;c<FCOLS;c++){ if(!field[0][c]){ const a=colAttack(c); if(a<bestA){bestA=a;best=c;} } } if(best<0){ for(let c=0;c<FCOLS;c++) if(!field[0][c]){best=c;break;} } return best; }
+function lowestDefCol(){ let best=0,bestD=Infinity; for(let c=0;c<BCOLS;c++){ const d=colDefTotal(c); if(d<bestD){bestD=d;best=c;} } return best; }
+function highestCard(){ let hr=-1,hc=-1,hv=-1; for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){ const f=board[r][c]; if(f&&f.val>hv){hv=f.val;hr=r;hc=c;} } return hv>=0?{r:hr,c:hc}:null; }
+function decideBossIntent(){
+  const n=fieldCount();
+  let choices;
+  if(n>=4) choices=["attack","destroy"];
+  else if(n<=1) choices=["summon"];
+  else choices=["summon","attack","destroy"];
+  const action=choices[Math.random()*choices.length|0];
+  if(action==="attack") bossIntent={type:"attack",val:20,col:lowestAtkOpenColForAttack()};
+  else if(action==="destroy") bossIntent={type:"destroy",target:highestCard()};
+  else bossIntent={type:"summon",col:lowestAtkOpenCol()};
+  renderBossIntent(); showBossMarks();
+}
+/* 공격 열: 턴 시작 시점의 방어력 기준으로 고정 (턴 중 0이므로 사실상 가장 왼쪽 등 균등) */
+function lowestAtkOpenColForAttack(){ let best=0,bestD=Infinity; for(let c=0;c<BCOLS;c++){ const d=colDefTotal(c); if(d<bestD){bestD=d;best=c;} } return best; }
+/* 파괴 대상만 실시간 갱신 */
+function refreshDestroyTarget(){
+  if(!bossIntent || bossIntent.type!=="destroy") { return; }
+  bossIntent.target=highestCard();
+  showBossMarks();
+}
+function renderBossIntent(){
+  const icon=bossIntentEl.querySelector(".iIcon"), val=bossIntentEl.querySelector(".iVal");
+  bossIntentEl.classList.remove("attack","summon","destroy");
+  if(!bossIntent){ bossIntentEl.style.display="none"; return; }
+  bossIntentEl.style.display="flex"; bossIntentEl.classList.add("pulse",bossIntent.type);
+  if(bossIntent.type==="attack"){ icon.textContent="⚔️"; val.textContent=bossIntent.val; }
+  else if(bossIntent.type==="destroy"){ icon.textContent="💥"; val.textContent="파괴"; }
+  else { icon.textContent="🧌"; val.textContent="소환"; }
+}
+function hideBossIntent(){ bossIntentEl.style.display="none"; bossIntentEl.classList.remove("pulse"); }
+function clearBossMarks(){ document.querySelectorAll(".colOverlay,.summonMark,.destroyMark").forEach(e=>e.remove()); }
+function showBossMarks(){
+  clearBossMarks();
+  if(!bossIntent) return;
+  if(bossIntent.type==="attack"){
+    const o=document.createElement("div"); o.className="colOverlay atkLine";
+    o.style.left=bx(bossIntent.col)+"px"; o.style.top=by(0)+"px";
+    o.style.width=CELL+"px"; o.style.height=(by(BROWS-1)+CELL-by(0))+"px";
+    boardEl.appendChild(o);
+  } else if(bossIntent.type==="summon"){
+    if(bossIntent.col>=0){ const m=document.createElement("div"); m.className="summonMark"; m.textContent="🧌";
+      m.style.left=fx(bossIntent.col)+"px"; m.style.top=fy(0)+"px"; m.style.width=CELL+"px"; m.style.height=CELL+"px"; fieldEl.appendChild(m); }
+  } else if(bossIntent.type==="destroy"){
+    const h=bossIntent.target;
+    if(h && board[h.r] && board[h.r][h.c]){ const m=document.createElement("div"); m.className="destroyMark"; m.textContent="💥";
+      m.style.left=bx(h.c)+"px"; m.style.top=by(h.r)+"px"; m.style.width=CELL+"px"; m.style.height=CELL+"px"; boardEl.appendChild(m); }
+  }
+}
+async function bossAct(){
+  if(!bossIntent) return; clearBossMarks();
+  if(bossIntent.type==="summon"){
+    let col=bossIntent.col; if(col<0 || field[0][col]) col=lowestAtkOpenCol();
+    if(col>=0) spawnAt(0,col); await sleep(300);
+  } else if(bossIntent.type==="attack"){
+    const col=bossIntent.col; const art=document.getElementById("bossArt"); punch(art);
+    applyDamageToPlayer(20,col); await sleep(350);
+  } else if(bossIntent.type==="destroy"){
+    const art=document.getElementById("bossArt"); punch(art);
+    let h=bossIntent.target; if(!h || !board[h.r][h.c]) h=highestCard();
+    if(h){ destroyCard(h.r,h.c); renderColStats(); } await sleep(350);
+  }
+}
+function spawnAt(r,c,silent){
+  const file=MON_FILES[Math.random()*MON_FILES.length|0];
+  const e={file,hp:SUMMON_HP,maxHp:SUMMON_HP,atk:SUMMON_ATK,el:null}; field[r][c]=e;
+  if(!silent){ renderEnemies(); if(e.el){ e.el.style.transition="none"; e.el.style.transform="scale(0)"; requestAnimationFrame(()=>{ e.el.style.transition="transform .3s"; e.el.style.transform="scale(1)"; }); } }
+}
+
+/* ===== 슬라이드 (마나 2 소모) ===== */
+function slide(dir){
+  if(busy)return;
+  if(mana<SLIDE_COST){ flashBadge("manaBadge"); return; }
+  const nb=Array.from({length:BROWS},()=>Array(BCOLS).fill(null));
+  function proc(getList,setList){
+    const K=(dir==='left'||dir==='right')?BROWS:BCOLS;
+    for(let k=0;k<K;k++){
+      const items=getList(k).filter(x=>x), out=[]; let i=0;
+      while(i<items.length){
+        if(i+1<items.length && items[i].val===items[i+1].val){
+          if(items[i].el) items[i].el.remove();
+          out.push({type:items[i+1].type, val:items[i].val*2, el:items[i+1].el, _merged:true});
+          i+=2;
+        } else { out.push(items[i]); i++; }
+      }
+      setList(k,out);
+    }
+  }
+  if(dir==='left') proc(r=>board[r],(r,o)=>{for(let c=0;c<BCOLS;c++)nb[r][c]=o[c]||null;});
+  else if(dir==='right') proc(r=>board[r].slice().reverse(),(r,o)=>{for(let c=0;c<BCOLS;c++)nb[r][BCOLS-1-c]=o[c]||null;});
+  else if(dir==='up') proc(c=>board.map(row=>row[c]),(c,o)=>{for(let r=0;r<BROWS;r++)nb[r][c]=o[r]||null;});
+  else proc(c=>board.map(row=>row[c]).reverse(),(c,o)=>{for(let r=0;r<BROWS;r++)nb[BROWS-1-r][c]=o[r]||null;});
+
+  const before=JSON.stringify(board.map(row=>row.map(x=>x?x.val+x.type:0)));
+  board=nb;
+  const after=JSON.stringify(board.map(row=>row.map(x=>x?x.val+x.type:0)));
+  if(before===after){ renderCards(); return; }
+
+  mana-=SLIDE_COST;
+  renderCards();
+  for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){ const f=board[r][c];
+    if(f&&f._merged){ delete f._merged; if(f.el){ f.el.classList.remove("merged"); void f.el.offsetWidth; f.el.classList.add("merged"); setTimeout(()=>f.el&&f.el.classList.remove("merged"),260); } } }
+  setTimeout(()=>{
+    const pos=spawnBoardTile(); renderCards();
+    if(pos){ const nf=board[pos[0]][pos[1]]; if(nf&&nf.el){ nf.el.classList.add("spawning"); setTimeout(()=>nf.el&&nf.el.classList.remove("spawning"),300); } }
+    renderColStats(); updateHUD(); refreshDestroyTarget();
+  },180);
+  renderColStats(); updateHUD(); refreshDestroyTarget();
+}
+
+/* ===== 이펙트 ===== */
+function punch(el){ if(!el)return; el.classList.remove("punch"); void el.offsetWidth; el.classList.add("punch"); }
+function hurt(el){ if(!el)return; el.classList.remove("hurt"); void el.offsetWidth; el.classList.add("hurt"); setTimeout(()=>el.classList.remove("hurt"),400); }
+function slashAt(left,top,parent){ const s=document.createElement("div"); s.className="slash"; s.style.left=left+"px"; s.style.top=top+"px"; s.style.width=CELL+"px"; s.style.height=CELL+"px"; parent.appendChild(s); setTimeout(()=>s.remove(),320); }
+function defHitAnim(c){ const el=colStatsEl.children[c]; if(!el)return; el.classList.remove("defhit"); void el.offsetWidth; el.classList.add("defhit"); setTimeout(()=>el.classList.remove("defhit"),400); }
+function defGainAnim(c){ const el=colStatsEl.children[c]; if(!el)return; el.classList.remove("defgain"); void el.offsetWidth; el.classList.add("defgain"); setTimeout(()=>el.classList.remove("defgain"),400); }
+function bossHurt(){
+  const art=document.getElementById("bossArt");
+  art.classList.remove("hurt"); void art.offsetWidth; art.classList.add("hurt"); setTimeout(()=>art.classList.remove("hurt"),400);
+  const s=stageScale(), rect=art.getBoundingClientRect(), st=document.getElementById("stage").getBoundingClientRect();
+  const el=document.createElement("div"); el.className="slash";
+  el.style.left=((rect.left-st.left)/s+rect.width/s/2-85)+"px"; el.style.top=((rect.top-st.top)/s+10)+"px";
+  el.style.width="170px"; el.style.height="170px";
+  gameEl.appendChild(el); setTimeout(()=>el.remove(),320);
+}
+function redFlash(){ const f=document.getElementById("redFlash"); f.classList.remove("on"); void f.offsetWidth; f.classList.add("on"); }
+function centerDmg(n){ const b=document.getElementById("centerDmg"); document.getElementById("centerDmgText").textContent="-"+n; b.classList.remove("show"); void b.offsetWidth; b.classList.add("show"); }
+function dmgPop(anchor,text,color){
+  const s=stageScale(), rect=anchor.getBoundingClientRect(), st=document.getElementById("stage").getBoundingClientRect();
+  const p=document.createElement("div"); p.className="dmgPop"; p.textContent=text; p.style.color=color;
+  p.style.left=((rect.left-st.left)/s+rect.width/s/2-20)+"px"; p.style.top=((rect.top-st.top)/s)+"px";
+  gameEl.appendChild(p); setTimeout(()=>p.remove(),800);
+}
+function flashBadge(id){ const b=document.getElementById(id); b.animate([{transform:'scale(1)'},{transform:'scale(1.15)'},{transform:'scale(1)'}],{duration:250}); }
+function showBanner(t){ const b=document.getElementById("banner"); document.getElementById("bannerText").textContent=t; b.classList.remove("show"); void b.offsetWidth; b.classList.add("show"); }
+function win(){ hideBossIntent(); clearBossMarks(); showBanner("보스 처치! 승리!"); }
+function lose(){ hideBossIntent(); clearBossMarks(); showBanner("패배..."); setTimeout(()=>{ if(confirm("패배! 다시 시작?")) newGame(); },800); }
+
+/* ===== 입력 ===== */
+let tsx,tsy,swiping=false;
+boardEl.addEventListener("touchstart",e=>{ tsx=e.touches[0].clientX; tsy=e.touches[0].clientY; swiping=true; },{passive:true});
+boardEl.addEventListener("touchend",e=>{ if(!swiping)return; swiping=false; const t=e.changedTouches[0]; doSwipe(t.clientX-tsx,t.clientY-tsy); },{passive:true});
+let bmx,bmy,bmdown=false;
+boardEl.addEventListener("mousedown",e=>{ bmx=e.clientX; bmy=e.clientY; bmdown=true; });
+addEventListener("mouseup",e=>{ if(!bmdown)return; bmdown=false; doSwipe(e.clientX-bmx,e.clientY-bmy); });
+function doSwipe(dx,dy){ if(Math.abs(dx)<30&&Math.abs(dy)<30)return; if(Math.abs(dx)>Math.abs(dy)) slide(dx>0?'right':'left'); else slide(dy>0?'down':'up'); }
+addEventListener("keydown",e=>{
+  if(e.key==="ArrowLeft")slide('left'); else if(e.key==="ArrowRight")slide('right');
+  else if(e.key==="ArrowUp")slide('up'); else if(e.key==="ArrowDown")slide('down');
+  else if(e.key===" "||e.key==="Enter"){ e.preventDefault(); endTurn(); }
+});
+
+newGame();
+</script>
+</body>
 </html>
