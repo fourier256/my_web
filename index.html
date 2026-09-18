@@ -5,6 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>2048 덱빌딩 던전</title>
 <link rel="stylesheet" href="style.css">
+<style>
+/* ===== 에러 팝업 (인라인 스타일: style.css 없어도 보이도록) ===== */
+#errOverlay{
+  position:fixed; inset:0; z-index:99999; display:none;
+  background:rgba(0,0,0,.72); align-items:center; justify-content:center;
+  font-family:system-ui,-apple-system,"Malgun Gothic",sans-serif;
+}
+#errOverlay.on{ display:flex; }
+#errBox{
+  max-width:86%; max-height:80%; overflow:auto;
+  background:#1c1f26; border:2px solid #ff5a5a; border-radius:14px;
+  padding:22px 24px; color:#fff; box-shadow:0 12px 40px #000a;
+}
+#errBox h2{ margin:0 0 12px; color:#ff7a7a; font-size:22px; }
+#errBox pre{
+  white-space:pre-wrap; word-break:break-word; margin:0 0 16px;
+  font-size:15px; line-height:1.5; color:#ffd7d7;
+  background:#000; padding:12px 14px; border-radius:8px;
+}
+#errBox .errBtns{ display:flex; gap:10px; justify-content:flex-end; }
+#errBox button{
+  font-size:16px; padding:9px 16px; border-radius:8px; border:0;
+  cursor:pointer; background:#3a3f4b; color:#fff;
+}
+#errBox button.primary{ background:#ff5a5a; }
+</style>
 </head>
 <body>
 <div id="stage"><div id="game">
@@ -46,7 +72,55 @@
   <div id="loadMsg">게임 데이터를 불러오는 중…</div>
 </div></div>
 
+<!-- ===== 에러 팝업 ===== -->
+<div id="errOverlay">
+  <div id="errBox">
+    <h2>⚠️ 오류가 발생했습니다</h2>
+    <pre id="errText"></pre>
+    <div class="errBtns">
+      <button id="errCopy">복사</button>
+      <button id="errClose" class="primary">닫기</button>
+    </div>
+  </div>
+</div>
+
 <script>
+/* ===================================================================
+   에러 팝업 시스템
+   - showError(msg): 화면에 팝업으로 에러 표시
+   - 전역 error / unhandledrejection 도 잡아서 팝업으로 노출
+=================================================================== */
+(function(){
+  const overlay=document.getElementById("errOverlay");
+  const textEl=document.getElementById("errText");
+  window.showError=function(msg){
+    // 이미 떠 있으면 메시지 누적
+    const stamp=new Date().toLocaleTimeString();
+    const line=`[${stamp}] ${msg}`;
+    textEl.textContent = overlay.classList.contains("on")
+      ? (textEl.textContent + "\n\n" + line)
+      : line;
+    overlay.classList.add("on");
+  };
+  document.getElementById("errClose").addEventListener("click",()=>{
+    overlay.classList.remove("on"); textEl.textContent="";
+  });
+  document.getElementById("errCopy").addEventListener("click",()=>{
+    const t=textEl.textContent;
+    if(navigator.clipboard) navigator.clipboard.writeText(t).catch(()=>{});
+  });
+  // 전역 예외 캐치
+  window.addEventListener("error",e=>{
+    const m=e.error && e.error.stack ? e.error.stack : (e.message || String(e));
+    showError("JS 오류:\n"+m);
+  });
+  window.addEventListener("unhandledrejection",e=>{
+    const r=e.reason;
+    const m=r && r.stack ? r.stack : (r && r.message ? r.message : String(r));
+    showError("처리되지 않은 Promise 거부:\n"+m);
+  });
+})();
+
 /* ===== 제스처 차단 ===== */
 document.addEventListener("touchstart", e=>{ if(e.touches.length>1) e.preventDefault(); }, {passive:false});
 document.addEventListener("touchmove",  e=>{ if(e.touches.length>1) e.preventDefault(); }, {passive:false});
@@ -131,9 +205,30 @@ async function loadData(){
       if(c.tile === undefined) c.tile = c.placesTile ? c.cost*2 : 0;
       if(c.exhaust === undefined) c.exhaust = false;
     }
+
+    // [추가] 덱에 정의되지 않은 카드 id 가 있는지 로드 시점에 미리 검증 → 팝업으로 경고
+    validateDecks();
   } catch(err) {
     showLoadError(err);
     throw err;
+  }
+}
+
+/* [추가] 덱 무결성 검사: template_deck.json 의 카드 id 가 cards.json 에 전부 있는지 확인 */
+function validateDecks(){
+  const missing=[];
+  for(const dk in DECKS){
+    const t=DECKS[dk];
+    (t.cards||[]).forEach(entry=>{
+      if(!CARDS[entry.id] && !missing.some(m=>m.deck===dk && m.id===entry.id)){
+        missing.push({deck:dk, id:entry.id});
+      }
+    });
+  }
+  if(missing.length){
+    const lines=missing.map(m=>` · 덱 "${m.deck}" 의 카드 id "${m.id}" 가 cards.json 에 없음`).join("\n");
+    showError("덱 데이터 오류: 아래 카드 id 가 cards.json 에 정의되어 있지 않습니다.\n"+lines+
+      "\n\n→ template_deck.json 의 id 철자를 확인하거나 cards.json 에 카드를 추가하세요.");
   }
 }
 
@@ -146,16 +241,15 @@ function showLoadError(err){
     `<code>params.json</code>, <code>cards.json</code>, <code>template_deck.json</code><br><br>`+
     `로컬 서버로 실행해야 합니다 (예: <code>python -m http.server</code>).<br><br>`+
     `<span style="color:#ff8a5a;font-size:20px">(${(err&&err.message)||err})</span></div>`;
+  showError("데이터 로드 실패:\n"+((err&&err.message)||err));
 }
 
 /* ===== 유틸: 페이즈 데이터 가져오기 ===== */
 function getPhaseData(p) {
-  // p 는 1 부터 시작하므로 인덱스는 p-1
   const idx = p - 1;
   if (idx >= 0 && idx < ENEMY_PHASES.length) {
     return ENEMY_PHASES[idx];
   }
-  // 기본값 (데이터가 없을 경우)
   return { bossHp: 100, bossAttack: 20, spawnHp: 30, spawnAtk: 10 };
 }
 
@@ -204,7 +298,7 @@ function initArchSelect(){
 }
 
 /* ===== 게임 시작 ===== */
-function newGame(){
+async function newGame(){
   field=Array.from({length:FROWS},()=>Array(FCOLS).fill(null));
   board=Array.from({length:BROWS},()=>Array(BCOLS).fill(null));
   deck=buildDeck(chosenArch); hand=[]; discard=[]; exhaustPile=[];
@@ -213,7 +307,6 @@ function newGame(){
   maxHp = hp;
   phase = 1;
   
-  // 페이즈 1 의 데이터 가져오기
   const p1Data = getPhaseData(1);
   bossMax = p1Data.bossHp; 
   bossHp = bossMax;
@@ -235,7 +328,11 @@ function newGame(){
   for(let c=0;c<FCOLS;c++) if(Math.random()<0.5) spawnAt(0,c,true);
   
   renderAll(); 
-  startTurn();
+
+  busy = true;
+  try { await startTurn(); }
+  catch(err){ showError("newGame 시작 중 오류:\n"+(err&&err.stack?err.stack:err)); }
+  finally { busy = false; }
 }
 
 function updatePhaseTag(){ document.getElementById("phaseTag").textContent=`[${phase}페이즈]`; }
@@ -334,7 +431,7 @@ function renderCards(){
 function effStrength(mult){ return strength*tempStrMult*(mult||1); }
 
 /* ===== 턴 시작 ===== */
-function startTurn(){
+async function startTurn(){
   turnCount++;
   colDef=Array(BCOLS).fill(0);
   thornsOn=false; blockedThisTurn=0; tempStrMult=1;
@@ -351,21 +448,27 @@ function startTurn(){
   renderCards(); renderColStats(); renderStrBadge(); renderBuffs(); updateHUD();
   
   const drawCount = GAME_CONFIG.cardsPerTurn || 5;
-  drawCards(drawCount);
+  await drawCards(drawCount);
 }
 
 document.getElementById("endTurnBtn").addEventListener("click",endTurn);
 
 async function endTurn(){
   if(busy)return; busy=true; hideBossIntent(); hideBuffTip();
-  await defenseResolve();
-  await playerColumnResolve();
-  if(bossHp<=0){ await nextPhaseOrWin(); if(phase>GAME_CONFIG.maxPhases){ busy=false; return; } }
-  refreshDestroyTarget(); clearBossMarks();
-  await discardHand();
-  await enemyPhase();
-  if(hp<=0){ lose(); busy=false; return; }
-  startTurn(); busy=false;
+  try {
+    await defenseResolve();
+    await playerColumnResolve();
+    if(bossHp<=0){ await nextPhaseOrWin(); if(phase>GAME_CONFIG.maxPhases){ return; } }
+    refreshDestroyTarget(); clearBossMarks();
+    await discardHand();
+    await enemyPhase();
+    if(hp<=0){ lose(); return; }
+    await startTurn();
+  } catch(err) {
+    showError("endTurn 처리 중 오류:\n"+(err&&err.stack?err.stack:err));
+  } finally {
+    busy=false; // 어떤 경우에도 잠금 해제
+  }
 }
 
 async function defenseResolve(){
@@ -396,7 +499,7 @@ function spawnBoardTile(){
   return [r,c];
 }
 
-/* ===== 페이즈 전환 (JSON 스펙 적용) ===== */
+/* ===== 페이즈 전환 ===== */
 async function nextPhaseOrWin(){
   const maxPh = GAME_CONFIG.maxPhases || 4;
   if(phase>=maxPh){ win(); phase=maxPh+1; return; }
@@ -405,7 +508,6 @@ async function nextPhaseOrWin(){
   showBanner(phase+"페이즈!");
   await sleep(900);
   
-  // 현재 페이즈의 데이터 가져와서 적용
   const pData = getPhaseData(phase);
   bossMax = pData.bossHp;
   bossHp = bossMax;
@@ -436,14 +538,27 @@ async function drawCards(n){
   for(let i=0;i<n;i++){
     if(hand.length>=maxHand) break;
     if(deck.length===0){ deck=discard.slice(); discard=[]; shuffle(deck); }
-    if(deck.length===0) break;
+    if(deck.length===0){
+      showError(`드로우 중단: 뽑을 카드가 없습니다.\n`+
+        `요청 ${n}장 중 ${i}장만 뽑음.\n`+
+        `deck=${deck.length}, discard=${discard.length}, hand=${hand.length}, exhaust=${exhaustPile.length}`);
+      break;
+    }
     await drawOne(deck.pop());
   }
   layoutHand(); updateHUD();
 }
 function drawOne(key){
   return new Promise(res=>{
-    const def=CARDS[key], cost=cardCost(def), el=document.createElement("div");
+    const def=CARDS[key];
+    if(!def){
+      // 정의되지 않은 카드 → 팝업으로 알리고 건너뜀 (예외로 게임이 멈추지 않게)
+      showError(`정의되지 않은 카드 key: "${key}"\ncards.json 에 해당 카드가 없습니다.\n`+
+        `→ template_deck.json 의 id 철자를 확인하거나 cards.json 에 추가하세요.`);
+      res();
+      return;
+    }
+    const cost=cardCost(def), el=document.createElement("div");
     el.className="hcard "+def.type; el.dataset.cost=cost; el.dataset.key=key;
     el.style.left="900px"; el.style.bottom="-260px"; el.style.opacity="0"; el.style.transform="translateX(-75px)";
     const kwStr = def.kw && def.kw.length ? def.kw.join(" · ") : "";
@@ -597,8 +712,24 @@ function runOps(ops, key, def, r, c){
         if(op.flash) redFlash();
         if(op.pop) dmgPop(hpBadgeEl(),"-"+op.amount,"#ff5a5a");
         break;
+      case "healHp": {
+        const before = hp;
+        hp = Math.min(maxHp, hp + op.amount);
+        const healed = hp - before;
+        if(healed > 0) dmgPop(hpBadgeEl(), "+" + healed, "#8affa0");
+        break;
+      }
+      case "gainMana": {
+        const before = mana;
+        mana = Math.min(maxMana, mana + op.amount);
+        const gained = mana - before;
+        if(gained > 0) dmgPop(document.getElementById("manaBadge"), "+" + gained, "#7ec8ff");
+        break;
+      }
       case "draw": drawCards(op.amount); break;
-      default: console.warn("알 수 없는 op:", op.op); break;
+      default:
+        showError("알 수 없는 op: "+op.op+" (카드: "+(def&&def.name||key)+")");
+        break;
     }
   }
 }
@@ -613,7 +744,9 @@ function runCustom(handler, key, def, r, c){
       thornsOn=true; dmgPop(hpBadgeEl(),"가시","#8affa0");
       break;
     }
-    default: console.warn("알 수 없는 custom 핸들러:", handler); break;
+    default:
+      showError("알 수 없는 custom 핸들러: "+handler+" (카드: "+(def&&def.name||key)+")");
+      break;
   }
 }
 function hpBadgeEl(){ return document.getElementById("hpBadge"); }
@@ -684,7 +817,7 @@ function highestCards(n){
 }
 function decideBossIntent(){
   const aiCfg = PARAMS.ai || {};
-  const pData = getPhaseData(phase); // 현재 페이즈 데이터
+  const pData = getPhaseData(phase);
   
   if(bossStun>0){ bossStun=0; renderBossStun(); bossIntent={type:"stunned"}; renderBossIntent(); showBossMarks(); return; }
   
@@ -767,7 +900,7 @@ async function bossAct(){
   }
 }
 function spawnAt(r,c,silent){
-  const pData = getPhaseData(phase); // 현재 페이즈의 소환체 스펙 사용
+  const pData = getPhaseData(phase);
   const files = MON_FILES;
   if(!files || files.length===0) return;
   const file=files[Math.random()*files.length|0];
@@ -892,7 +1025,7 @@ addEventListener("keydown",e=>{
     document.getElementById("loadMsg").classList.add("hidden");
     initArchSelect();
   }catch(err){
-    // showLoadError 에서 이미 처리됨
+    // showLoadError / showError 에서 이미 처리됨
   }
 })();
 </script>
