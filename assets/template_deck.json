@@ -1,1 +1,65 @@
 
+{
+    "decks": {
+      "warrior": {
+        "label": "전사",
+        "icon": "⚔️",
+        "desc": "공격적인 플레이를 선호합니다.\n높은 공격 타일을 빠르게 만듭니다.",
+        "cards": [
+          { "id": "attack_2", "count": 2 },
+          { "id": "attack_4", "count": 2 },
+          { "id": "attack_8", "count": 2 },
+          { "id": "defend_2", "count": 2 },
+          { "id": "defend_4", "count": 2 },
+          { "id": "defend_8", "count": 2 },
+          { "id": "strike_6", "count": 2 },
+          { "id": "strike_12", "count": 2 },
+          { "id": "strike_24", "count": 2 },
+          { "id": "trench_6", "count": 2 },
+          { "id": "tranch_12", "count": 2 },
+          { "id": "trench_24", "count": 2 },
+          { "id": "draw_3", "count": 6 }
+        ]
+      },
+      "guardian": {
+        "label": "수호자",
+        "icon": "🛡️",
+        "desc": "탄탄한 방어력을 바탕으로\n장기전을 유도합니다.",
+        "cards": [
+          { "id": "attack_2", "count": 2 },
+          { "id": "attack_4", "count": 2 },
+          { "id": "attack_8", "count": 2 },
+          { "id": "defend_2", "count": 2 },
+          { "id": "defend_4", "count": 2 },
+          { "id": "defend_8", "count": 2 },
+          { "id": "strike_6", "count": 2 },
+          { "id": "strike_12", "count": 2 },
+          { "id": "strike_24", "count": 2 },
+          { "id": "trench_6", "count": 2 },
+          { "id": "tranch_12", "count": 2 },
+          { "id": "trench_24", "count": 2 },
+          { "id": "draw_3", "count": 6 }
+        ]
+      },
+      "balanced": {
+        "label": "균형",
+        "icon": "⚖️",
+        "desc": "공격과 방어가 적절히 조화된\n초보자용 덱입니다.",
+        "cards": [
+          { "id": "attack_2", "count": 2 },
+          { "id": "attack_4", "count": 2 },
+          { "id": "attack_8", "count": 2 },
+          { "id": "defend_2", "count": 2 },
+          { "id": "defend_4", "count": 2 },
+          { "id": "defend_8", "count": 2 },
+          { "id": "strike_6", "count": 2 },
+          { "id": "strike_12", "count": 2 },
+          { "id": "strike_24", "count": 2 },
+          { "id": "trench_6", "count": 2 },
+          { "id": "tranch_12", "count": 2 },
+          { "id": "trench_24", "count": 2 },
+          { "id": "draw_3", "count": 6 }
+        ]
+      }
+    }
+  }
