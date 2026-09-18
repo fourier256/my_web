@@ -4,7 +4,7 @@
     "initialHp": 48,
     "initialMana": 8,
     "manaGrowth": 2,
-    "maxManaCap": 16,
+    "maxManaCap": 20,
     "maxHandSize": 10,
     "cardsPerTurn": 5,
     "maxPhases": 4
