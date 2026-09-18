@@ -325,12 +325,28 @@ async function newGame(){
   updatePhaseTag();
   buildSlots();
   
-  for(let c=0;c<FCOLS;c++) if(Math.random()<0.5) spawnAt(0,c,true);
+  // [수정] 시작 시 초기 몬스터 생성 제거 (필드를 비운 채로 시작)
   
   renderAll(); 
 
   busy = true;
-  try { await startTurn(); }
+  try {
+    // [수정] 게임 시작 시 적 턴부터 시작
+    // 첫 적 턴의 보스 의도 설정 (마나는 startTurn 에서 세팅되지만
+    // 첫 적 턴에서 적 행동 판단을 위해 미리 초기화)
+    maxMana = GAME_CONFIG.initialMana || 12;
+    mana = maxMana;
+    decideBossIntent();
+    updateHUD();
+    await sleep(300);
+
+    // 적 페이즈 먼저 실행
+    await enemyPhase();
+    if(hp<=0){ lose(); return; }
+
+    // 그 다음 플레이어 첫 턴 시작
+    await startTurn();
+  }
   catch(err){ showError("newGame 시작 중 오류:\n"+(err&&err.stack?err.stack:err)); }
   finally { busy = false; }
 }
