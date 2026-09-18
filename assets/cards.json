@@ -222,6 +222,42 @@
           { "op": "draw", "amount": 3 }
         ]
       }
+    },
+    "global_attack_16": {
+      "id": "global_attack_16",
+      "name": "광역공격",
+      "type": "skill",
+      "cost": 16,
+      "tile": 0,
+      "icon": "lorc/guillotine.svg",
+      "desc": "광역 16 데미지",
+      "kw": ["스킬", "전역", "타격"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "damageAll", "amount": 16, "useStr": false}
+        ]
+      }
+    },
+    "global_defence_16": {
+      "id": "global_defence_16",
+      "name": "광역방어",
+      "type": "skill",
+      "cost": 16,
+      "tile": 0,
+      "icon": "sbed/fortress.svg",
+      "desc": "광역 16 방어력",
+      "kw": ["스킬", "전역", "타격"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "addAllColDef", "amount": 16 }
+        ]
+      }
     }
   }
 }
