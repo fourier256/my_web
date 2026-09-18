@@ -4,173 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>2048 덱빌딩 던전</title>
-<style>
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; }
-  html,body { width:100%; height:100%; background:#000; overflow:hidden; font-family:"Segoe UI","Malgun Gothic",sans-serif; touch-action:none; overscroll-behavior:none; position:fixed; inset:0; }
-  #stage { position:absolute; top:50%; left:50%; width:1080px; height:1920px; transform-origin:center; background:#1c1726; overflow:hidden; }
-  #game { position:absolute; inset:0; background:linear-gradient(#241d33,#17121f); }
-
-  #topbar { position:absolute; top:0; left:0; width:100%; padding:16px 20px 6px; z-index:20; }
-  #bossName { font-size:26px; color:#eee; text-align:center; }
-  #bossName b { color:#ff8a5a; }
-  #phaseTag { color:#ffd166; font-size:22px; }
-  #bossHpBar { margin-top:8px; height:40px; background:#3a0d0d; border:4px solid #000; border-radius:20px; overflow:hidden; position:relative; }
-  #bossHpFill { height:100%; width:100%; background:linear-gradient(#ff4d4d,#a01818); transition:width .3s; }
-  #bossHpText { position:absolute; inset:0; text-align:center; line-height:40px; font-size:22px; font-weight:bold; color:#fff; text-shadow:0 2px 2px #000; }
-  #bossStun { position:absolute; top:2px; right:26px; font-size:30px; display:none; z-index:21; filter:drop-shadow(0 0 6px #ffec5a); }
-  #bossStun.on{ display:block; animation:intentPulse 1s infinite; }
-
-  #bossIntent { margin:12px auto 0; width:max-content; max-width:96%; background:#0e0b16dd; border:3px solid #6a5a2a; border-radius:14px; padding:6px 20px;
-    display:flex; align-items:center; gap:10px; color:#fff; font-size:32px; font-weight:900; text-shadow:0 2px 3px #000; box-shadow:0 4px 10px #000a; }
-  #bossIntent.attack{ border-color:#c0392b; } #bossIntent.summon{ border-color:#8e44ad; } #bossIntent.destroy{ border-color:#e67e22; }
-  #bossIntent .iIcon{ font-size:36px; } #bossIntent .iVal{ color:#ffde59; }
-  @keyframes intentPulse{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.06);} }
-  #bossIntent.pulse{ animation:intentPulse 1.4s ease-in-out infinite; }
-
-  #bossArt { position:absolute; top:250px; left:0; width:100%; height:160px; z-index:4; display:flex; align-items:center; justify-content:center; pointer-events:none; }
-  #bossArt img { height:160px; image-rendering:pixelated; filter:drop-shadow(0 0 24px #ff3b0088) drop-shadow(0 8px 10px #000a); }
-  #bossArt.hurt img { filter:drop-shadow(0 0 14px #f00) brightness(1.8) sepia(1) hue-rotate(-40deg) saturate(6) !important; }
-  #bossArt.punch img { animation:punch .25s ease-out; }
-
-  #strBadge { position:absolute; top:250px; left:24px; min-width:74px; height:74px; padding:0 10px; border-radius:20px; z-index:22;
-    background:radial-gradient(circle at 40% 35%,#ffb56b,#a03c10); border:4px solid #7a2e08;
-    display:none; align-items:center; justify-content:center; gap:4px; font-size:30px; font-weight:900; color:#fff; text-shadow:0 2px 3px #000; box-shadow:0 4px 10px #000a; }
-  #strBadge.show{ display:flex; }
-  #strBadge.bump{ animation:blockPulse .3s; }
-
-  #buffBar { position:absolute; top:334px; left:24px; z-index:23; display:flex; flex-direction:column; gap:8px; }
-  .buffChip { min-width:74px; height:60px; padding:0 12px; border-radius:16px;
-    background:radial-gradient(circle at 40% 35%,#9b6bff,#3a1a7a); border:4px solid #2a0e5a;
-    display:flex; align-items:center; justify-content:center; gap:6px; font-size:26px; font-weight:900; color:#fff; text-shadow:0 2px 3px #000; box-shadow:0 4px 10px #000a; cursor:pointer; pointer-events:auto; }
-  .buffChip.bump{ animation:blockPulse .3s; }
-  #buffTip { position:absolute; z-index:470; max-width:360px; background:#0e0b16f2; border:3px solid #9b6bff; border-radius:14px;
-    padding:12px 16px; color:#eee; font-size:22px; line-height:1.4; box-shadow:0 6px 16px #000c; display:none; }
-  #buffTip.on{ display:block; }
-  #buffTip b{ color:#c9a8ff; }
-
-  #fieldWrap { position:absolute; left:50%; transform:translateX(-50%); }
-  #field { position:relative; background:#15111faa; border:4px solid #0e0b16; border-radius:16px; }
-  .fslot { position:absolute; background:#1d1830; border:2px solid #2a233e; border-radius:10px; }
-  .colOverlay { position:absolute; border-radius:12px; pointer-events:none; z-index:6; }
-  .colOverlay.atkLine { background:linear-gradient(#ff2b2b33,#ff2b2b11); border:3px dashed #ff4d4d; box-shadow:0 0 18px #ff2b2b55 inset; animation:pulseLine 1.2s ease-in-out infinite; }
-  @keyframes pulseLine{ 0%,100%{opacity:.5;} 50%{opacity:1;} }
-  .summonMark { position:absolute; z-index:9; display:flex; align-items:center; justify-content:center; font-size:64px; opacity:.75; pointer-events:none; animation:pulseLine 1.2s ease-in-out infinite; text-shadow:0 0 14px #8e44ad; }
-  .destroyMark { position:absolute; z-index:35; display:flex; align-items:center; justify-content:center; font-size:60px; pointer-events:none; animation:pulseLine 1s ease-in-out infinite; filter:drop-shadow(0 0 10px #e67e22); }
-
-  .enemy { position:absolute; border-radius:10px; transition:left .3s ease,top .3s ease; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-  .enemy img { width:96px; height:96px; image-rendering:pixelated; filter:drop-shadow(0 4px 6px #000a); }
-  .enemy .estat { display:flex; gap:6px; margin-top:2px; font-size:16px; font-weight:bold; color:#fff; text-shadow:0 1px 2px #000; }
-  .enemy .eatk{ color:#ff9a6a; } .enemy .ehpn{ color:#8affa0; }
-  .enemy .ehp { width:120px; height:14px; background:#4a0d0d; border:2px solid #000; border-radius:7px; margin-top:1px; position:relative; overflow:hidden; }
-  .enemy .ehpfill { height:100%; background:linear-gradient(#ff5a5a,#a01818); transition:width .2s; }
-  .enemy .estun { position:absolute; top:-6px; right:4px; font-size:28px; display:none; filter:drop-shadow(0 0 6px #ffec5a); }
-  .enemy.stunned .estun{ display:block; animation:intentPulse 1s infinite; }
-  .enemy.stunned img{ filter:grayscale(.6) brightness(.8) drop-shadow(0 4px 6px #000a); }
-
-  #colStats { position:absolute; left:50%; transform:translateX(-50%); z-index:8; display:flex; }
-  .colStat { text-align:center; font-size:26px; font-weight:900; text-shadow:0 2px 3px #000; color:#7ec8ff; }
-  @keyframes defHit{ 0%{transform:scale(1);color:#7ec8ff;} 30%{transform:scale(1.5);color:#fff;} 100%{transform:scale(1);color:#7ec8ff;} }
-  .colStat.defhit{ animation:defHit .4s; }
-  @keyframes defGain{ 0%{transform:scale(1);color:#7ec8ff;} 30%{transform:scale(1.6);color:#aef;} 100%{transform:scale(1);color:#7ec8ff;} }
-  .colStat.defgain{ animation:defGain .4s; }
-
-  #boardWrap { position:absolute; left:50%; transform:translateX(-50%); }
-  #board { position:relative; background:#241c14; border:4px solid #120d08; border-radius:16px; }
-  .bslot { position:absolute; background:#2e2519; border:2px solid #3d3020; border-radius:10px; transition:background .12s,border-color .12s,box-shadow .12s; }
-  .bslot.valid { background:#3f6a2e; border:3px solid #9cff5a; box-shadow:inset 0 0 20px #9cff5aaa, 0 0 12px #9cff5a88; }
-  .bslot.hover { background:#7cc44a; border-color:#eaffce; box-shadow:inset 0 0 26px #dfffb0, 0 0 20px #aef58c; }
-  .fcard { position:absolute; border-radius:10px; transition:left .16s ease,top .16s ease; display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(#efe6d6,#d9c9a8); border:4px solid #b89b6a; z-index:5; }
-  .fcard.atk { border-color:#c0392b; background:linear-gradient(#f3d9d2,#e0b3a8); }
-  .fcard.def { border-color:#2980b9; background:linear-gradient(#d2e2f3,#a8c6e0); }
-  .fcard .ficon { width:52px; height:52px; }
-  .fcard .fval { position:absolute; top:-10px; left:-10px; min-width:42px; height:42px; padding:0 4px; border-radius:21px; background:radial-gradient(#fff,#d8c088); color:#111; font-size:22px; font-weight:900; display:flex; align-items:center; justify-content:center; border:3px solid #0007; }
-  @keyframes spawnGrow{ 0%{transform:scale(0);} 70%{transform:scale(1.15);} 100%{transform:scale(1);} }
-  .fcard.spawning{ animation:spawnGrow .28s ease-out; }
-  @keyframes mergePunch{ 0%{transform:scale(1);} 45%{transform:scale(1.35);} 100%{transform:scale(1);} }
-  .fcard.merged{ animation:mergePunch .25s ease-out; z-index:12; }
-
-  @keyframes hitShake { 0%,100%{transform:translate(0,0);} 20%{transform:translate(-8px,4px);} 40%{transform:translate(8px,-4px);} 60%{transform:translate(-6px,2px);} 80%{transform:translate(6px,-2px);} }
-  .hurt { animation:hitShake .3s; }
-  .hurt img { filter:drop-shadow(0 0 10px #f00) brightness(1.8) sepia(1) hue-rotate(-40deg) saturate(6) !important; }
-  @keyframes punch { 0%{transform:scale(1);} 45%{transform:scale(1.3);} 100%{transform:scale(1);} }
-  .punch { animation:punch .25s ease-out; z-index:15; }
-  .slash { position:absolute; pointer-events:none; z-index:30; overflow:hidden; }
-  .slash::after { content:""; position:absolute; top:50%; left:-40%; width:180%; height:9px; background:linear-gradient(90deg,transparent,#fff,transparent); transform:translateY(-50%) rotate(-30deg); animation:slashGo .3s ease-out forwards; box-shadow:0 0 14px #fff; }
-  @keyframes slashGo { from{opacity:0; transform:translate(-40px,26px) rotate(-30deg);} 30%{opacity:1;} to{opacity:0; transform:translate(40px,-26px) rotate(-30deg);} }
-  @keyframes destroyFx { 0%{opacity:1;transform:scale(1) rotate(0);} 100%{opacity:0;transform:scale(1.4) rotate(20deg);} }
-  .destroying { animation:destroyFx .4s ease-out forwards; filter:brightness(2) sepia(1) hue-rotate(-30deg) saturate(4); }
-
-  #handZone { position:absolute; bottom:0; left:0; width:100%; height:470px; z-index:18; }
-  #hpBadge,#manaBadge { position:absolute; bottom:22px; width:135px; height:135px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:30px; font-weight:bold; color:#fff; text-shadow:0 2px 3px #000; border:5px solid #0008; z-index:25; }
-  #hpBadge { left:22px; background:radial-gradient(circle at 40% 35%,#ff6b6b,#8b0000); }
-  #manaBadge { right:22px; background:radial-gradient(circle at 40% 35%,#5aa0ff,#0a2a7a); }
-  #manaBadge #manaText{ font-size:26px; }
-  .badgeLabel { font-size:18px; opacity:.85; }
-  #endTurnBtn { position:absolute; bottom:170px; right:22px; width:175px; height:76px; background:linear-gradient(#ffd166,#e0a020); border:4px solid #7a5a10; border-radius:16px; color:#3a2a00; font-size:26px; font-weight:900; z-index:26; box-shadow:0 5px 0 #7a5a10; display:flex; align-items:center; justify-content:center; }
-  #endTurnBtn:active { transform:translateY(4px); box-shadow:0 1px 0 #7a5a10; }
-  #deckPile { position:absolute; bottom:22px; right:170px; width:82px; height:108px; background:#2a2440; border:3px solid #5a5480; border-radius:10px; color:#ccc; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:20px; z-index:22; }
-  @keyframes blockPulse{ 0%{transform:scale(1);} 40%{transform:scale(1.35);} 100%{transform:scale(1);} }
-
-  #hand { position:absolute; bottom:0; left:0; width:100%; height:300px; z-index:19; pointer-events:none; }
-  .hcard { position:absolute; left:50%; bottom:-30px; width:150px; height:215px; margin-left:-75px;
-    background:linear-gradient(#efe6d6,#d9c9a8); border:4px solid #b89b6a; border-radius:14px; box-shadow:0 6px 14px #000a;
-    display:flex; flex-direction:column; align-items:center; padding:8px 6px;
-    transform-origin:center 340px; pointer-events:auto; cursor:grab;
-    transition:transform .3s cubic-bezier(.2,.8,.3,1),opacity .3s; }
-  .hcard.atk{border-color:#c0392b;} .hcard.def{border-color:#2980b9;} .hcard.skill{border-color:#7a5aa8;}
-  .hcard .hcost{ position:absolute; top:-12px; left:-12px; width:46px; height:46px; border-radius:50%; background:radial-gradient(#7fc0ff,#1a5ec0); color:#fff; font-size:22px; font-weight:bold; display:flex; align-items:center; justify-content:center; border:3px solid #fff8; }
-  .hcard .htier{ position:absolute; top:-12px; right:-10px; background:#3a2d18; color:#ffd166; font-size:15px; font-weight:bold; padding:3px 8px; border-radius:10px; border:2px solid #0007; }
-  .hcard .htier.skill{ background:#3a2848; color:#d8b6ff; }
-  .hcard .hicon{ width:58px; height:58px; margin-top:10px; }
-  .hcard .hname{ font-size:19px; font-weight:bold; color:#3a2d18; margin-top:5px; text-align:center; line-height:1.1; }
-  .hcard .hdesc{ font-size:11px; color:#5a4a30; text-align:center; margin-top:4px; line-height:1.2; }
-  .hcard .hkw{ position:absolute; bottom:4px; font-size:10px; color:#7a3010; font-weight:bold; }
-  .hcard.unaffordable{ filter:grayscale(.6) brightness(.75); }
-  .hcard.dragging{ transition:none !important; z-index:200; cursor:grabbing; box-shadow:0 14px 30px #000c; }
-  .hcard.zoomed{ transition:transform .2s ease !important; z-index:400 !important;
-    transform:translate(-50%,-60%) scale(2.1) !important; left:540px !important; bottom:auto !important; top:820px !important; }
-  .hcard.zoomed .hdesc{ font-size:14px; }
-  .hcard.zoomed .hname{ font-size:24px; }
-  #zoomDim{ position:absolute; inset:0; background:#000a; z-index:390; display:none; pointer-events:none; }
-  #zoomDim.on{ display:block; }
-
-  .dmgPop{ position:absolute; font-size:38px; font-weight:900; color:#ffde59; text-shadow:0 2px 4px #000,0 0 8px #f80; pointer-events:none; z-index:40; animation:popUp .8s ease-out forwards; }
-  @keyframes popUp{ 0%{opacity:1; transform:translateY(0) scale(.6);} 30%{transform:translateY(-20px) scale(1.2);} 100%{opacity:0; transform:translateY(-80px) scale(1);} }
-  #centerDmg{ position:absolute; top:820px; left:0; width:100%; text-align:center; z-index:55; pointer-events:none; }
-  #centerDmg span{ display:inline-block; font-size:110px; font-weight:900; color:#ff3030; text-shadow:0 4px 10px #000,0 0 20px #f00; opacity:0; }
-  #centerDmg.show span{ animation:centerDmgFx 1s ease-out; }
-  @keyframes centerDmgFx{ 0%{opacity:0;transform:scale(2.2);} 20%{opacity:1;transform:scale(1);} 75%{opacity:1;} 100%{opacity:0;transform:scale(1.1);} }
-  #redFlash{ position:absolute; inset:0; background:#f00; opacity:0; pointer-events:none; z-index:50; }
-  #redFlash.on{ animation:flashRed .45s; }
-  @keyframes flashRed{ 0%{opacity:0;} 30%{opacity:.5;} 100%{opacity:0;} }
-  #banner{ position:absolute; top:900px; width:100%; text-align:center; z-index:60; pointer-events:none; }
-  #banner span{ display:inline-block; font-size:60px; font-weight:900; color:#fff; text-shadow:0 4px 8px #000; opacity:0; }
-  #banner.show span{ animation:bannerPop 1.2s ease-out; }
-  @keyframes bannerPop{ 0%{opacity:0; transform:scale(2);} 20%{opacity:1; transform:scale(1);} 80%{opacity:1;} 100%{opacity:0;} }
-
-  #archSelect{ position:absolute; inset:0; z-index:600; background:#0d0a14ee; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:40px; }
-  #archSelect h1{ color:#ffd166; font-size:60px; text-shadow:0 4px 8px #000; }
-  #archSelect p{ color:#bbb; font-size:26px; }
-  .archRow{ display:flex; gap:40px; }
-  .archCard{ width:300px; height:440px; background:linear-gradient(#2a2440,#1a1630); border:5px solid #6a5a8a; border-radius:20px; padding:24px; color:#eee; cursor:pointer; box-shadow:0 8px 20px #000a; transition:transform .15s,border-color .15s; }
-  .archCard:active{ transform:scale(.97); }
-  .archCard:hover{ border-color:#ffd166; }
-  .archCard .aTitle{ font-size:40px; font-weight:900; text-align:center; margin-bottom:16px; }
-  .archCard.str .aTitle{ color:#ff9a5a; } .archCard.def .aTitle{ color:#5ab0ff; }
-  .archCard .aIcon{ font-size:80px; text-align:center; margin:10px 0 20px; }
-  .archCard .aDesc{ font-size:20px; line-height:1.5; color:#cfc9dd; }
-
-  #loadMsg{ position:absolute; inset:0; z-index:700; background:#0d0a14; display:flex; align-items:center; justify-content:center;
-    color:#eee; font-size:26px; text-align:center; padding:40px; line-height:1.6; }
-  #loadMsg.hidden{ display:none; }
-  #loadMsg b{ color:#ffd166; }
-  #loadMsg code{ background:#241d33; padding:2px 8px; border-radius:6px; color:#9cff5a; }
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div id="stage"><div id="game">
   <div id="topbar">
-    <div id="bossName">보스 · <b id="bossTitle">불타는 군주</b> <span id="phaseTag">[1페이즈]</span></div>
+    <div id="bossName">보스 · <b id="bossTitle">용용이</b> <span id="phaseTag">[1 페이즈]</span></div>
     <div id="bossHpBar"><div id="bossHpFill"></div><div id="bossHpText"></div></div>
     <div id="bossStun">😵‍💫</div>
     <div id="bossIntent"><span class="iIcon"></span><span class="iVal"></span></div>
@@ -200,11 +39,11 @@
 
   <div id="archSelect">
     <h1>덱을 선택하세요</h1>
-    <p>아키타입에 맞는 30장 고정 덱이 구성됩니다</p>
+    <p>아키타입에 맞는 30 장 고정 덱이 구성됩니다</p>
     <div class="archRow" id="archRow"></div>
   </div>
 
-  <div id="loadMsg">카드 데이터를 불러오는 중…</div>
+  <div id="loadMsg">게임 데이터를 불러오는 중…</div>
 </div></div>
 
 <script>
@@ -221,19 +60,24 @@ document.addEventListener("selectstart", e=>e.preventDefault());
 document.addEventListener("contextmenu", e=>e.preventDefault());
 document.addEventListener("wheel", e=>{ if(e.ctrlKey) e.preventDefault(); }, {passive:false});
 
-/* ===== 리소스 ===== */
+/* ===== 리소스 URL ===== */
 const MON="https://raw.githubusercontent.com/crawl/tiles/master/releases/Ancient/Oct-5-2010/dc-mon/";
 const IC="https://raw.githubusercontent.com/game-icons/icons/master/";
 const BOSS_IMG=MON+"dragon.png";
 const SWORD=IC+"lorc/pointy-sword.svg";
 const SHIELD=IC+"sbed/shield.svg";
-const MON_FILES=["kobold.png","ogre.png","ooze.png","necromancer.png","naga.png","manticore.png","minotaur.png","cyclops.png"];
-const SUMMON_ATK=10, SUMMON_HP=30, BOSS_ATK=20;
-const BOSS_BASE_HP=100, MAX_PHASE=4;
-const SLIDE_COST=2;
-const MERGE_CAP=16;   /* 슬라이드 병합 상한 */
 
-/* ===== 카드/덱: JSON에서 로드 ===== */
+/* ===== 파라미터 (JSON 에서 로드) ===== */
+let PARAMS = {};
+let MON_FILES = [];
+let SLIDE_COST = 2;
+let MERGE_CAP = 16;
+let CELL = 140;
+let FCOLS=4, FROWS=2, BCOLS=4, BROWS=4;
+let GAME_CONFIG = {};
+let ENEMY_PHASES = []; // 페이즈별 스펙 배열
+
+/* ===== 카드/덱 데이터 ===== */
 let CARDS={}, DECKS={};
 function cardCost(def){ return def.cost; }
 function coverNeed(def){ return def.coverNeed; }
@@ -242,60 +86,103 @@ function iconURL(def){ return IC+def.icon; }
 
 /* ===== 데이터 로딩 ===== */
 async function loadData(){
-  const [cardsRes, deckRes] = await Promise.all([
-    fetch("./assets/cards.json",{cache:"no-store"}),
-    fetch("./assets/template_deck.json",{cache:"no-store"})
-  ]);
-  if(!cardsRes.ok) throw new Error("cards.json HTTP "+cardsRes.status);
-  if(!deckRes.ok)  throw new Error("template_deck.json HTTP "+deckRes.status);
-  const cardsData=await cardsRes.json();
-  const deckData=await deckRes.json();
-  CARDS=cardsData.cards||{};
-  DECKS=deckData.decks||{};
-  for(const k in CARDS){
-    const c=CARDS[k];
-    if(!c.kw) c.kw=[];
-    if(c.placesTile===undefined) c.placesTile = (c.type!=="skill");
-    if(c.destroysCover===undefined) c.destroysCover = (c.type==="skill");
-    if(c.coverNeed===undefined) c.coverNeed = c.cost;
-    if(c.tile===undefined) c.tile = c.placesTile ? c.cost*2 : 0;
-    if(c.exhaust===undefined) c.exhaust=false;
+  try {
+    const [paramsRes, cardsRes, deckRes] = await Promise.all([
+      fetch("./assets/params.json",{cache:"no-store"}),
+      fetch("./assets/cards.json",{cache:"no-store"}),
+      fetch("./assets/template_deck.json",{cache:"no-store"})
+    ]);
+    
+    if(!paramsRes.ok) throw new Error("params.json HTTP "+paramsRes.status);
+    if(!cardsRes.ok) throw new Error("cards.json HTTP "+cardsRes.status);
+    if(!deckRes.ok)  throw new Error("template_deck.json HTTP "+deckRes.status);
+
+    const paramsData = await paramsRes.json();
+    const cardsData = await cardsRes.json();
+    const deckData = await deckRes.json();
+
+    PARAMS = paramsData;
+    GAME_CONFIG = PARAMS.game || {};
+    const boardConfig = PARAMS.board || {};
+    const enemyConfig = PARAMS.enemy || {};
+
+    // 상수 값들 적용
+    FCOLS = boardConfig.fieldCols || 4;
+    FROWS = boardConfig.fieldRows || 2;
+    BCOLS = boardConfig.boardCols || 4;
+    BROWS = boardConfig.boardRows || 4;
+    CELL = boardConfig.cellSize || 140;
+    SLIDE_COST = boardConfig.slideCost || 2;
+    MERGE_CAP = boardConfig.mergeLimit || 16;
+    MON_FILES = enemyConfig.files || [];
+    
+    // 페이즈별 스펙 배열 저장 (인덱스 0 이 1 페이즈)
+    ENEMY_PHASES = enemyConfig.phases || [];
+
+    // 카드 데이터 처리
+    CARDS = cardsData.cards || {};
+    DECKS = deckData.decks || {};
+    for(const k in CARDS){
+      const c = CARDS[k];
+      if(!c.kw) c.kw = [];
+      if(c.placesTile === undefined) c.placesTile = (c.type !== "skill");
+      if(c.destroysCover === undefined) c.destroysCover = (c.type === "skill");
+      if(c.coverNeed === undefined) c.coverNeed = c.cost;
+      if(c.tile === undefined) c.tile = c.placesTile ? c.cost*2 : 0;
+      if(c.exhaust === undefined) c.exhaust = false;
+    }
+  } catch(err) {
+    showLoadError(err);
+    throw err;
   }
 }
+
 function showLoadError(err){
   const el=document.getElementById("loadMsg");
   el.classList.remove("hidden");
   el.innerHTML=
     `<div><b>데이터를 불러오지 못했습니다.</b><br><br>`+
-    `<code>./assets/cards.json</code> 또는 <code>./assets/template_deck.json</code> 을 찾을 수 없거나 로컬 파일 접근이 차단되었습니다.<br><br>`+
-    `<code>file://</code>로 직접 열면 보안 정책상 JSON을 불러올 수 없습니다. 로컬 서버로 실행하세요:<br><br>`+
-    `<code>python -m http.server</code><br>→ <code>http://localhost:8000/game.html</code><br><br>`+
+    `<code>assets/</code> 폴더에 다음 파일들이 있는지 확인하세요:<br>`+
+    `<code>params.json</code>, <code>cards.json</code>, <code>template_deck.json</code><br><br>`+
+    `로컬 서버로 실행해야 합니다 (예: <code>python -m http.server</code>).<br><br>`+
     `<span style="color:#ff8a5a;font-size:20px">(${(err&&err.message)||err})</span></div>`;
 }
 
-/* ===== 그리드 ===== */
-const FCOLS=4, FROWS=2, BCOLS=4, BROWS=4, CELL=140;
+/* ===== 유틸: 페이즈 데이터 가져오기 ===== */
+function getPhaseData(p) {
+  // p 는 1 부터 시작하므로 인덱스는 p-1
+  const idx = p - 1;
+  if (idx >= 0 && idx < ENEMY_PHASES.length) {
+    return ENEMY_PHASES[idx];
+  }
+  // 기본값 (데이터가 없을 경우)
+  return { bossHp: 100, bossAttack: 20, spawnHp: 30, spawnAtk: 10 };
+}
+
+/* ===== 그리드 계산 함수 ===== */
 const bx=c=>16+c*(CELL+16), by=r=>16+r*(CELL+16);
 const fx=c=>16+c*(CELL+16), fy=r=>16+r*(CELL+16);
 const BOARD_W=CELL*BCOLS+16*(BCOLS+1), BOARD_H=CELL*BROWS+16*(BROWS+1);
 const FIELD_W=CELL*FCOLS+16*(FCOLS+1), FIELD_H=CELL*FROWS+16*(FROWS+1);
 
-/* ===== 상태 ===== */
+/* ===== 상태 변수 ===== */
 let field,board,deck,hand,discard,exhaustPile,mana,maxMana,hp,maxHp,bossHp,bossMax,turnCount,
     colDef,busy,bossIntent,bossStun,strength,tempStrMult,thornsOn,blockedThisTurn,chosenArch,phase;
+    
 const gameEl=document.getElementById("game"),
       fieldEl=document.getElementById("field"), boardEl=document.getElementById("board"),
       handEl=document.getElementById("hand"), colStatsEl=document.getElementById("colStats"),
       bossIntentEl=document.getElementById("bossIntent"), buffBarEl=document.getElementById("buffBar"),
       buffTipEl=document.getElementById("buffTip");
 
+/* ===== 리사이즈 및 유틸 ===== */
 function resize(){ const s=Math.min(innerWidth/1080,innerHeight/1920); document.getElementById("stage").style.transform=`translate(-50%,-50%) scale(${s})`; }
 addEventListener("resize",resize); resize();
 function stageScale(){ return Math.min(innerWidth/1080,innerHeight/1920); }
 function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} }
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
-/* ===== 덱 구성 (템플릿 기반) ===== */
+/* ===== 덱 구성 ===== */
 function buildDeck(arch){
   const t=DECKS[arch]; const d=[];
   (t.cards||[]).forEach(entry=>{ const n=entry.count||1; for(let i=0;i<n;i++) d.push(entry.id); });
@@ -321,17 +208,38 @@ function newGame(){
   field=Array.from({length:FROWS},()=>Array(FCOLS).fill(null));
   board=Array.from({length:BROWS},()=>Array(BCOLS).fill(null));
   deck=buildDeck(chosenArch); hand=[]; discard=[]; exhaustPile=[];
-  hp=30; maxHp=30; phase=1; bossMax=BOSS_BASE_HP*phase; bossHp=bossMax;
-  turnCount=0; colDef=Array(BCOLS).fill(0);
-  busy=false; bossIntent=null; bossStun=0;
-  strength=0; tempStrMult=1; thornsOn=false; blockedThisTurn=0;
-  document.getElementById("bossImg").src=BOSS_IMG;
+  
+  hp = GAME_CONFIG.initialHp || 30; 
+  maxHp = hp;
+  phase = 1;
+  
+  // 페이즈 1 의 데이터 가져오기
+  const p1Data = getPhaseData(1);
+  bossMax = p1Data.bossHp; 
+  bossHp = bossMax;
+  
+  turnCount = 0; 
+  colDef = Array(BCOLS).fill(0);
+  busy = false; 
+  bossIntent = null; 
+  bossStun = 0;
+  strength = 0; 
+  tempStrMult = 1; 
+  thornsOn = false; 
+  blockedThisTurn = 0;
+  
+  document.getElementById("bossImg").src = BOSS_IMG;
   updatePhaseTag();
   buildSlots();
+  
   for(let c=0;c<FCOLS;c++) if(Math.random()<0.5) spawnAt(0,c,true);
-  renderAll(); startTurn();
+  
+  renderAll(); 
+  startTurn();
 }
+
 function updatePhaseTag(){ document.getElementById("phaseTag").textContent=`[${phase}페이즈]`; }
+
 function buildSlots(){
   fieldEl.style.width=FIELD_W+"px"; fieldEl.style.height=FIELD_H+"px";
   boardEl.style.width=BOARD_W+"px"; boardEl.style.height=BOARD_H+"px";
@@ -353,12 +261,13 @@ function buildSlots(){
   for(let c=0;c<BCOLS;c++){ const d=document.createElement("div"); d.className="colStat"; d.style.width=(CELL+16)+"px"; d.style.marginLeft=(c===0?16:0)+"px"; colStatsEl.appendChild(d); }
 }
 
-/* ===== 렌더 ===== */
+/* ===== 렌더링 함수들 ===== */
 function renderAll(){ renderEnemies(); renderCards(); renderColStats(); updateHUD(); renderStrBadge(); renderBuffs(); renderBossIntent(); renderBossStun(); }
 const manaText=document.getElementById("manaText"),hpText=document.getElementById("hpText"),
  deckCount=document.getElementById("deckCount"),bossHpFill=document.getElementById("bossHpFill"),
  bossHpText=document.getElementById("bossHpText"),
  strBadge=document.getElementById("strBadge"),strText=document.getElementById("strText"),bossStunEl=document.getElementById("bossStun");
+
 function updateHUD(){
   manaText.textContent=`${mana}/${maxMana}`; hpText.textContent=`${Math.max(0,hp)}/${maxHp}`;
   deckCount.textContent=deck.length;
@@ -370,11 +279,10 @@ function renderStrBadge(bump){
   strText.textContent=strength; strBadge.classList.toggle("show", strength!==0);
   if(bump && strength!==0){ strBadge.classList.remove("bump"); void strBadge.offsetWidth; strBadge.classList.add("bump"); }
 }
-/* 지속효과(버프) */
 function activeBuffs(){
   const list=[];
   if(thornsOn) list.push({icon:"🌵", name:"가시", tip:"<b>가시</b><br>이번 턴에 방어력으로 막아낸 데미지만큼 보스에게 반사합니다. (턴 종료 시 해제)"});
-  if(tempStrMult>1) list.push({icon:"⚡", name:"압도적인힘", tip:"<b>압도적인힘</b><br>이번 턴 동안 힘 효과가 2배로 적용됩니다. (턴 종료 시 해제)"});
+  if(tempStrMult>1) list.push({icon:"⚡", name:"압도적인힘", tip:"<b>압도적인힘</b><br>이번 턴 동안 힘 효과가 2 배로 적용됩니다. (턴 종료 시 해제)"});
   return list;
 }
 function renderBuffs(bump){
@@ -423,34 +331,43 @@ function renderCards(){
     f.el.style.left=bx(c)+"px"; f.el.style.top=by(r)+"px";
   }
 }
-
-/* ===== 힘 계산 ===== */
 function effStrength(mult){ return strength*tempStrMult*(mult||1); }
 
-/* ===== 턴 ===== */
+/* ===== 턴 시작 ===== */
 function startTurn(){
   turnCount++;
-  colDef=Array(BCOLS).fill(0);          /* 방어력 매 턴 리셋 */
+  colDef=Array(BCOLS).fill(0);
   thornsOn=false; blockedThisTurn=0; tempStrMult=1;
-  maxMana=Math.min(40,12+(turnCount-1)*4); mana=maxMana;
+  
+  const baseMana = GAME_CONFIG.initialMana || 12;
+  const growth = GAME_CONFIG.manaGrowth || 4;
+  const maxCap = GAME_CONFIG.maxManaCap || 40;
+  
+  maxMana = Math.min(maxCap, baseMana + (turnCount-1)*growth);
+  mana = maxMana;
+  
   spawnBoardTile();
   decideBossIntent();
   renderCards(); renderColStats(); renderStrBadge(); renderBuffs(); updateHUD();
-  drawCards(5);
+  
+  const drawCount = GAME_CONFIG.cardsPerTurn || 5;
+  drawCards(drawCount);
 }
+
 document.getElementById("endTurnBtn").addEventListener("click",endTurn);
+
 async function endTurn(){
   if(busy)return; busy=true; hideBossIntent(); hideBuffTip();
   await defenseResolve();
   await playerColumnResolve();
-  if(bossHp<=0){ await nextPhaseOrWin(); if(phase>MAX_PHASE){ busy=false; return; } }
+  if(bossHp<=0){ await nextPhaseOrWin(); if(phase>GAME_CONFIG.maxPhases){ busy=false; return; } }
   refreshDestroyTarget(); clearBossMarks();
   await discardHand();
   await enemyPhase();
   if(hp<=0){ lose(); busy=false; return; }
   startTurn(); busy=false;
 }
-/* 배치된 방어 타일 발동 → 해당 열 방어력 += 타일 값 */
+
 async function defenseResolve(){
   for(let c=0;c<BCOLS;c++){
     for(let r=0;r<BROWS;r++){
@@ -462,7 +379,6 @@ async function defenseResolve(){
     }
   }
 }
-/* 배치된 공격 타일 발동 → 해당 열에 데미지 */
 async function playerColumnResolve(){
   for(let c=0;c<BCOLS;c++){
     for(let r=BROWS-1;r>=0;r--){
@@ -471,6 +387,7 @@ async function playerColumnResolve(){
     }
   }
 }
+
 function spawnBoardTile(){
   const empties=[]; for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++) if(!board[r][c]) empties.push([r,c]);
   if(!empties.length) return null;
@@ -479,20 +396,27 @@ function spawnBoardTile(){
   return [r,c];
 }
 
-/* ===== 페이즈 전환 ===== */
+/* ===== 페이즈 전환 (JSON 스펙 적용) ===== */
 async function nextPhaseOrWin(){
-  if(phase>=MAX_PHASE){ win(); phase=MAX_PHASE+1; return; }
+  const maxPh = GAME_CONFIG.maxPhases || 4;
+  if(phase>=maxPh){ win(); phase=maxPh+1; return; }
+  
   phase++;
   showBanner(phase+"페이즈!");
   await sleep(900);
-  bossMax=BOSS_BASE_HP*phase; bossHp=bossMax;
+  
+  // 현재 페이즈의 데이터 가져와서 적용
+  const pData = getPhaseData(phase);
+  bossMax = pData.bossHp;
+  bossHp = bossMax;
+  
   bossStun=0; renderBossStun();
   updatePhaseTag(); updateHUD();
   decideBossIntent();
   await sleep(300);
 }
 
-/* ===== 부채꼴 손패 ===== */
+/* ===== 손패 및 드로우 ===== */
 function layoutHand(){
   const n=hand.length; if(n===0) return;
   const centerX=540, baseBottom=-30;
@@ -508,8 +432,9 @@ function layoutHand(){
   });
 }
 async function drawCards(n){
+  const maxHand = GAME_CONFIG.maxHandSize || 10;
   for(let i=0;i<n;i++){
-    if(hand.length>=10) break;
+    if(hand.length>=maxHand) break;
     if(deck.length===0){ deck=discard.slice(); discard=[]; shuffle(deck); }
     if(deck.length===0) break;
     await drawOne(deck.pop());
@@ -545,7 +470,7 @@ async function discardHand(){
   await Promise.all(proms);
 }
 
-/* ===== 드래그 소환 + 홀드 확대 ===== */
+/* ===== 드래그 로직 ===== */
 function attachDrag(card){
   const el=card.el; let ox,oy,dragging=false,holdTimer=null,zoomed=false,startP=null;
   const dim=document.getElementById("zoomDim");
@@ -602,7 +527,6 @@ function slotUnder(px,py){
     if(lx>=bx(c)&&lx<=bx(c)+CELL&&ly>=by(r)&&ly<=by(r)+CELL) return {r,c};
   return null;
 }
-/* 모든 카드는 coverNeed 값과 같은 타일 위에만 놓을 수 있음(공/방 무관) */
 function canPlace(card,r,c){
   const t=board[r][c]; const need=coverNeed(card.def);
   return !!(t && t.val===need);
@@ -623,10 +547,6 @@ function doPlace(card,r,c){
   applyPlaceEffect(card.def,r,c,board[r][c]);
   updateHUD();
 }
-
-/* ===== 배치 효과 =====
-   공/방: 즉발 효과 실행 → 덮은 타일 제거 후 2N 타일 배치
-   스킬: 즉발 효과 실행 → 덮은 타일 파괴(배치 없음) */
 function applyPlaceEffect(def,r,c,covered){
   const key=Object.keys(CARDS).find(k=>CARDS[k]===def);
   if(def.placesTile){
@@ -637,15 +557,12 @@ function applyPlaceEffect(def,r,c,covered){
     if(nc&&nc.el){ nc.el.classList.add("spawning"); setTimeout(()=>nc.el&&nc.el.classList.remove("spawning"),300); if(hasKW(def,"타격")||def.type==="atk") punch(nc.el); }
     runCardEffect(key,def,r,c);
   } else {
-    /* 스킬: 즉발 먼저, 그 다음 덮은 타일 파괴 */
     runCardEffect(key,def,r,c);
     if(def.destroysCover) destroyCard(r,c);
   }
   renderCards(); renderColStats(); renderStrBadge(); renderBuffs(true); renderEnemies();
   refreshDestroyTarget();
 }
-
-/* ===== 카드 효과: ops 인터프리터 + custom 핸들러 ===== */
 function runCardEffect(key,def,r,c){
   const eff=def.effect;
   if(!eff){ return; }
@@ -706,9 +623,7 @@ function addColDef(c, amt){
 }
 function destroyCard(r,c){ const t=board[r][c]; if(t){ if(t.el){ t.el.classList.add("destroying"); const el=t.el; setTimeout(()=>el.remove(),400);} board[r][c]=null; } }
 
-/* ===== 데미지 ===== */
-function lowestEnemy(col){ for(let r=FROWS-1;r>=0;r--){ if(field[r][col]) return field[r][col]; } return null; }
-function lowestEnemyRow(col){ for(let r=FROWS-1;r>=0;r--){ if(field[r][col]) return r; } return -1; }
+/* ===== 데미지 로직 ===== */
 function dealToColumn(col,amt,opt){
   opt=opt||{};
   let target=null,tr=-1;
@@ -730,9 +645,6 @@ function dealDirect(target,amt,r,c){
 }
 function killEnemy(e){ for(let r=0;r<FROWS;r++)for(let c=0;c<FCOLS;c++) if(field[r][c]===e) field[r][c]=null;
   if(e.el){ e.el.style.transition="transform .3s,opacity .3s"; e.el.style.transform="scale(0)"; e.el.style.opacity="0"; const el=e.el; setTimeout(()=>el.remove(),300);} }
-function knockback(tr,c){ const e=field[tr][c]; if(e && tr>0 && !field[tr-1][c]){ field[tr-1][c]=e; field[tr][c]=null; renderEnemies(); } }
-
-/* 플레이어 피격: 해당 열 방어력으로 흡수 후 초과분만 HP */
 function applyDamageToPlayer(dmg,c){
   let remain=dmg, absorbed=0;
   const useDef=Math.min(colDef[c],remain); colDef[c]-=useDef; remain-=useDef; absorbed+=useDef;
@@ -746,7 +658,8 @@ function applyDamageToPlayer(dmg,c){
 
 /* ===== 적 페이즈 ===== */
 async function enemyPhase(){
-  showBanner("적의 턴"); await sleep(450);
+  const animCfg = PARAMS.animations || {};
+  showBanner("적의 턴"); await sleep(animCfg.turnEndDelay || 450);
   for(let c=0;c<FCOLS;c++){ const e=field[FROWS-1][c]; if(e){ if(e.stun>0){ e.stun=0; e.el&&e.el.classList.remove("stunned"); dmgPop(e.el,"기절!","#ffec5a"); await sleep(200); } else { await enemyAttack(e,c); if(hp<=0)return; } } }
   for(let c=0;c<FCOLS;c++){ const e=field[0][c]; if(e && !field[1][c]){ if(e.stun>0){ e.stun=0; e.el&&e.el.classList.remove("stunned"); } else { field[1][c]=e; field[0][c]=null; } } }
   renderEnemies(); await sleep(300);
@@ -755,7 +668,7 @@ async function enemyPhase(){
 }
 async function enemyAttack(e,c){ punch(e.el); applyDamageToPlayer(e.atk,c); await sleep(320); }
 
-/* ===== 보스 인텐트 ===== */
+/* ===== 보스 AI ===== */
 function fieldCount(){ let n=0; for(let r=0;r<FROWS;r++)for(let c=0;c<FCOLS;c++) if(field[r][c]) n++; return n; }
 function openTopCols(){ const arr=[]; for(let c=0;c<FCOLS;c++) if(!field[0][c]) arr.push(c); return arr; }
 function lowestDefCols(n){
@@ -770,15 +683,24 @@ function highestCards(n){
   return arr.slice(0,n).map(o=>({r:o.r,c:o.c}));
 }
 function decideBossIntent(){
+  const aiCfg = PARAMS.ai || {};
+  const pData = getPhaseData(phase); // 현재 페이즈 데이터
+  
   if(bossStun>0){ bossStun=0; renderBossStun(); bossIntent={type:"stunned"}; renderBossIntent(); showBossMarks(); return; }
+  
   const mult=phase, n=fieldCount();
   let choices;
-  if(n>=4) choices=["attack","destroy"];
-  else if(n<=1) choices=["summon"];
+  
+  const destroyTh = aiCfg.destroyIfEnemiesMoreThan || 3;
+  const summonTh = aiCfg.summonIfEnemiesLessThan || 2;
+
+  if(n >= destroyTh) choices=["attack","destroy"];
+  else if(n <= summonTh) choices=["summon"];
   else choices=["summon","attack","destroy"];
+  
   const action=choices[Math.random()*choices.length|0];
   if(action==="attack"){
-    bossIntent={type:"attack", val:BOSS_ATK, cols:lowestDefCols(mult)};
+    bossIntent={type:"attack", val: pData.bossAttack, cols:lowestDefCols(mult)};
   } else if(action==="destroy"){
     bossIntent={type:"destroy", targets:highestCards(mult)};
   } else {
@@ -834,7 +756,8 @@ async function bossAct(){
     for(const col of cols){ if(col!=null && !field[0][col]){ spawnAt(0,col); await sleep(260); } }
   } else if(bossIntent.type==="attack"){
     const art=document.getElementById("bossArt");
-    for(const col of (bossIntent.cols||[])){ punch(art); applyDamageToPlayer(BOSS_ATK,col); await sleep(300); if(hp<=0) return; }
+    const pData = getPhaseData(phase);
+    for(const col of (bossIntent.cols||[])){ punch(art); applyDamageToPlayer(pData.bossAttack,col); await sleep(300); if(hp<=0) return; }
   } else if(bossIntent.type==="destroy"){
     const art=document.getElementById("bossArt"); punch(art);
     let targets=(bossIntent.targets||[]);
@@ -844,16 +767,28 @@ async function bossAct(){
   }
 }
 function spawnAt(r,c,silent){
-  const file=MON_FILES[Math.random()*MON_FILES.length|0];
-  const e={file,hp:SUMMON_HP,maxHp:SUMMON_HP,atk:SUMMON_ATK,stun:0,el:null}; field[r][c]=e;
+  const pData = getPhaseData(phase); // 현재 페이즈의 소환체 스펙 사용
+  const files = MON_FILES;
+  if(!files || files.length===0) return;
+  const file=files[Math.random()*files.length|0];
+  const e={file,hp:pData.spawnHp,maxHp:pData.spawnHp,atk:pData.spawnAtk,stun:0,el:null}; 
+  field[r][c]=e;
   if(!silent){ renderEnemies(); if(e.el){ e.el.style.transition="none"; e.el.style.transform="scale(0)"; requestAnimationFrame(()=>{ e.el.style.transition="transform .3s"; e.el.style.transform="scale(1)"; }); } }
 }
 
-/* ===== 슬라이드 (마나 2 소모, 병합 상한 16) ===== */
+/* ===== 슬라이드 로직 ===== */
 function slide(dir){
   if(busy)return;
   if(mana<SLIDE_COST){ flashBadge("manaBadge"); return; }
+  
   const nb=Array.from({length:BROWS},()=>Array(BCOLS).fill(null));
+  const boardCfg = PARAMS.board || {};
+  const slideRules = boardCfg.slideSpawnRules || {};
+  
+  const rule = slideRules[dir] || { type: "def", val: 2 };
+  const spawnType = rule.type;
+  const spawnVal = rule.val;
+
   function proc(getList,setList){
     const K=(dir==='left'||dir==='right')?BROWS:BCOLS;
     for(let k=0;k<K;k++){
@@ -876,21 +811,38 @@ function slide(dir){
   const before=JSON.stringify(board.map(row=>row.map(x=>x?x.val+x.type:0)));
   board=nb;
   const after=JSON.stringify(board.map(row=>row.map(x=>x?x.val+x.type:0)));
+  
   if(before===after){ renderCards(); return; }
 
   mana-=SLIDE_COST;
   renderCards();
+  
   for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){ const f=board[r][c];
     if(f&&f._merged){ delete f._merged; if(f.el){ f.el.classList.remove("merged"); void f.el.offsetWidth; f.el.classList.add("merged"); setTimeout(()=>f.el&&f.el.classList.remove("merged"),260); } } }
+  
   setTimeout(()=>{
-    const pos=spawnBoardTile(); renderCards();
-    if(pos){ const nf=board[pos[0]][pos[1]]; if(nf&&nf.el){ nf.el.classList.add("spawning"); setTimeout(()=>nf.el&&nf.el.classList.remove("spawning"),300); } }
+    const empties=[]; 
+    for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++) if(!board[r][c]) empties.push([r,c]);
+    
+    if(empties.length > 0) {
+      const [r,c] = empties[Math.random()*empties.length|0];
+      board[r][c] = { type: spawnType, val: spawnVal, el: null };
+      
+      const nf=board[r][c];
+      renderCards();
+      if(nf&&nf.el){ 
+        nf.el.classList.add("spawning"); 
+        setTimeout(()=>nf.el&&nf.el.classList.remove("spawning"),300); 
+      }
+    }
+    
     renderColStats(); updateHUD(); refreshDestroyTarget();
   },180);
+  
   renderColStats(); updateHUD(); refreshDestroyTarget();
 }
 
-/* ===== 이펙트 ===== */
+/* ===== 이펙트 함수들 ===== */
 function punch(el){ if(!el)return; el.classList.remove("punch"); void el.offsetWidth; el.classList.add("punch"); }
 function hurt(el){ if(!el)return; el.classList.remove("hurt"); void el.offsetWidth; el.classList.add("hurt"); setTimeout(()=>el.classList.remove("hurt"),400); }
 function slashAt(left,top,parent){ const s=document.createElement("div"); s.className="slash"; s.style.left=left+"px"; s.style.top=top+"px"; s.style.width=CELL+"px"; s.style.height=CELL+"px"; parent.appendChild(s); setTimeout(()=>s.remove(),320); }
@@ -919,7 +871,7 @@ function showBanner(t){ const b=document.getElementById("banner"); document.getE
 function win(){ hideBossIntent(); clearBossMarks(); showBanner("최종 승리!"); }
 function lose(){ hideBossIntent(); clearBossMarks(); showBanner("패배..."); setTimeout(()=>{ if(confirm("패배! 다시 시작?")) location.reload(); },800); }
 
-/* ===== 입력 ===== */
+/* ===== 입력 처리 ===== */
 let tsx,tsy,swiping=false;
 boardEl.addEventListener("touchstart",e=>{ tsx=e.touches[0].clientX; tsy=e.touches[0].clientY; swiping=true; },{passive:true});
 boardEl.addEventListener("touchend",e=>{ if(!swiping)return; swiping=false; const t=e.changedTouches[0]; doSwipe(t.clientX-tsx,t.clientY-tsy); },{passive:true});
@@ -940,7 +892,7 @@ addEventListener("keydown",e=>{
     document.getElementById("loadMsg").classList.add("hidden");
     initArchSelect();
   }catch(err){
-    showLoadError(err);
+    // showLoadError 에서 이미 처리됨
   }
 })();
 </script>
