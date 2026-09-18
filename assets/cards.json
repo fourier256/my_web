@@ -56,12 +56,12 @@
       "cost": 2,
       "tile": 4,
       "icon": "sbed/shield.svg",
-      "desc": "2 방어력을 얻고 4 방어 타일을 배치합니다.",
+      "desc": "4 방어력을 얻고 4 방어 타일을 배치합니다.",
       "kw": [],
       "effect": {
         "type": "simple",
         "ops": [
-          { "op": "addColDef", "amount": 2 }
+          { "op": "addColDef", "amount": 4 }
         ]
       }
     },
@@ -72,12 +72,12 @@
       "cost": 4,
       "tile": 8,
       "icon": "sbed/round-shield.svg",
-      "desc": "4 방어력을 얻고 8 방어 타일을 배치합니다.",
+      "desc": "8 방어력을 얻고 8 방어 타일을 배치합니다.",
       "kw": [],
       "effect": {
         "type": "simple",
         "ops": [
-          { "op": "addColDef", "amount": 4 }
+          { "op": "addColDef", "amount": 8 }
         ]
       }
     },
@@ -88,12 +88,12 @@
       "cost": 8,
       "tile": 16,
       "icon": "sbed/tower-shield.svg",
-      "desc": "8 방어력을 얻고 16 방어 타일을 배치합니다.",
+      "desc": "16 방어력을 얻고 16 방어 타일을 배치합니다.",
       "kw": [],
       "effect": {
         "type": "simple",
         "ops": [
-          { "op": "addColDef", "amount": 8 }
+          { "op": "addColDef", "amount": 16 }
         ]
       }
     },
@@ -158,14 +158,14 @@
       "cost": 2,
       "tile": 0,
       "icon": "sbed/wooden-fence.svg",
-      "desc": "6 방어력을 얻습니다. (타일 배치 없음)",
+      "desc": "9 방어력을 얻습니다. (타일 배치 없음)",
       "kw": ["스킬"],
       "placesTile": false,
       "destroysCover": true,
       "effect": {
         "type": "simple",
         "ops": [
-          { "op": "addColDef", "amount": 6 }
+          { "op": "addColDef", "amount": 9 }
         ]
       }
     },
@@ -176,14 +176,14 @@
       "cost": 4,
       "tile": 0,
       "icon": "sbed/stone-wall.svg",
-      "desc": "12 방어력을 얻습니다. (타일 배치 없음)",
+      "desc": "18 방어력을 얻습니다. (타일 배치 없음)",
       "kw": ["스킬"],
       "placesTile": false,
       "destroysCover": true,
       "effect": {
         "type": "simple",
         "ops": [
-          { "op": "addColDef", "amount": 12 }
+          { "op": "addColDef", "amount": 18 }
         ]
       }
     },
@@ -194,14 +194,14 @@
       "cost": 8,
       "tile": 0,
       "icon": "sbed/fortress.svg",
-      "desc": "24 방어력을 얻습니다. (타일 배치 없음)",
+      "desc": "36 방어력을 얻습니다. (타일 배치 없음)",
       "kw": ["스킬"],
       "placesTile": false,
       "destroysCover": true,
       "effect": {
         "type": "simple",
         "ops": [
-          { "op": "addColDef", "amount": 24 }
+          { "op": "addColDef", "amount": 36 }
         ]
       }
     },
@@ -230,14 +230,16 @@
       "cost": 16,
       "tile": 0,
       "icon": "lorc/guillotine.svg",
-      "desc": "광역 16 데미지",
+      "desc": "광역 16 데미지, gain 4 mana",
       "kw": ["스킬", "전역", "타격"],
       "placesTile": false,
       "destroysCover": true,
       "effect": {
         "type": "simple",
         "ops": [
-          { "op": "damageAll", "amount": 16, "useStr": false}
+          { "op": "damageAll", "amount": 16, "useStr": false},
+          { "op": "gainMana", "amount": 4, "useStr": false}
+          
         ]
       }
     },
@@ -248,14 +250,15 @@
       "cost": 16,
       "tile": 0,
       "icon": "sbed/fortress.svg",
-      "desc": "광역 16 방어력",
+      "desc": "광역 24 방어력",
       "kw": ["스킬", "전역", "타격"],
       "placesTile": false,
       "destroysCover": true,
       "effect": {
         "type": "simple",
         "ops": [
-          { "op": "addAllColDef", "amount": 16 }
+          { "op": "addAllColDef", "amount": 24 },
+          { "op": "gainMana", "amount": 4, "useStr": false}
         ]
       }
     }
