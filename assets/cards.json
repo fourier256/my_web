@@ -1,1 +1,227 @@
 
+{
+  "cards": {
+    "attack_2": {
+      "id": "attack_2",
+      "name": "공격",
+      "type": "atk",
+      "cost": 2,
+      "tile": 4,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "2 즉발 데미지를 주고 4 공격 타일을 배치합니다.",
+      "kw": ["타격"],
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "damageColumn", "amount": 2, "useStr": false }
+        ]
+      }
+    },
+    "attack_4": {
+      "id": "attack_4",
+      "name": "강한 공격",
+      "type": "atk",
+      "cost": 4,
+      "tile": 8,
+      "icon": "lorc/brutal-helm.svg",
+      "desc": "4 즉발 데미지를 주고 8 공격 타일을 배치합니다.",
+      "kw": ["타격"],
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "damageColumn", "amount": 4, "useStr": false }
+        ]
+      }
+    },
+    "attack_8": {
+      "id": "attack_8",
+      "name": "필사의 공격",
+      "type": "atk",
+      "cost": 8,
+      "tile": 16,
+      "icon": "lorc/crossed-swords.svg",
+      "desc": "8 즉발 데미지를 주고 16 공격 타일을 배치합니다.",
+      "kw": ["타격", "필사"],
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "damageColumn", "amount": 8, "useStr": false }
+        ]
+      }
+    },
+    "defend_2": {
+      "id": "defend_2",
+      "name": "방어",
+      "type": "def",
+      "cost": 2,
+      "tile": 4,
+      "icon": "sbed/shield.svg",
+      "desc": "2 방어력을 얻고 4 방어 타일을 배치합니다.",
+      "kw": [],
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "addColDef", "amount": 2 }
+        ]
+      }
+    },
+    "defend_4": {
+      "id": "defend_4",
+      "name": "든든한 방어",
+      "type": "def",
+      "cost": 4,
+      "tile": 8,
+      "icon": "sbed/round-shield.svg",
+      "desc": "4 방어력을 얻고 8 방어 타일을 배치합니다.",
+      "kw": [],
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "addColDef", "amount": 4 }
+        ]
+      }
+    },
+    "defend_8": {
+      "id": "defend_8",
+      "name": "굳건한 방어",
+      "type": "def",
+      "cost": 8,
+      "tile": 16,
+      "icon": "sbed/tower-shield.svg",
+      "desc": "8 방어력을 얻고 16 방어 타일을 배치합니다.",
+      "kw": [],
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "addColDef", "amount": 8 }
+        ]
+      }
+    },
+    "strike_6": {
+      "id": "strike_6",
+      "name": "타격",
+      "type": "skill",
+      "cost": 2,
+      "tile": 0,
+      "icon": "lorc/punch.svg",
+      "desc": "6 즉발 데미지를 줍니다. (타일 배치 없음)",
+      "kw": ["스킬", "타격"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "damageColumn", "amount": 6, "useStr": false }
+        ]
+      }
+    },
+    "strike_12": {
+      "id": "strike_12",
+      "name": "강한 타격",
+      "type": "skill",
+      "cost": 4,
+      "tile": 0,
+      "icon": "lorc/hammer-drop.svg",
+      "desc": "12 즉발 데미지를 줍니다. (타일 배치 없음)",
+      "kw": ["스킬", "타격"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "damageColumn", "amount": 12, "useStr": false }
+        ]
+      }
+    },
+    "strike_24": {
+      "id": "strike_24",
+      "name": "필사의 타격",
+      "type": "skill",
+      "cost": 8,
+      "tile": 0,
+      "icon": "lorc/guillotine.svg",
+      "desc": "24 즉발 데미지를 줍니다. (타일 배치 없음)",
+      "kw": ["스킬", "타격", "필사"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "damageColumn", "amount": 24, "useStr": false }
+        ]
+      }
+    },
+    "trench_6": {
+      "id": "trench_6",
+      "name": "참호",
+      "type": "skill",
+      "cost": 2,
+      "tile": 0,
+      "icon": "sbed/wooden-fence.svg",
+      "desc": "6 방어력을 얻습니다. (타일 배치 없음)",
+      "kw": ["스킬"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "addColDef", "amount": 6 }
+        ]
+      }
+    },
+    "trench_12": {
+      "id": "trench_12",
+      "name": "든든한 참호",
+      "type": "skill",
+      "cost": 4,
+      "tile": 0,
+      "icon": "sbed/stone-wall.svg",
+      "desc": "12 방어력을 얻습니다. (타일 배치 없음)",
+      "kw": ["스킬"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "addColDef", "amount": 12 }
+        ]
+      }
+    },
+    "trench_24": {
+      "id": "trench_24",
+      "name": "굳건한 참호",
+      "type": "skill",
+      "cost": 8,
+      "tile": 0,
+      "icon": "sbed/fortress.svg",
+      "desc": "24 방어력을 얻습니다. (타일 배치 없음)",
+      "kw": ["스킬"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "addColDef", "amount": 24 }
+        ]
+      }
+    },
+    "draw_3": {
+      "id": "draw_3",
+      "name": "전술",
+      "type": "skill",
+      "cost": 2,
+      "tile": 0,
+      "icon": "lorc/book-pile.svg",
+      "desc": "카드를 3 장 뽑습니다.",
+      "kw": ["스킬", "드로우"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "draw", "amount": 3 }
+        ]
+      }
+    }
+  }
+}
