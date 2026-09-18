@@ -1,1 +1,70 @@
 
+{
+  "game": {
+    "initialHp": 48,
+    "initialMana": 8,
+    "manaGrowth": 2,
+    "maxManaCap": 16,
+    "maxHandSize": 10,
+    "cardsPerTurn": 5,
+    "maxPhases": 4
+  },
+  "board": {
+    "fieldCols": 4,
+    "fieldRows": 2,
+    "boardCols": 4,
+    "boardRows": 4,
+    "cellSize": 140,
+    "slideCost": 2,
+    "mergeLimit": 16,
+    "slideSpawnRules": {
+      "left": { "type": "def", "val": 2 },
+      "right": { "type": "def", "val": 2 },
+      "up": { "type": "atk", "val": 2 },
+      "down": { "type": "atk", "val": 2 }
+    }
+  },
+  "enemy": {
+    "stunDuration": 1,
+    "files": ["kobold.png", "ogre.png", "ooze.png", "necromancer.png", "naga.png", "manticore.png", "minotaur.png", "cyclops.png"],
+    "phases": [
+      {
+        "phase": 1,
+        "bossHp": 100,
+        "bossAttack": 20,
+        "spawnHp": 24,
+        "spawnAtk": 8
+      },
+      {
+        "phase": 2,
+        "bossHp": 180,
+        "bossAttack": 25,
+        "spawnHp": 48,
+        "spawnAtk": 12
+      },
+      {
+        "phase": 3,
+        "bossHp": 300,
+        "bossAttack": 32,
+        "spawnHp": 60,
+        "spawnAtk": 15
+      },
+      {
+        "phase": 4,
+        "bossHp": 500,
+        "bossAttack": 45,
+        "spawnHp": 80,
+        "spawnAtk": 20
+      }
+    ]
+  },
+  "ai": {
+    "summonIfEnemiesLessThan": 2,
+    "destroyIfEnemiesMoreThan": 3
+  },
+  "animations": {
+    "turnEndDelay": 450,
+    "damagePopDuration": 800,
+    "shakeDuration": 300
+  }
+}
