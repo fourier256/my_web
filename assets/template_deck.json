@@ -16,7 +16,7 @@
           { "id": "strike_12", "count": 2 },
           { "id": "strike_24", "count": 2 },
           { "id": "trench_6", "count": 2 },
-          { "id": "tranch_12", "count": 2 },
+          { "id": "trench_12", "count": 2 },
           { "id": "trench_24", "count": 2 },
           { "id": "draw_3", "count": 6 },
           { "id": "global_attack_16", "count": 2 },
@@ -38,7 +38,7 @@
           { "id": "strike_12", "count": 2 },
           { "id": "strike_24", "count": 2 },
           { "id": "trench_6", "count": 2 },
-          { "id": "tranch_12", "count": 2 },
+          { "id": "trench_12", "count": 2 },
           { "id": "trench_24", "count": 2 },
           { "id": "draw_3", "count": 6 }
         ]
@@ -58,7 +58,7 @@
           { "id": "strike_12", "count": 2 },
           { "id": "strike_24", "count": 2 },
           { "id": "trench_6", "count": 2 },
-          { "id": "tranch_12", "count": 2 },
+          { "id": "trench_12", "count": 2 },
           { "id": "trench_24", "count": 2 },
           { "id": "draw_3", "count": 6 }
         ]
