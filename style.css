@@ -159,3 +159,48 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
 #loadMsg.hidden{ display:none; }
 #loadMsg b{ color:#ffd166; }
 #loadMsg code{ background:#241d33; padding:2px 8px; border-radius:6px; color:#9cff5a; }
+
+/* ===== 가시성 개선 오버라이드 ===== */
+
+/* 상단 보스 영역 여백 축소 → 게임판 공간 확보 */
+#topbar { padding:12px 20px 4px; }
+#bossName { font-size:30px; }
+#phaseTag { font-size:24px; }
+#bossHpBar { margin-top:6px; height:44px; }
+#bossHpText { line-height:44px; font-size:26px; }
+#bossIntent { margin-top:8px; font-size:34px; padding:6px 22px; }
+
+/* 보스 아트를 조금 위로 당기고 키움 */
+#bossArt { top:225px; height:170px; }
+#bossArt img { height:170px; }
+#strBadge { top:225px; }
+#buffBar { top:312px; }
+
+/* 필드(적) 타일 안의 요소 확대 */
+.enemy img { width:110px; height:110px; }
+.enemy .estat { font-size:20px; gap:8px; margin-top:4px; }
+.enemy .ehp { width:140px; height:16px; }
+
+/* 보드 카드(타일) 안의 아이콘·숫자 확대 */
+.fcard .ficon { width:64px; height:64px; }
+.fcard .fval { min-width:48px; height:48px; font-size:26px; border-radius:24px; }
+
+/* 열 방어 수치 확대 */
+.colStat { font-size:30px; }
+
+/* 손패 카드 확대 + 글자 키우기 (가장 큰 가시성 개선) */
+#handZone { height:430px; }
+#hand { height:340px; }
+.hcard { width:172px; height:246px; margin-left:-86px; }
+.hcard .hcost { width:50px; height:50px; font-size:24px; }
+.hcard .htier { font-size:17px; padding:4px 9px; }
+.hcard .hicon { width:66px; height:66px; }
+.hcard .hname { font-size:22px; margin-top:6px; }
+.hcard .hdesc { font-size:14px; margin-top:5px; line-height:1.25; }
+.hcard .hkw { font-size:12px; }
+
+/* HP/마나 뱃지, 턴종료 버튼 살짝 키움 */
+#hpBadge, #manaBadge { width:145px; height:145px; font-size:32px; }
+#manaBadge #manaText { font-size:28px; }
+#endTurnBtn { width:185px; height:82px; font-size:28px; bottom:180px; }
+
