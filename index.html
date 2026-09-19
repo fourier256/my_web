@@ -87,14 +87,11 @@
 <script>
 /* ===================================================================
    에러 팝업 시스템
-   - showError(msg): 화면에 팝업으로 에러 표시
-   - 전역 error / unhandledrejection 도 잡아서 팝업으로 노출
 =================================================================== */
 (function(){
   const overlay=document.getElementById("errOverlay");
   const textEl=document.getElementById("errText");
   window.showError=function(msg){
-    // 이미 떠 있으면 메시지 누적
     const stamp=new Date().toLocaleTimeString();
     const line=`[${stamp}] ${msg}`;
     textEl.textContent = overlay.classList.contains("on")
@@ -109,7 +106,6 @@
     const t=textEl.textContent;
     if(navigator.clipboard) navigator.clipboard.writeText(t).catch(()=>{});
   });
-  // 전역 예외 캐치
   window.addEventListener("error",e=>{
     const m=e.error && e.error.stack ? e.error.stack : (e.message || String(e));
     showError("JS 오류:\n"+m);
@@ -146,12 +142,12 @@ let PARAMS = {};
 let MON_FILES = [];
 let SLIDE_COST = 2;
 let MERGE_CAP = 16;
-let CELL = 160;              // [수정] 기본 셀 크기 140 → 160 (가시성 향상)
+let CELL = 160;             // buildSlots()에서 화면 크기에 맞춰 재계산됨
 let FCOLS=4, FROWS=2, BCOLS=4, BROWS=4;
 let GAME_CONFIG = {};
-let ENEMY_PHASES = []; // 페이즈별 스펙 배열
+let ENEMY_PHASES = [];
 
-/* [수정] 손패 카드 폭에 맞춘 반값 오프셋 (CSS .hcard width:172px 기준 → 86) */
+/* 손패 카드 폭에 맞춘 반값 오프셋 (CSS .hcard width:172px 기준 → 86) */
 const CARD_HALF = 86;
 
 /* ===== 카드/덱 데이터 ===== */
@@ -183,20 +179,17 @@ async function loadData(){
     const boardConfig = PARAMS.board || {};
     const enemyConfig = PARAMS.enemy || {};
 
-    // 상수 값들 적용
     FCOLS = boardConfig.fieldCols || 4;
     FROWS = boardConfig.fieldRows || 2;
     BCOLS = boardConfig.boardCols || 4;
     BROWS = boardConfig.boardRows || 4;
-    CELL = boardConfig.cellSize || 160;   // [수정] fallback 160
+    CELL = boardConfig.cellSize || 160;   // buildSlots()에서 다시 계산됨
     SLIDE_COST = boardConfig.slideCost || 2;
     MERGE_CAP = boardConfig.mergeLimit || 16;
     MON_FILES = enemyConfig.files || [];
     
-    // 페이즈별 스펙 배열 저장 (인덱스 0 이 1 페이즈)
     ENEMY_PHASES = enemyConfig.phases || [];
 
-    // 카드 데이터 처리
     CARDS = cardsData.cards || {};
     DECKS = deckData.decks || {};
     for(const k in CARDS){
@@ -209,7 +202,6 @@ async function loadData(){
       if(c.exhaust === undefined) c.exhaust = false;
     }
 
-    // [추가] 덱에 정의되지 않은 카드 id 가 있는지 로드 시점에 미리 검증 → 팝업으로 경고
     validateDecks();
   } catch(err) {
     showLoadError(err);
@@ -217,7 +209,7 @@ async function loadData(){
   }
 }
 
-/* [추가] 덱 무결성 검사: template_deck.json 의 카드 id 가 cards.json 에 전부 있는지 확인 */
+/* 덱 무결성 검사 */
 function validateDecks(){
   const missing=[];
   for(const dk in DECKS){
@@ -247,7 +239,7 @@ function showLoadError(err){
   showError("데이터 로드 실패:\n"+((err&&err.message)||err));
 }
 
-/* ===== 유틸: 페이즈 데이터 가져오기 ===== */
+/* ===== 유틸: 페이즈 데이터 ===== */
 function getPhaseData(p) {
   const idx = p - 1;
   if (idx >= 0 && idx < ENEMY_PHASES.length) {
@@ -256,11 +248,12 @@ function getPhaseData(p) {
   return { bossHp: 100, bossAttack: 20, spawnHp: 30, spawnAtk: 10 };
 }
 
-/* ===== 그리드 계산 함수 ===== */
+/* ===== 그리드 계산 함수 (bx/by/fx/fy 는 호출 시점의 CELL 을 읽음) ===== */
 const bx=c=>16+c*(CELL+16), by=r=>16+r*(CELL+16);
 const fx=c=>16+c*(CELL+16), fy=r=>16+r*(CELL+16);
-const BOARD_W=CELL*BCOLS+16*(BCOLS+1), BOARD_H=CELL*BROWS+16*(BROWS+1);
-const FIELD_W=CELL*FCOLS+16*(FCOLS+1), FIELD_H=CELL*FROWS+16*(FROWS+1);
+/* [수정] const → let : buildSlots() 에서 CELL 변경 시 함께 갱신 */
+let BOARD_W=CELL*BCOLS+16*(BCOLS+1), BOARD_H=CELL*BROWS+16*(BROWS+1);
+let FIELD_W=CELL*FCOLS+16*(FCOLS+1), FIELD_H=CELL*FROWS+16*(FROWS+1);
 
 /* ===== 상태 변수 ===== */
 let field,board,deck,hand,discard,exhaustPile,mana,maxMana,hp,maxHp,bossHp,bossMax,turnCount,
@@ -328,24 +321,22 @@ async function newGame(){
   updatePhaseTag();
   buildSlots();
   
-  // [수정] 시작 시 초기 몬스터 생성 제거 (필드를 비운 채로 시작)
+  // 시작 시 초기 몬스터 생성 없음 (필드를 비운 채로 시작)
   
   renderAll(); 
 
   busy = true;
   try {
-    // [수정] 게임 시작 시 적 턴부터 시작
+    // 게임 시작 시 적 턴부터 시작
     maxMana = GAME_CONFIG.initialMana || 12;
     mana = maxMana;
     decideBossIntent();
     updateHUD();
     await sleep(300);
 
-    // 적 페이즈 먼저 실행
     await enemyPhase();
     if(hp<=0){ lose(); return; }
 
-    // 그 다음 플레이어 첫 턴 시작
     await startTurn();
   }
   catch(err){ showError("newGame 시작 중 오류:\n"+(err&&err.stack?err.stack:err)); }
@@ -354,10 +345,38 @@ async function newGame(){
 
 function updatePhaseTag(){ document.getElementById("phaseTag").textContent=`[${phase}페이즈]`; }
 
+/* ===== [수정] 슬롯 생성 + 셀 크기 자동 계산 + 중앙 정렬 ===== */
 function buildSlots(){
+  const GAP = 16;
+  const STAGE_W = 1080, STAGE_H = 1920;
+  const SIDE_PAD = 20;                 // 좌우 최소 여백
+  const TOP_LIMIT = 420;               // 보스 인텐트 아래
+  const BOTTOM_LIMIT = STAGE_H - 470;  // 손패 영역 위
+  const GAP_FB = 60;                   // 필드-보드 사이(콜스탯 자리 포함)
+
+  // 가로 제약
+  const maxCols = Math.max(BCOLS, FCOLS);
+  const cellByWidth = (STAGE_W - SIDE_PAD*2 - GAP*(maxCols+1)) / maxCols;
+
+  // 세로 제약
+  const availH = BOTTOM_LIMIT - TOP_LIMIT - GAP_FB;
+  const cellByHeight = (availH - GAP*(FROWS+1) - GAP*(BROWS+1)) / (FROWS + BROWS);
+
+  // 둘 중 작은 값 채택 + 클램프
+  CELL = Math.floor(Math.min(cellByWidth, cellByHeight));
+  CELL = Math.max(120, Math.min(CELL, 200));
+
+  // 파생 크기 재계산 (전역 갱신)
+  BOARD_W = CELL*BCOLS + GAP*(BCOLS+1);
+  BOARD_H = CELL*BROWS + GAP*(BROWS+1);
+  FIELD_W = CELL*FCOLS + GAP*(FCOLS+1);
+  FIELD_H = CELL*FROWS + GAP*(FROWS+1);
+
+  // 컨테이너 크기
   fieldEl.style.width=FIELD_W+"px"; fieldEl.style.height=FIELD_H+"px";
   boardEl.style.width=BOARD_W+"px"; boardEl.style.height=BOARD_H+"px";
   fieldEl.innerHTML=""; boardEl.innerHTML="";
+
   for(let r=0;r<FROWS;r++)for(let c=0;c<FCOLS;c++){
     const f=document.createElement("div"); f.className="fslot";
     f.style.left=fx(c)+"px"; f.style.top=fy(r)+"px"; f.style.width=CELL+"px"; f.style.height=CELL+"px";
@@ -369,27 +388,27 @@ function buildSlots(){
     boardEl.appendChild(b);
   }
 
-  /* ===== [수정] 세로 배치 동적 계산: 보스 아래 ~ 손패 위 공간에 필드+보드를 중앙 정렬 ===== */
-  const TOP_LIMIT    = 420;            // 보스 인텐트 아래 시작선
-  const BOTTOM_LIMIT = 1920 - 470;     // 손패 영역(handZone) 위선
-  const GAP_FB       = 70;             // 필드-보드 사이 간격(콜스탯 자리 포함)
-  const totalH       = FIELD_H + GAP_FB + BOARD_H;
-  const avail        = BOTTOM_LIMIT - TOP_LIMIT;
-  const startTop     = TOP_LIMIT + Math.max(0, (avail - totalH) / 2);
-
+  // 세로 배치: 남는 공간에 필드+보드 중앙 정렬
+  const totalH = FIELD_H + GAP_FB + BOARD_H;
+  const avail  = BOTTOM_LIMIT - TOP_LIMIT;
+  const startTop = TOP_LIMIT + Math.max(0, (avail - totalH)/2);
   const fieldTop = Math.round(startTop);
   const boardTop = Math.round(startTop + FIELD_H + GAP_FB);
 
   document.getElementById("fieldWrap").style.top = fieldTop + "px";
   document.getElementById("boardWrap").style.top = boardTop + "px";
+
+  // 콜스탯 (열 방어 표시)
   colStatsEl.style.top   = (boardTop - 44) + "px";
+  colStatsEl.style.left  = "50%";
+  colStatsEl.style.transform = "translateX(-50%)";
   colStatsEl.style.width = BOARD_W + "px";
   colStatsEl.innerHTML   = "";
   for(let c=0;c<BCOLS;c++){
     const d=document.createElement("div");
     d.className="colStat";
-    d.style.width=(CELL+16)+"px";
-    d.style.marginLeft=(c===0?16:0)+"px";
+    d.style.width=(CELL+GAP)+"px";
+    d.style.textAlign="center";
     colStatsEl.appendChild(d);
   }
 }
@@ -503,7 +522,7 @@ async function endTurn(){
   } catch(err) {
     showError("endTurn 처리 중 오류:\n"+(err&&err.stack?err.stack:err));
   } finally {
-    busy=false; // 어떤 경우에도 잠금 해제
+    busy=false;
   }
 }
 
@@ -588,7 +607,6 @@ function drawOne(key){
   return new Promise(res=>{
     const def=CARDS[key];
     if(!def){
-      // 정의되지 않은 카드 → 팝업으로 알리고 건너뜀 (예외로 게임이 멈추지 않게)
       showError(`정의되지 않은 카드 key: "${key}"\ncards.json 에 해당 카드가 없습니다.\n`+
         `→ template_deck.json 의 id 철자를 확인하거나 cards.json 에 추가하세요.`);
       res();
