@@ -146,10 +146,13 @@ let PARAMS = {};
 let MON_FILES = [];
 let SLIDE_COST = 2;
 let MERGE_CAP = 16;
-let CELL = 140;
+let CELL = 160;              // [수정] 기본 셀 크기 140 → 160 (가시성 향상)
 let FCOLS=4, FROWS=2, BCOLS=4, BROWS=4;
 let GAME_CONFIG = {};
 let ENEMY_PHASES = []; // 페이즈별 스펙 배열
+
+/* [수정] 손패 카드 폭에 맞춘 반값 오프셋 (CSS .hcard width:172px 기준 → 86) */
+const CARD_HALF = 86;
 
 /* ===== 카드/덱 데이터 ===== */
 let CARDS={}, DECKS={};
@@ -185,7 +188,7 @@ async function loadData(){
     FROWS = boardConfig.fieldRows || 2;
     BCOLS = boardConfig.boardCols || 4;
     BROWS = boardConfig.boardRows || 4;
-    CELL = boardConfig.cellSize || 140;
+    CELL = boardConfig.cellSize || 160;   // [수정] fallback 160
     SLIDE_COST = boardConfig.slideCost || 2;
     MERGE_CAP = boardConfig.mergeLimit || 16;
     MON_FILES = enemyConfig.files || [];
@@ -332,8 +335,6 @@ async function newGame(){
   busy = true;
   try {
     // [수정] 게임 시작 시 적 턴부터 시작
-    // 첫 적 턴의 보스 의도 설정 (마나는 startTurn 에서 세팅되지만
-    // 첫 적 턴에서 적 행동 판단을 위해 미리 초기화)
     maxMana = GAME_CONFIG.initialMana || 12;
     mana = maxMana;
     decideBossIntent();
@@ -367,11 +368,30 @@ function buildSlots(){
     b.style.left=bx(c)+"px"; b.style.top=by(r)+"px"; b.style.width=CELL+"px"; b.style.height=CELL+"px";
     boardEl.appendChild(b);
   }
-  document.getElementById("fieldWrap").style.top="440px";
-  const boardTop=440+FIELD_H+70;
-  document.getElementById("boardWrap").style.top=boardTop+"px";
-  colStatsEl.style.top=(boardTop-52)+"px"; colStatsEl.style.width=BOARD_W+"px"; colStatsEl.innerHTML="";
-  for(let c=0;c<BCOLS;c++){ const d=document.createElement("div"); d.className="colStat"; d.style.width=(CELL+16)+"px"; d.style.marginLeft=(c===0?16:0)+"px"; colStatsEl.appendChild(d); }
+
+  /* ===== [수정] 세로 배치 동적 계산: 보스 아래 ~ 손패 위 공간에 필드+보드를 중앙 정렬 ===== */
+  const TOP_LIMIT    = 420;            // 보스 인텐트 아래 시작선
+  const BOTTOM_LIMIT = 1920 - 470;     // 손패 영역(handZone) 위선
+  const GAP_FB       = 70;             // 필드-보드 사이 간격(콜스탯 자리 포함)
+  const totalH       = FIELD_H + GAP_FB + BOARD_H;
+  const avail        = BOTTOM_LIMIT - TOP_LIMIT;
+  const startTop     = TOP_LIMIT + Math.max(0, (avail - totalH) / 2);
+
+  const fieldTop = Math.round(startTop);
+  const boardTop = Math.round(startTop + FIELD_H + GAP_FB);
+
+  document.getElementById("fieldWrap").style.top = fieldTop + "px";
+  document.getElementById("boardWrap").style.top = boardTop + "px";
+  colStatsEl.style.top   = (boardTop - 44) + "px";
+  colStatsEl.style.width = BOARD_W + "px";
+  colStatsEl.innerHTML   = "";
+  for(let c=0;c<BCOLS;c++){
+    const d=document.createElement("div");
+    d.className="colStat";
+    d.style.width=(CELL+16)+"px";
+    d.style.marginLeft=(c===0?16:0)+"px";
+    colStatsEl.appendChild(d);
+  }
 }
 
 /* ===== 렌더링 함수들 ===== */
@@ -546,7 +566,7 @@ function layoutHand(){
     const x=centerX + off*spread, angle=off*maxAngle, lift=Math.abs(off)*Math.abs(off)*4;
     h.el.style.transition="transform .3s cubic-bezier(.2,.8,.3,1),left .3s,bottom .3s,opacity .3s";
     h.el.style.left=x+"px"; h.el.style.bottom=(baseBottom - lift + 60)+"px";
-    h.el.style.transform=`translateX(-75px) rotate(${angle}deg)`; h.el.style.zIndex=100+i; h.el.style.opacity="1";
+    h.el.style.transform=`translateX(-${CARD_HALF}px) rotate(${angle}deg)`; h.el.style.zIndex=100+i; h.el.style.opacity="1";
   });
 }
 async function drawCards(n){
@@ -576,7 +596,7 @@ function drawOne(key){
     }
     const cost=cardCost(def), el=document.createElement("div");
     el.className="hcard "+def.type; el.dataset.cost=cost; el.dataset.key=key;
-    el.style.left="900px"; el.style.bottom="-260px"; el.style.opacity="0"; el.style.transform="translateX(-75px)";
+    el.style.left="900px"; el.style.bottom="-260px"; el.style.opacity="0"; el.style.transform=`translateX(-${CARD_HALF}px)`;
     const kwStr = def.kw && def.kw.length ? def.kw.join(" · ") : "";
     const tierLabel = def.type==="skill" ? "스킬" : def.tile;
     const tierCls = def.type==="skill" ? "htier skill" : "htier";
@@ -596,7 +616,7 @@ async function discardHand(){
   const copy=hand.slice(); hand.length=0;
   const proms=copy.map(c=>{ discard.push(c.key);
     c.el.style.transition="transform .38s,opacity .38s,bottom .38s";
-    c.el.style.bottom="640px"; c.el.style.opacity="0"; c.el.style.transform="translateX(-75px) rotate(25deg) scale(.6)";
+    c.el.style.bottom="640px"; c.el.style.opacity="0"; c.el.style.transform=`translateX(-${CARD_HALF}px) rotate(25deg) scale(.6)`;
     return new Promise(r=>setTimeout(()=>{c.el.remove();r();},400)); });
   await Promise.all(proms);
 }
@@ -610,7 +630,7 @@ function attachDrag(card){
   function armHold(){ clearHold(); holdTimer=setTimeout(()=>{ if(dragging){ el.classList.remove("dragging"); highlightValid(card,false); zoomIn(); } },3000); }
   function zoomIn(){ zoomed=true; el.classList.add("zoomed"); dim.classList.add("on"); }
   function zoomOut(){ if(!zoomed) return; zoomed=false; el.classList.remove("zoomed"); dim.classList.remove("on"); }
-  function beginDragVisual(){ el.style.transition="none"; el.classList.add("dragging"); el.style.transform="translateX(-75px)"; ox=75; oy=100; }
+  function beginDragVisual(){ el.style.transition="none"; el.classList.add("dragging"); el.style.transform=`translateX(-${CARD_HALF}px)`; ox=CARD_HALF; oy=100; }
   function down(e){
     if(busy) return;
     if(+el.dataset.cost>mana){ flashBadge("manaBadge"); return; }
@@ -622,7 +642,7 @@ function attachDrag(card){
   }
   function setPos(p,s,st){
     const lx=(p.x-st.left)/s, ly=(p.y-st.top)/s;
-    el.style.left=lx+"px"; el.style.bottom=(1920 - ly - (215-oy))+"px"; el.style.transform="translateX(-75px)";
+    el.style.left=lx+"px"; el.style.bottom=(1920 - ly - (215-oy))+"px"; el.style.transform=`translateX(-${CARD_HALF}px)`;
     const slot=slotUnder(p.x,p.y);
     boardEl.querySelectorAll(".bslot").forEach(b=>b.classList.toggle("hover", !!(slot&&b.classList.contains("valid")&&+b.dataset.r===slot.r&&+b.dataset.c===slot.c)));
   }
