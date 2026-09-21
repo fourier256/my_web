@@ -587,65 +587,55 @@ async function nextPhaseOrWin(){
   await sleep(300);
 }
 
-/* ===== 손패 배치 — 카드의 바깥 끝이 (D28)~(O32) 영역을 넘지 않게 ===== */
+/* ===== 손패 배치 — 카드는 #hand 의 자식, 좌표는 컨테이너 기준(0~areaW) ===== */
 function layoutHand(){
   const n=hand.length; if(n===0) return;
 
-  const HAND_LEFT  = GX(4);          // 180  (D)
-  const HAND_RIGHT = GX(15)+CW;      // 900  (O 끝)
-  const centerX = (HAND_LEFT + HAND_RIGHT) / 2;   // 540
-
-  const cardW = CARD_HALF*2;
-  const cardH = cardW * 1.42;        // CSS --hcard-w 비율과 동일
+  /* 핸드 컨테이너(#hand)의 내부 폭. buildSlots 에서 (D28)~(O32) = 720px 로 배치됨.
+     카드 left 는 이 컨테이너 기준이므로 0 ~ areaW 안에 들어가게 계산. */
+  const areaW = handEl.clientWidth || (12*CW);   // 12칸 = 720
+  const centerX = areaW/2;
   const maxAngle = Math.min(7, 24/Math.max(1,n));
 
-  /* 카드 간격: 우선 넉넉히 잡고, 아래에서 양끝이 영역을 넘으면 줄인다 */
-  let spread = n>1 ? Math.min(120, (HAND_RIGHT-HAND_LEFT-cardW)/(n-1)) : 0;
+  const cardW = CARD_HALF*2;
+  const cardH = cardW * 1.42;   // CSS --hcard-w 비율과 동일
 
-  const baseBottom = 40;
-
-  /* 회전 반영한 수평 반폭 (각도 θ 라디안) */
   function halfSpan(angleDeg){
-    const t = Math.abs(angleDeg)*Math.PI/180;
+    const t=Math.abs(angleDeg)*Math.PI/180;
     return (cardW/2)*Math.cos(t) + (cardH/2)*Math.sin(t);
   }
-
-  /* 양 끝 카드가 영역을 넘지 않도록 spread 를 조정 (반복 축소) */
-  function edgesFit(sp){
+  function fits(sp){
     const mid=(n-1)/2;
     for(let i=0;i<n;i++){
-      const off=i-mid;
-      const x=centerX+off*sp;
-      const hs=halfSpan(off*maxAngle);
-      if(x-hs < HAND_LEFT-0.5 || x+hs > HAND_RIGHT+0.5) return false;
+      const off=i-mid, x=centerX+off*sp, hs=halfSpan(off*maxAngle);
+      if(x-hs < -0.5 || x+hs > areaW+0.5) return false;
     }
     return true;
   }
-  while(spread>0 && !edgesFit(spread)) spread-=2;
+  let spread = n>1 ? Math.min(120, (areaW-cardW)/(n-1)) : 0;
+  while(spread>0 && !fits(spread)) spread-=1;
   if(spread<0) spread=0;
 
   hand.forEach((h,i)=>{
     if(h.el.classList.contains("dragging")||h.el.classList.contains("zoomed")) return;
     const mid=(n-1)/2, off=i-mid;
     const angle=off*maxAngle;
-    let x = centerX + off*spread;
-
-    /* spread=0 등으로 여전히 넘칠 경우, 카드 끝 기준으로 최종 클램프 */
-    const hs = halfSpan(angle);
-    const minX = HAND_LEFT + hs;
-    const maxX = HAND_RIGHT - hs;
+    let x=centerX+off*spread;
+    const hs=halfSpan(angle);
+    const minX=hs, maxX=areaW-hs;
     if(minX<=maxX){ if(x<minX)x=minX; if(x>maxX)x=maxX; }
-    else { x=centerX; }   // 영역보다 카드가 크면 중앙 고정
+    else x=centerX;
 
     const lift=Math.abs(off)*Math.abs(off)*4;
     h.el.style.transition="transform .3s cubic-bezier(.2,.8,.3,1),left .3s,bottom .3s,opacity .3s";
-    h.el.style.left=x+"px";
-    h.el.style.bottom=(baseBottom - lift)+"px";
-    h.el.style.transform=`translateX(-${CARD_HALF}px) rotate(${angle}deg)`;
-    h.el.style.zIndex=100+i;
-    h.el.style.opacity="1";
+    h.el.style.left = x+"px";                        // 컨테이너 기준
+    h.el.style.bottom = (20 - lift)+"px";
+    h.el.style.transform = `translateX(-${CARD_HALF}px) rotate(${angle}deg)`;
+    h.el.style.zIndex = 100+i;
+    h.el.style.opacity = "1";
   });
 }
+
 
 async function drawCards(n){
   const maxHand = GAME_CONFIG.maxHandSize || 10;
