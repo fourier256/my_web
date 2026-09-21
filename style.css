@@ -1,4 +1,4 @@
-/* style.css — 18×32 그리드 레이아웃 (셀 240×180) */
+/* style.css — 18×32 그리드 레이아웃 (셀 180×180 정사각형, 좌우 마진 3칸) */
 
 * { margin:0; padding:0; box-sizing:border-box; -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; }
 html,body { width:100%; height:100%; background:#000; overflow:hidden; font-family:"Segoe UI","Malgun Gothic",sans-serif; touch-action:none; overscroll-behavior:none; position:fixed; inset:0; }
@@ -8,8 +8,8 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
   position:absolute; top:50%; left:50%;
   width:1080px; height:1920px;
   transform-origin:center; background:#1c1726; overflow:hidden;
-  /* 셀 크기 (JS 와 동기화: 4칸×3칸 = 240×180) */
-  --cell-w:240px; --cell-h:180px;
+  /* 셀 크기 (JS 와 동기화: 3칸×3칸 = 180×180 정사각형) */
+  --cell-w:180px; --cell-h:180px;
 }
 #game { position:absolute; inset:0; background:linear-gradient(#241d33,#17121f); }
 
@@ -19,9 +19,9 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
 #bossName b { color:#ff8a5a; }
 #phaseTag { color:#ffd166; font-size:24px; }
 
-/* 보스 아트 (JS: F2~M5, 480×240) */
-#bossArt { position:absolute; z-index:4; display:flex; align-items:center; justify-content:center; pointer-events:none; }
-#bossArt img { max-width:100%; max-height:100%; image-rendering:pixelated; filter:drop-shadow(0 0 24px #ff3b0088) drop-shadow(0 8px 10px #000a); }
+/* 보스 아트 (JS: F2~M5, 480×240) — 정사각형 이미지의 상단 50%만 꽉 채워 크게 표시 */
+#bossArt { position:absolute; z-index:4; display:block; overflow:hidden; pointer-events:none; }
+#bossArt img { width:100%; height:100%; object-fit:cover; object-position:top; image-rendering:pixelated; filter:drop-shadow(0 0 24px #ff3b0088) drop-shadow(0 8px 10px #000a); }
 #bossArt.hurt img { filter:drop-shadow(0 0 14px #f00) brightness(1.8) sepia(1) hue-rotate(-40deg) saturate(6) !important; }
 #bossArt.punch img { animation:punch .25s ease-out; }
 
@@ -78,7 +78,7 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
 .summonMark { position:absolute; z-index:9; display:flex; align-items:center; justify-content:center; font-size:calc(var(--cell-h) * .5); opacity:.75; pointer-events:none; animation:pulseLine 1.2s ease-in-out infinite; text-shadow:0 0 14px #8e44ad; }
 .destroyMark { position:absolute; z-index:35; display:flex; align-items:center; justify-content:center; font-size:calc(var(--cell-h) * .45); pointer-events:none; animation:pulseLine 1s ease-in-out infinite; filter:drop-shadow(0 0 10px #e67e22); }
 
-/* ===== 적 타일 (셀 240×180 비례) ===== */
+/* ===== 적 타일 (셀 180×180 비례) ===== */
 .enemy { position:absolute; border-radius:10px; transition:left .3s ease,top .3s ease; display:flex; flex-direction:column; align-items:center; justify-content:center; }
 .enemy img { width:calc(var(--cell-h) * .58); height:calc(var(--cell-h) * .58); image-rendering:pixelated; filter:drop-shadow(0 4px 6px #000a); }
 .enemy .estat { display:flex; gap:10px; margin-top:4px; font-size:22px; font-weight:bold; color:#fff; text-shadow:0 1px 2px #000; }
@@ -97,7 +97,7 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
 @keyframes defGain{ 0%{transform:scale(1);color:#7ec8ff;} 30%{transform:scale(1.6);color:#aef;} 100%{transform:scale(1);color:#7ec8ff;} }
 .colStat.defgain{ animation:defGain .4s; }
 
-/* ===== 보드 카드(타일) (셀 240×180 비례) ===== */
+/* ===== 보드 카드(타일) (셀 180×180 비례) ===== */
 .fcard { position:absolute; border-radius:10px; transition:left .16s ease,top .16s ease; display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(#efe6d6,#d9c9a8); border:4px solid #b89b6a; z-index:5; }
 .fcard.atk { border-color:#c0392b; background:linear-gradient(#f3d9d2,#e0b3a8); }
 .fcard.def { border-color:#2980b9; background:linear-gradient(#d2e2f3,#a8c6e0); }
