@@ -159,8 +159,10 @@ function placeGrid(el, colA,rowA,colB,rowB){
   return a;
 }
 
-/* 셀 크기: 가로 4칸 × 세로 3칸 = 240 × 180 */
-const CELL_W = 4*CW;   // 240
+/* 셀 크기: 가로 3칸 × 세로 3칸 = 180 × 180 (정사각형)
+   보드/필드 좌우 마진을 3칸씩(스테이지 마진 1칸 + 추가 2칸)으로 만들어
+   사용 폭 12칸(D~O) 안에 4열 × 3칸 = 12칸이 딱 맞게 들어감. */
+const CELL_W = 3*CW;   // 180
 const CELL_H = 3*CH;   // 180
 
 /* ===== 파라미터 (JSON 에서 로드) ===== */
@@ -272,8 +274,8 @@ function getPhaseData(p) {
 
 /* ===================================================================
    [레이아웃] 셀 좌표 계산 — 그리드 기준
-   필드 셀: 필드 영역 (B7)~(Q12) 안, 4열×2행, 셀 4×3칸, gap 0
-   보드 셀: 보드 영역 (B15)~(Q26) 안, 4열×4행, 셀 4×3칸, gap 0
+   필드 셀: 필드 영역 (D7)~(O12) 안, 4열×2행, 셀 3×3칸(180×180), gap 0
+   보드 셀: 보드 영역 (D15)~(O26) 안, 4열×4행, 셀 3×3칸(180×180), gap 0
    슬롯 내부 좌표(컨테이너 기준 offset)를 계산해서 타일을 절대배치.
 =================================================================== */
 /* 필드/보드 컨테이너의 내부 로컬 좌표(=슬롯 위치) */
@@ -370,12 +372,13 @@ function updatePhaseTag(){ document.getElementById("phaseTag").textContent=`[${p
 
 /* ===================================================================
    [레이아웃] 슬롯 생성 — 그리드 좌표로 컨테이너 배치 + 셀 절대배치
-   필드 (B7)~(Q12) / 열방어 (14행) / 보드 (B15)~(Q26)
+   좌우 마진 3칸(A~C, P~R) → 사용 폭 D~O(12칸=720px)
+   필드 (D7)~(O12) / 열방어 (D14~O14) / 보드 (D15)~(O26)
 =================================================================== */
 function buildSlots(){
-  /* --- 컨테이너를 그리드 영역에 배치 --- */
-  placeGrid(document.getElementById("fieldWrap"), 2,7, 17,12);   // 필드
-  placeGrid(document.getElementById("boardWrap"), 2,15, 17,26);  // 보드
+  /* --- 컨테이너를 그리드 영역에 배치 (좌우 마진 3칸) --- */
+  placeGrid(document.getElementById("fieldWrap"), 4,7, 15,12);   // 필드 (D7~O12)
+  placeGrid(document.getElementById("boardWrap"), 4,15, 15,26);  // 보드 (D15~O26)
 
   fieldEl.style.width=(FCOLS*CELL_W)+"px"; fieldEl.style.height=(FROWS*CELL_H)+"px";
   boardEl.style.width=(BCOLS*CELL_W)+"px"; boardEl.style.height=(BROWS*CELL_H)+"px";
@@ -395,8 +398,8 @@ function buildSlots(){
     boardEl.appendChild(b);
   }
 
-  /* --- 열 방어력: 14행, 보드 각 열(4칸 폭) 위에 --- */
-  placeGrid(colStatsEl, 2,14, 17,14);
+  /* --- 열 방어력: 14행, 보드 각 열(3칸 폭) 위에 (D14~O14) --- */
+  placeGrid(colStatsEl, 4,14, 15,14);
   colStatsEl.innerHTML="";
   for(let c=0;c<BCOLS;c++){
     const d=document.createElement("div"); d.className="colStat";
@@ -413,9 +416,7 @@ function buildSlots(){
   placeGrid(handEl,                                4,28, 15,32); // 핸드
   placeGrid(document.getElementById("manaBadge"), 16,28, 18,30);// MP 구슬 3×3
   placeGrid(document.getElementById("deckPile"),  17,31, 18,32);// 덱 2×2
-  /* 턴 종료 버튼: 덱 왼쪽 위, 핸드 오른쪽 (P28~R30 영역의 위쪽 활용은 MP가 씀)
-     → 핸드 우측 상단 살짝, 버프영역 대칭으로 좌하단은 피함. (Q~R, 그러나 MP와 겹침 방지 위해 별도)
-     여기서는 핸드 바로 위(4~15, 27행)에 가로 버튼으로 배치 */
+  /* 턴 종료 버튼: 핸드 바로 위(L27~O27) 가로 버튼 */
   placeGrid(document.getElementById("endTurnBtn"), 12,27, 15,27);
 }
 
@@ -711,7 +712,11 @@ function attachDrag(card){
   }
   function setPos(p,s,st){
     const lx=(p.x-st.left)/s, ly=(p.y-st.top)/s;
-    el.style.left=lx+"px"; el.style.bottom=(1920 - ly - (240-oy))+"px"; el.style.transform=`translateX(-${CARD_HALF}px)`;
+    /* lx 는 스테이지(0~1080) 기준 → #hand 컨테이너 기준으로 변환 (컨테이너 left 만큼 빼기) */
+    const handLeft = handEl.offsetLeft;   // #hand 의 스테이지 기준 left (=180)
+    el.style.left=(lx - handLeft)+"px";
+    el.style.bottom=(1920 - ly - (240-oy))+"px";
+    el.style.transform=`translateX(-${CARD_HALF}px)`;
     const slot=slotUnder(p.x,p.y);
     boardEl.querySelectorAll(".bslot").forEach(b=>b.classList.toggle("hover", !!(slot&&b.classList.contains("valid")&&+b.dataset.r===slot.r&&+b.dataset.c===slot.c)));
   }
