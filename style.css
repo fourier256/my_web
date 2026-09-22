@@ -194,3 +194,69 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
 #loadMsg.hidden{ display:none; }
 #loadMsg b{ color:#ffd166; }
 #loadMsg code{ background:#241d33; padding:2px 8px; border-radius:6px; color:#9cff5a; }
+
+/* ===================================================================
+   [메타] 맵 · 보상 · 모닥불 · 덱보기 (MVP)
+=================================================================== */
+#mapScreen{ position:absolute; inset:0; z-index:500; background:linear-gradient(#12101c,#1c1630); display:none; flex-direction:column; }
+#mapScreen.on{ display:flex; }
+#mapHud{ position:absolute; top:0; left:0; width:100%; height:80px; z-index:520; display:flex; align-items:center; gap:28px; padding:0 30px; background:#0d0a16cc; color:#eee; font-size:30px; }
+#mapHud b{ color:#ffd166; }
+#mapHud .mFloor{ margin-left:auto; color:#bda8ff; font-size:26px; }
+#mapScroll{ position:absolute; top:80px; left:0; width:100%; bottom:0; overflow-y:auto; overflow-x:hidden; }
+#mapScreen #mapScroll{ }
+#mapEdges{ position:absolute; top:0; left:0; }
+#mapNodes{ position:absolute; top:0; left:0; width:100%; height:100%; }
+.mapNode{ position:absolute; width:110px; height:110px; margin-left:-55px; margin-top:-55px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; font-size:52px;
+  background:#241d33; border:5px solid #4a3a66; color:#fff; box-shadow:0 4px 12px #0008; opacity:.55; }
+.mapNode .mnIcon{ line-height:1; }
+.mapNode.t-boss{ width:150px; height:150px; margin-left:-75px; margin-top:-75px; font-size:76px; border-color:#ff5a5a; background:#3a1420; }
+.mapNode.t-rest{ border-color:#ff9a4a; }
+.mapNode.t-treasure{ border-color:#ffd166; }
+.mapNode.t-battle{ border-color:#8a7ab0; }
+.mapNode.cleared{ opacity:.35; filter:grayscale(.6); }
+.mapNode.current{ box-shadow:0 0 0 6px #ffd16688, 0 4px 12px #0008; opacity:1; }
+.mapNode.selectable{ opacity:1; cursor:pointer; animation:nodePulse 1.4s ease-in-out infinite; }
+.mapNode.selectable:hover{ transform:scale(1.08); }
+@keyframes nodePulse{ 0%,100%{ box-shadow:0 0 0 0 #9cff5a00, 0 4px 12px #0008; } 50%{ box-shadow:0 0 0 8px #9cff5a55, 0 4px 12px #0008; } }
+
+#deckViewBtn{ position:absolute; right:24px; bottom:24px; z-index:540; display:none;
+  padding:14px 26px; border-radius:14px; background:#2a2440; border:3px solid #6a5a8a; color:#eee; font-size:26px; font-weight:bold; cursor:pointer; }
+
+/* 보상 / 덱보기 카드 (전투 손패 카드 축소 재사용) */
+#rewardScreen,#restScreen{ position:absolute; inset:0; z-index:560; background:#0d0a14ee; display:none; flex-direction:column; align-items:center; justify-content:center; gap:40px; }
+#rewardScreen.on,#restScreen.on{ display:flex; }
+#rewardScreen h1,#restScreen h1{ color:#ffd166; font-size:52px; text-shadow:0 4px 8px #000; }
+.rewardRow,.restRow{ display:flex; gap:36px; }
+#rewardSkip{ margin-top:10px; padding:12px 30px; border-radius:12px; background:#3a3450; border:3px solid #6a5a8a; color:#ddd; font-size:26px; cursor:pointer; }
+
+.rwCard{ position:relative; width:260px; height:370px; background:linear-gradient(#efe6d6,#d9c9a8);
+  border:6px solid #b89b6a; border-radius:18px; box-shadow:0 8px 20px #000a; padding:16px 12px;
+  display:flex; flex-direction:column; align-items:center; cursor:pointer; transition:transform .15s,box-shadow .15s; }
+.rwCard:hover{ transform:translateY(-10px) scale(1.03); box-shadow:0 16px 30px #000c; }
+.rwCard.atk{ border-color:#c0392b; } .rwCard.def{ border-color:#2980b9; } .rwCard.skill{ border-color:#7a5aa8; }
+.rwCard .hcost{ position:absolute; top:-16px; left:-16px; width:60px; height:60px; border-radius:50%; background:radial-gradient(#7fc0ff,#1a5ec0); color:#fff; font-size:30px; font-weight:bold; display:flex; align-items:center; justify-content:center; border:3px solid #fff8; }
+.rwCard .htier{ position:absolute; top:-12px; right:-10px; background:#3a2d18; color:#ffd166; font-size:20px; font-weight:bold; padding:4px 10px; border-radius:10px; border:2px solid #0007; }
+.rwCard .htier.skill{ background:#3a2848; color:#d8b6ff; }
+.rwCard .hicon{ width:96px; height:96px; margin-top:16px; filter:drop-shadow(0 0 2px #000); }
+.rwCard .hname{ font-size:30px; font-weight:bold; color:#3a2d18; margin-top:12px; text-align:center; line-height:1.1; }
+.rwCard .hdesc{ font-size:21px; color:#5a4a30; text-align:center; margin-top:10px; line-height:1.3; padding:0 4px; }
+.rwCard .hkw{ position:absolute; bottom:8px; font-size:16px; color:#7a3010; font-weight:bold; }
+
+.restCard{ width:280px; height:300px; background:linear-gradient(#3a2418,#2a1810); border:6px solid #ff9a4a; border-radius:18px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; cursor:pointer; color:#ffe; transition:transform .15s; }
+.restCard:hover{ transform:scale(1.04); }
+.restCard .rIcon{ font-size:90px; } .restCard .rTitle{ font-size:38px; font-weight:900; } .restCard .rDesc{ font-size:24px; color:#ffd9b0; }
+
+/* 덱 보기 오버레이 */
+#deckView{ position:absolute; inset:0; z-index:600; background:#0d0a14f2; display:none; flex-direction:column; align-items:center; padding:40px 20px; gap:24px; overflow:hidden; }
+#deckView.on{ display:flex; }
+#deckView h1{ color:#ffd166; font-size:46px; }
+.deckViewRow{ display:flex; flex-wrap:wrap; gap:20px; justify-content:center; align-content:flex-start; overflow-y:auto; width:100%; padding:10px; }
+#deckView .rwCard{ width:200px; height:290px; cursor:default; }
+#deckView .rwCard:hover{ transform:none; box-shadow:0 8px 20px #000a; }
+#deckView .rwCard .hicon{ width:70px; height:70px; }
+#deckView .rwCard .hname{ font-size:24px; }
+#deckView .rwCard .hdesc{ font-size:18px; }
+#deckViewClose{ padding:14px 40px; border-radius:14px; background:#ff5a5a; color:#fff; font-size:28px; font-weight:bold; cursor:pointer; }
