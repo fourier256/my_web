@@ -139,8 +139,6 @@ const SHIELD=IC+"sbed/shield.svg";
 
 /* ===================================================================
    [레이아웃] 18×32 그리드 시스템 — 한 칸 = 60×60px
-   좌표 (col,row) 는 1-based. 열 A=1 ~ R=18, 행 1~32.
-   모든 화면 요소는 이 그리드 기준으로 배치.
 =================================================================== */
 const STAGE_W=1080, STAGE_H=1920;
 const GRID_COLS=18, GRID_ROWS=32;
@@ -151,7 +149,6 @@ function GY(row){ return (row-1)*CH; }
 function gridArea(colA,rowA,colB,rowB){
   return { left:GX(colA), top:GY(rowA), w:(colB-colA+1)*CW, h:(rowB-rowA+1)*CH };
 }
-/* 요소에 그리드 영역을 픽셀로 적용 */
 function placeGrid(el, colA,rowA,colB,rowB){
   const a=gridArea(colA,rowA,colB,rowB);
   el.style.left=a.left+"px"; el.style.top=a.top+"px";
@@ -159,13 +156,11 @@ function placeGrid(el, colA,rowA,colB,rowB){
   return a;
 }
 
-/* 셀 크기: 가로 3칸 × 세로 3칸 = 180 × 180 (정사각형)
-   보드/필드 좌우 마진을 3칸씩(스테이지 마진 1칸 + 추가 2칸)으로 만들어
-   사용 폭 12칸(D~O) 안에 4열 × 3칸 = 12칸이 딱 맞게 들어감. */
+/* 셀 크기: 3×3칸 = 180×180 정사각형 (좌우 마진 3칸) */
 const CELL_W = 3*CW;   // 180
 const CELL_H = 3*CH;   // 180
 
-/* ===== 파라미터 (JSON 에서 로드) ===== */
+/* ===== 파라미터 ===== */
 let PARAMS = {};
 let MON_FILES = [];
 let SLIDE_COST = 2;
@@ -174,7 +169,6 @@ let FCOLS=4, FROWS=2, BCOLS=4, BROWS=4;
 let GAME_CONFIG = {};
 let ENEMY_PHASES = [];
 
-/* 손패 카드 폭 절반 (CSS --hcard-w 와 동기화) */
 let CARD_HALF = 100;
 
 /* ===== 카드/덱 데이터 ===== */
@@ -235,7 +229,6 @@ async function loadData(){
   }
 }
 
-/* 덱 무결성 검사 */
 function validateDecks(){
   const missing=[];
   for(const dk in DECKS){
@@ -265,26 +258,26 @@ function showLoadError(err){
   showError("데이터 로드 실패:\n"+((err&&err.message)||err));
 }
 
-/* ===== 유틸: 페이즈 데이터 ===== */
 function getPhaseData(p) {
   const idx = p - 1;
   if (idx >= 0 && idx < ENEMY_PHASES.length) return ENEMY_PHASES[idx];
   return { bossHp: 100, bossAttack: 20, spawnHp: 30, spawnAtk: 10 };
 }
 
-/* ===================================================================
-   [레이아웃] 셀 좌표 계산 — 그리드 기준
-   필드 셀: 필드 영역 (D7)~(O12) 안, 4열×2행, 셀 3×3칸(180×180), gap 0
-   보드 셀: 보드 영역 (D15)~(O26) 안, 4열×4행, 셀 3×3칸(180×180), gap 0
-   슬롯 내부 좌표(컨테이너 기준 offset)를 계산해서 타일을 절대배치.
-=================================================================== */
-/* 필드/보드 컨테이너의 내부 로컬 좌표(=슬롯 위치) */
 function fieldSlotLocal(r,c){ return { left:c*CELL_W, top:r*CELL_H, w:CELL_W, h:CELL_H }; }
 function boardSlotLocal(r,c){ return { left:c*CELL_W, top:r*CELL_H, w:CELL_W, h:CELL_H }; }
 
 /* ===== 상태 변수 ===== */
 let field,board,deck,hand,discard,exhaustPile,mana,maxMana,hp,maxHp,bossHp,bossMax,turnCount,
     colDef,busy,bossIntent,bossStun,strength,tempStrMult,thornsOn,blockedThisTurn,chosenArch,phase;
+
+/* ▼ 신규 카드 효과용 상태 */
+let keepDefNext=0;          // 탑쌓기: 다음 턴 방어도 초기화를 건너뛸 횟수
+let evadeCols=new Set();    // 회피: 이번 적 턴에 데미지를 무효화할 열
+let capNextDmg=null;        // 기합: 다음에 받는 데미지를 이 값으로 고정 (1회)
+let dmgDealtThisTurn=0;     // 흡혈: 이번 턴 누적 가한 데미지
+let lifestealPct=0;         // 흡혈: 턴 종료 시 회복 비율(%)
+let pendingHandNextTurn=[]; // 사혈/몰아붙이기: 다음 턴 시작 시 손에 추가할 카드 id
 
 const stageEl=document.getElementById("stage"),
       gameEl=document.getElementById("game"),
@@ -293,14 +286,12 @@ const stageEl=document.getElementById("stage"),
       bossIntentEl=document.getElementById("bossIntent"), buffBarEl=document.getElementById("buffBar"),
       buffTipEl=document.getElementById("buffTip");
 
-/* ===== 리사이즈 및 유틸 ===== */
 function resize(){ const s=Math.min(innerWidth/1080,innerHeight/1920); stageEl.style.transform=`translate(-50%,-50%) scale(${s})`; }
 addEventListener("resize",resize); resize();
 function stageScale(){ return Math.min(innerWidth/1080,innerHeight/1920); }
 function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} }
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
-/* ===== 덱 구성 ===== */
 function buildDeck(arch){
   const t=DECKS[arch]; const d=[];
   (t.cards||[]).forEach(entry=>{ const n=entry.count||1; for(let i=0;i<n;i++) d.push(entry.id); });
@@ -308,7 +299,6 @@ function buildDeck(arch){
   return d;
 }
 
-/* ===== 아키타입 선택 ===== */
 function initArchSelect(){
   const row=document.getElementById("archRow"); row.innerHTML="";
   for(const key in DECKS){
@@ -321,7 +311,6 @@ function initArchSelect(){
   }
 }
 
-/* ===== 게임 시작 ===== */
 async function newGame(){
   field=Array.from({length:FROWS},()=>Array(FCOLS).fill(null));
   board=Array.from({length:BROWS},()=>Array(BCOLS).fill(null));
@@ -344,6 +333,10 @@ async function newGame(){
   tempStrMult = 1;
   thornsOn = false;
   blockedThisTurn = 0;
+
+  /* 신규 상태 초기화 */
+  keepDefNext=0; evadeCols=new Set(); capNextDmg=null;
+  dmgDealtThisTurn=0; lifestealPct=0; pendingHandNextTurn=[];
 
   document.getElementById("bossImg").src = BOSS_IMG;
   updatePhaseTag();
@@ -370,20 +363,13 @@ async function newGame(){
 
 function updatePhaseTag(){ document.getElementById("phaseTag").textContent=`[${phase}페이즈]`; }
 
-/* ===================================================================
-   [레이아웃] 슬롯 생성 — 그리드 좌표로 컨테이너 배치 + 셀 절대배치
-   좌우 마진 3칸(A~C, P~R) → 사용 폭 D~O(12칸=720px)
-   필드 (D7)~(O12) / 열방어 (D14~O14) / 보드 (D15)~(O26)
-=================================================================== */
 function buildSlots(){
-  /* --- 컨테이너를 그리드 영역에 배치 (좌우 마진 3칸) --- */
-  placeGrid(document.getElementById("fieldWrap"), 4,7, 15,12);   // 필드 (D7~O12)
-  placeGrid(document.getElementById("boardWrap"), 4,15, 15,26);  // 보드 (D15~O26)
+  placeGrid(document.getElementById("fieldWrap"), 4,7, 15,12);
+  placeGrid(document.getElementById("boardWrap"), 4,15, 15,26);
 
   fieldEl.style.width=(FCOLS*CELL_W)+"px"; fieldEl.style.height=(FROWS*CELL_H)+"px";
   boardEl.style.width=(BCOLS*CELL_W)+"px"; boardEl.style.height=(BROWS*CELL_H)+"px";
 
-  /* --- 슬롯 DOM --- */
   fieldEl.innerHTML=""; boardEl.innerHTML="";
   for(let r=0;r<FROWS;r++)for(let c=0;c<FCOLS;c++){
     const f=document.createElement("div"); f.className="fslot"; f.dataset.r=r; f.dataset.c=c;
@@ -398,7 +384,6 @@ function buildSlots(){
     boardEl.appendChild(b);
   }
 
-  /* --- 열 방어력: 14행, 보드 각 열(3칸 폭) 위에 (D14~O14) --- */
   placeGrid(colStatsEl, 4,14, 15,14);
   colStatsEl.innerHTML="";
   for(let c=0;c<BCOLS;c++){
@@ -407,20 +392,17 @@ function buildSlots(){
     colStatsEl.appendChild(d);
   }
 
-  /* --- 상단/하단 고정 UI 를 그리드 좌표로 배치 --- */
-  placeGrid(document.getElementById("bossArt"),   6,2, 13,5);   // 보스 8×4
-  placeGrid(document.getElementById("bossHpBar"), 6,6, 13,6);   // 보스 HP 게이지
-  placeGrid(bossIntentEl,                          15,2, 16,3);  // 인텐트 2×2
-  placeGrid(document.getElementById("hpBadge"),   1,28, 3,30);  // HP 구슬 3×3
-  placeGrid(buffBarEl,                             1,31, 3,32);  // 버프 영역
-  placeGrid(handEl,                                4,28, 15,32); // 핸드
-  placeGrid(document.getElementById("manaBadge"), 16,28, 18,30);// MP 구슬 3×3
-  placeGrid(document.getElementById("deckPile"),  17,31, 18,32);// 덱 2×2
-  /* 턴 종료 버튼: 핸드 바로 위(L27~O27) 가로 버튼 */
+  placeGrid(document.getElementById("bossArt"),   6,2, 13,5);
+  placeGrid(document.getElementById("bossHpBar"), 6,6, 13,6);
+  placeGrid(bossIntentEl,                          15,2, 16,3);
+  placeGrid(document.getElementById("hpBadge"),   1,28, 3,30);
+  placeGrid(buffBarEl,                             1,31, 3,32);
+  placeGrid(handEl,                                4,28, 15,32);
+  placeGrid(document.getElementById("manaBadge"), 16,28, 18,30);
+  placeGrid(document.getElementById("deckPile"),  17,31, 18,32);
   placeGrid(document.getElementById("endTurnBtn"), 12,27, 15,27);
 }
 
-/* ===== 렌더링 함수들 ===== */
 function renderAll(){ renderEnemies(); renderCards(); renderColStats(); updateHUD(); renderStrBadge(); renderBuffs(); renderBossIntent(); renderBossStun(); }
 const manaText=document.getElementById("manaText"),hpText=document.getElementById("hpText"),
  deckCount=document.getElementById("deckCount"),bossHpFill=document.getElementById("bossHpFill"),
@@ -442,6 +424,10 @@ function activeBuffs(){
   const list=[];
   if(thornsOn) list.push({icon:"🌵", name:"가시", tip:"<b>가시</b><br>이번 턴에 방어력으로 막아낸 데미지만큼 보스에게 반사합니다. (턴 종료 시 해제)"});
   if(tempStrMult>1) list.push({icon:"⚡", name:"압도적인힘", tip:"<b>압도적인힘</b><br>이번 턴 동안 힘 효과가 2 배로 적용됩니다. (턴 종료 시 해제)"});
+  if(keepDefNext>0) list.push({icon:"🏰", name:"탑", tip:"<b>탑 쌓기</b><br>다음 턴 시작 시 방어도를 잃지 않습니다. (남은 횟수 "+keepDefNext+")"});
+  if(evadeCols.size>0) list.push({icon:"💨", name:"회피", tip:"<b>회피</b><br>이번 적 턴에 지정한 열의 공격 데미지를 받지 않습니다."});
+  if(capNextDmg!=null) list.push({icon:"🛑", name:"기합", tip:"<b>기합</b><br>다음에 받는 데미지를 "+capNextDmg+"(으)로 고정합니다. (1회)"});
+  if(lifestealPct>0) list.push({icon:"🧛", name:"흡혈", tip:"<b>흡혈</b><br>이번 턴 종료 시 입힌 데미지의 "+lifestealPct+"% 를 회복합니다."});
   return list;
 }
 function renderBuffs(bump){
@@ -467,7 +453,6 @@ function renderBossStun(){ bossStunEl.classList.toggle("on", bossStun>0); }
 function colDefTotal(c){ return colDef[c]; }
 function renderColStats(){ for(let c=0;c<BCOLS;c++){ colStatsEl.children[c].textContent=`🛡${colDefTotal(c)}`; } }
 
-/* ===== 적 렌더: 필드 슬롯 로컬좌표 위에 절대배치 ===== */
 function renderEnemies(){
   for(let r=0;r<FROWS;r++)for(let c=0;c<FCOLS;c++){
     const e=field[r][c]; if(!e)continue;
@@ -485,7 +470,6 @@ function renderEnemies(){
   }
 }
 
-/* ===== 보드 카드(타일) 렌더 ===== */
 function renderCards(){
   for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){
     const f=board[r][c]; if(!f)continue;
@@ -503,8 +487,14 @@ function effStrength(mult){ return strength*tempStrMult*(mult||1); }
 /* ===== 턴 시작 ===== */
 async function startTurn(){
   turnCount++;
-  colDef=Array(BCOLS).fill(0);
+
+  /* 탑쌓기: 방어도 유지 1회 소비, 아니면 초기화 */
+  if(keepDefNext>0){ keepDefNext--; }
+  else { colDef=Array(BCOLS).fill(0); }
+
   thornsOn=false; blockedThisTurn=0; tempStrMult=1;
+  evadeCols=new Set(); capNextDmg=null;
+  dmgDealtThisTurn=0; lifestealPct=0;
 
   const baseMana = GAME_CONFIG.initialMana || 12;
   const growth = GAME_CONFIG.manaGrowth || 4;
@@ -519,6 +509,13 @@ async function startTurn(){
 
   const drawCount = GAME_CONFIG.cardsPerTurn || 5;
   await drawCards(drawCount);
+
+  /* 사혈/몰아붙이기: 예약된 카드를 손으로 추가 */
+  if(pendingHandNextTurn.length){
+    const ids=pendingHandNextTurn.slice(); pendingHandNextTurn.length=0;
+    for(const id of ids){ await drawSpecific(id); }
+    layoutHand(); updateHUD();
+  }
 }
 
 document.getElementById("endTurnBtn").addEventListener("click",endTurn);
@@ -528,6 +525,13 @@ async function endTurn(){
   try {
     await defenseResolve();
     await playerColumnResolve();
+
+    /* 흡혈: 이번 턴 입힌 데미지의 일정 % 회복 */
+    if(lifestealPct>0 && dmgDealtThisTurn>0){
+      const healed=Math.floor(dmgDealtThisTurn*lifestealPct/100);
+      if(healed>0){ hp=Math.min(maxHp, hp+healed); dmgPop(hpBadgeEl(),"🧛+"+healed,"#8affa0"); updateHUD(); await sleep(200); }
+    }
+
     if(bossHp<=0){ await nextPhaseOrWin(); if(phase>(GAME_CONFIG.maxPhases||4)){ return; } }
     refreshDestroyTarget(); clearBossMarks();
     await discardHand();
@@ -569,7 +573,6 @@ function spawnBoardTile(){
   return [r,c];
 }
 
-/* ===== 페이즈 전환 ===== */
 async function nextPhaseOrWin(){
   const maxPh = GAME_CONFIG.maxPhases || 4;
   if(phase>=maxPh){ win(); phase=maxPh+1; return; }
@@ -588,18 +591,13 @@ async function nextPhaseOrWin(){
   await sleep(300);
 }
 
-/* ===== 손패 배치 — 카드는 #hand 의 자식, 좌표는 컨테이너 기준(0~areaW) ===== */
 function layoutHand(){
   const n=hand.length; if(n===0) return;
-
-  /* 핸드 컨테이너(#hand)의 내부 폭. buildSlots 에서 (D28)~(O32) = 720px 로 배치됨.
-     카드 left 는 이 컨테이너 기준이므로 0 ~ areaW 안에 들어가게 계산. */
-  const areaW = handEl.clientWidth || (12*CW);   // 12칸 = 720
+  const areaW = handEl.clientWidth || (12*CW);
   const centerX = areaW/2;
   const maxAngle = Math.min(7, 24/Math.max(1,n));
-
   const cardW = CARD_HALF*2;
-  const cardH = cardW * 1.42;   // CSS --hcard-w 비율과 동일
+  const cardH = cardW * 1.42;
 
   function halfSpan(angleDeg){
     const t=Math.abs(angleDeg)*Math.PI/180;
@@ -629,14 +627,13 @@ function layoutHand(){
 
     const lift=Math.abs(off)*Math.abs(off)*4;
     h.el.style.transition="transform .3s cubic-bezier(.2,.8,.3,1),left .3s,bottom .3s,opacity .3s";
-    h.el.style.left = x+"px";                        // 컨테이너 기준
+    h.el.style.left = x+"px";
     h.el.style.bottom = (20 - lift)+"px";
     h.el.style.transform = `translateX(-${CARD_HALF}px) rotate(${angle}deg)`;
     h.el.style.zIndex = 100+i;
     h.el.style.opacity = "1";
   });
 }
-
 
 async function drawCards(n){
   const maxHand = GAME_CONFIG.maxHandSize || 10;
@@ -653,6 +650,14 @@ async function drawCards(n){
   }
   layoutHand(); updateHUD();
 }
+
+/* 특정 id 카드를 덱과 무관하게 손으로 생성 (사혈/몰아붙이기 복귀용) */
+async function drawSpecific(key){
+  const maxHand = GAME_CONFIG.maxHandSize || 10;
+  if(hand.length>=maxHand){ discard.push(key); return; }
+  await drawOne(key);
+}
+
 function drawOne(key){
   return new Promise(res=>{
     const def=CARDS[key];
@@ -689,9 +694,6 @@ async function discardHand(){
   await Promise.all(proms);
 }
 
-/* ===================================================================
-   드래그 로직 — 좌표 역산은 실제 .bslot rect 기반
-=================================================================== */
 function attachDrag(card){
   const el=card.el; let ox,oy,dragging=false,holdTimer=null,zoomed=false,startP=null;
   const dim=document.getElementById("zoomDim");
@@ -712,8 +714,7 @@ function attachDrag(card){
   }
   function setPos(p,s,st){
     const lx=(p.x-st.left)/s, ly=(p.y-st.top)/s;
-    /* lx 는 스테이지(0~1080) 기준 → #hand 컨테이너 기준으로 변환 (컨테이너 left 만큼 빼기) */
-    const handLeft = handEl.offsetLeft;   // #hand 의 스테이지 기준 left (=180)
+    const handLeft = handEl.offsetLeft;
     el.style.left=(lx - handLeft)+"px";
     el.style.bottom=(1920 - ly - (240-oy))+"px";
     el.style.transform=`translateX(-${CARD_HALF}px)`;
@@ -804,13 +805,26 @@ function runCardEffect(key,def,r,c){
   if(eff.type==="simple"){ runOps(eff.ops||[], key, def, r, c); }
   else if(eff.type==="custom"){ runCustom(eff.handler, key, def, r, c); }
 }
+
+/* ===== op 실행 ===== */
 function runOps(ops, key, def, r, c){
   for(const op of ops){
     switch(op.op){
       case "damageColumn": {
         const times=op.times||1;
         const bonus=op.useStr ? effStrength(op.strMult||1) : 0;
-        for(let i=0;i<times;i++) dealToColumn(c, op.amount+bonus, op.stun?{stun:true}:undefined);
+        for(let i=0;i<times;i++){
+          let amt=op.amount+bonus;
+          /* 대상 상태 선조회 (기절/뒤칸) */
+          const info=peekColumnTarget(c);
+          if(op.bonusIfStunned && info && info.isEnemy && info.stunned) amt+=op.bonusIfStunned;
+          if(op.bonusIfBackOccupied && info && info.isEnemy && info.backOccupied) amt+=op.bonusIfBackOccupied;
+          const res=dealToColumn(c, amt, { stun:!!op.stun, pushBack:op.pushBack||0 });
+          if(res && res.killed && op.onKill){
+            if(op.onKill.healHp){ const b=hp; hp=Math.min(maxHp,hp+op.onKill.healHp); const h=hp-b; if(h>0) dmgPop(hpBadgeEl(),"+"+h,"#8affa0"); }
+            if(op.onKill.draw){ drawCards(op.onKill.draw); }
+          }
+        }
         break;
       }
       case "damageAll": {
@@ -820,6 +834,12 @@ function runOps(ops, key, def, r, c){
       }
       case "addColDef": addColDef(c, op.amount); break;
       case "addAllColDef": for(let cc=0;cc<BCOLS;cc++) addColDef(cc, op.amount); break;
+      case "multiplyAllColDef": {
+        const m=op.mult||1;
+        for(let cc=0;cc<BCOLS;cc++){ if(colDef[cc]>0){ const add=colDef[cc]*(m-1); colDef[cc]=colDef[cc]*m; if(add>0){ defGainAnim(cc); dmgPop(colStatsEl.children[cc],"×"+m,"#7ec8ff"); } } }
+        renderColStats();
+        break;
+      }
       case "addStrength":
         strength+=op.amount; renderStrBadge(true);
         dmgPop(strBadge,(op.amount>0?"+":"")+op.amount+"💪","#ffb56b");
@@ -847,6 +867,31 @@ function runOps(ops, key, def, r, c){
         break;
       }
       case "draw": drawCards(op.amount); break;
+
+      /* ▼ 신규 op */
+      case "keepDefNextTurn":
+        keepDefNext += (op.amount||1);
+        dmgPop(colStatsEl.children[c]||hpBadgeEl(),"🏰","#7ec8ff");
+        break;
+      case "evadeColumn":
+        evadeCols.add(c);
+        dmgPop(colStatsEl.children[c]||hpBadgeEl(),"💨회피","#bfe4ff");
+        break;
+      case "capNextDamage":
+        capNextDmg = op.amount;
+        dmgPop(hpBadgeEl(),"🛑기합","#bfe4ff");
+        break;
+      case "lifestealThisTurn":
+        lifestealPct = Math.max(lifestealPct, op.pct||0);
+        dmgPop(hpBadgeEl(),"🧛흡혈","#8affa0");
+        break;
+      case "returnToHandNextTurn":
+        pendingHandNextTurn.push(op.id || key);
+        break;
+      case "addCardToHand":
+        pendingHandNextTurn.push(op.id || key);
+        break;
+
       default:
         showError("알 수 없는 op: "+op.op+" (카드: "+(def&&def.name||key)+")");
         break;
@@ -877,28 +922,56 @@ function addColDef(c, amt){
 function destroyCard(r,c){ const t=board[r][c]; if(t){ if(t.el){ t.el.classList.add("destroying"); const el=t.el; setTimeout(()=>el.remove(),400);} board[r][c]=null; } }
 
 /* ===== 데미지 로직 ===== */
+/* 열의 공격 대상(맨 앞 적) 상태를 파괴 없이 조회 */
+function peekColumnTarget(col){
+  for(let r=FROWS-1;r>=0;r--){
+    if(field[r][col]){
+      const backOccupied = (r-1>=0) ? !!field[r-1][col] : false;
+      return { isEnemy:true, row:r, stunned: field[r][col].stun>0, backOccupied };
+    }
+  }
+  return { isEnemy:false };  // 대상 없음 → 보스
+}
+
+/* 반환: {isEnemy, killed} — onKill 처리를 위해 사용 */
 function dealToColumn(col,amt,opt){
   opt=opt||{};
   let target=null,tr=-1;
   for(let r=FROWS-1;r>=0;r--){ if(field[r][col]){ target=field[r][col]; tr=r; break; } }
+  let killed=false, isEnemy=false;
+
   if(target){
-    if(amt>0){ target.hp-=amt; hurt(target.el); slashAtSlot(fslotEl(tr,col),fieldEl); dmgPop(target.el,"-"+amt,"#ffde59"); }
+    isEnemy=true;
+    if(amt>0){ target.hp-=amt; dmgDealtThisTurn+=amt; hurt(target.el); slashAtSlot(fslotEl(tr,col),fieldEl); dmgPop(target.el,"-"+amt,"#ffde59"); }
     if(opt.stun){ target.stun=1; if(target.el) target.el.classList.add("stunned"); }
-    if(target.hp<=0) killEnemy(target); renderEnemies();
+    if(target.hp<=0){ killed=true; killEnemy(target); }
+    else if(opt.pushBack && tr-1>=0 && !field[tr-1][col]){
+      /* 밀쳐내기: 뒤가 비면 한 칸 뒤로 */
+      field[tr-1][col]=target; field[tr][col]=null;
+    }
+    renderEnemies();
   } else {
-    if(amt>0){ bossHp-=amt; bossHurt(); dmgPop(document.getElementById("bossArt"),"-"+amt,"#ffde59"); }
+    if(amt>0){ bossHp-=amt; dmgDealtThisTurn+=amt; bossHurt(); dmgPop(document.getElementById("bossArt"),"-"+amt,"#ffde59"); }
     if(opt.stun){ bossStun=1; renderBossStun(); }
   }
   updateHUD();
+  return { isEnemy, killed };
 }
 function dealDirect(target,amt,r,c){
   if(!target) return;
-  target.hp-=amt; hurt(target.el); slashAtSlot(fslotEl(r,c),fieldEl); dmgPop(target.el,"-"+amt,"#ffde59");
+  target.hp-=amt; dmgDealtThisTurn+=amt; hurt(target.el); slashAtSlot(fslotEl(r,c),fieldEl); dmgPop(target.el,"-"+amt,"#ffde59");
   if(target.hp<=0) killEnemy(target); renderEnemies(); updateHUD();
 }
 function killEnemy(e){ for(let r=0;r<FROWS;r++)for(let c=0;c<FCOLS;c++) if(field[r][c]===e) field[r][c]=null;
   if(e.el){ e.el.style.transition="transform .3s,opacity .3s"; e.el.style.transform="scale(0)"; e.el.style.opacity="0"; const el=e.el; setTimeout(()=>el.remove(),300);} }
+
 function applyDamageToPlayer(dmg,c){
+  /* 회피: 이 열이면 데미지 무효 */
+  if(evadeCols.has(c)){ dmgPop(document.getElementById("hpBadge"),"💨회피!","#bfe4ff"); return; }
+
+  /* 기합: 다음 받는 데미지를 고정값으로 (1회) */
+  if(capNextDmg!=null){ dmg=Math.min(dmg,capNextDmg); capNextDmg=null; renderBuffs(); }
+
   let remain=dmg, absorbed=0;
   const useDef=Math.min(colDef[c],remain); colDef[c]-=useDef; remain-=useDef; absorbed+=useDef;
   if(absorbed>0){ defHitAnim(c); blockedThisTurn+=absorbed; }
@@ -909,7 +982,6 @@ function applyDamageToPlayer(dmg,c){
   updateHUD();
 }
 
-/* ===== 적 페이즈 ===== */
 async function enemyPhase(){
   const animCfg = PARAMS.animations || {};
   showBanner("적의 턴"); await sleep(animCfg.turnEndDelay || 450);
@@ -921,7 +993,6 @@ async function enemyPhase(){
 }
 async function enemyAttack(e,c){ punch(e.el); applyDamageToPlayer(e.atk,c); await sleep(320); }
 
-/* ===== 보스 AI ===== */
 function fieldCount(){ let n=0; for(let r=0;r<FROWS;r++)for(let c=0;c<FCOLS;c++) if(field[r][c]) n++; return n; }
 function openTopCols(){ const arr=[]; for(let c=0;c<FCOLS;c++) if(!field[0][c]) arr.push(c); return arr; }
 function lowestDefCols(n){
@@ -1034,7 +1105,6 @@ function spawnAt(r,c,silent){
   if(!silent){ renderEnemies(); if(e.el){ e.el.style.transition="none"; e.el.style.transform="scale(0)"; requestAnimationFrame(()=>{ e.el.style.transition="transform .3s"; e.el.style.transform="scale(1)"; }); } }
 }
 
-/* ===== 슬라이드 로직 ===== */
 function slide(dir){
   if(busy)return;
   if(mana<SLIDE_COST){ flashBadge("manaBadge"); return; }
@@ -1095,7 +1165,6 @@ function slide(dir){
   renderColStats(); updateHUD(); refreshDestroyTarget();
 }
 
-/* ===== 이펙트 함수들 ===== */
 function punch(el){ if(!el)return; el.classList.remove("punch"); void el.offsetWidth; el.classList.add("punch"); }
 function hurt(el){ if(!el)return; el.classList.remove("hurt"); void el.offsetWidth; el.classList.add("hurt"); setTimeout(()=>el.classList.remove("hurt"),400); }
 function slashAtSlot(slotEl,parent){
@@ -1129,7 +1198,6 @@ function showBanner(t){ const b=document.getElementById("banner"); document.getE
 function win(){ hideBossIntent(); clearBossMarks(); showBanner("최종 승리!"); }
 function lose(){ hideBossIntent(); clearBossMarks(); showBanner("패배..."); setTimeout(()=>{ if(confirm("패배! 다시 시작?")) location.reload(); },800); }
 
-/* ===== 입력 처리 ===== */
 let tsx,tsy,swiping=false;
 boardEl.addEventListener("touchstart",e=>{ tsx=e.touches[0].clientX; tsy=e.touches[0].clientY; swiping=true; },{passive:true});
 boardEl.addEventListener("touchend",e=>{ if(!swiping)return; swiping=false; const t=e.changedTouches[0]; doSwipe(t.clientX-tsx,t.clientY-tsy); },{passive:true});
@@ -1143,7 +1211,6 @@ addEventListener("keydown",e=>{
   else if(e.key===" "||e.key==="Enter"){ e.preventDefault(); endTurn(); }
 });
 
-/* ===== 부트스트랩 ===== */
 (async function boot(){
   try{
     await loadData();
