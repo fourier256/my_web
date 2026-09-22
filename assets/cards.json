@@ -261,7 +261,7 @@
           { "op": "gainMana", "amount": 4, "useStr": false}
         ]
       }
-    }
+    },
     "shield_bash": {
       "id": "shield_bash",
       "name": "방패 밀쳐내기",
