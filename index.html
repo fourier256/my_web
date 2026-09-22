@@ -6,29 +6,14 @@
 <title>2048 덱빌딩 던전</title>
 <link rel="stylesheet" href="style.css">
 <style>
-/* ===== 에러 팝업 (인라인: style.css 없어도 보이도록) ===== */
-#errOverlay{
-  position:fixed; inset:0; z-index:99999; display:none;
-  background:rgba(0,0,0,.72); align-items:center; justify-content:center;
-  font-family:system-ui,-apple-system,"Malgun Gothic",sans-serif;
-}
+/* ===== 에러 팝업 (인라인) ===== */
+#errOverlay{ position:fixed; inset:0; z-index:99999; display:none; background:rgba(0,0,0,.72); align-items:center; justify-content:center; font-family:system-ui,-apple-system,"Malgun Gothic",sans-serif; }
 #errOverlay.on{ display:flex; }
-#errBox{
-  max-width:86%; max-height:80%; overflow:auto;
-  background:#1c1f26; border:2px solid #ff5a5a; border-radius:14px;
-  padding:22px 24px; color:#fff; box-shadow:0 12px 40px #000a;
-}
+#errBox{ max-width:86%; max-height:80%; overflow:auto; background:#1c1f26; border:2px solid #ff5a5a; border-radius:14px; padding:22px 24px; color:#fff; box-shadow:0 12px 40px #000a; }
 #errBox h2{ margin:0 0 12px; color:#ff7a7a; font-size:22px; }
-#errBox pre{
-  white-space:pre-wrap; word-break:break-word; margin:0 0 16px;
-  font-size:15px; line-height:1.5; color:#ffd7d7;
-  background:#000; padding:12px 14px; border-radius:8px;
-}
+#errBox pre{ white-space:pre-wrap; word-break:break-word; margin:0 0 16px; font-size:15px; line-height:1.5; color:#ffd7d7; background:#000; padding:12px 14px; border-radius:8px; }
 #errBox .errBtns{ display:flex; gap:10px; justify-content:flex-end; }
-#errBox button{
-  font-size:16px; padding:9px 16px; border-radius:8px; border:0;
-  cursor:pointer; background:#3a3f4b; color:#fff;
-}
+#errBox button{ font-size:16px; padding:9px 16px; border-radius:8px; border:0; cursor:pointer; background:#3a3f4b; color:#fff; }
 #errBox button.primary{ background:#ff5a5a; }
 </style>
 </head>
@@ -69,6 +54,40 @@
     <div class="archRow" id="archRow"></div>
   </div>
 
+  <!-- ===== 맵(탐색) 화면 ===== -->
+  <div id="mapScreen">
+    <div id="mapHud">
+      <span class="mHp">❤ <b id="mapHp">48/48</b></span>
+      <span class="mGold">💰 <b id="mapGold">0</b></span>
+      <span class="mDeck">🎴 <b id="mapDeck">0</b></span>
+      <span class="mFloor" id="mapFloorLabel">1층</span>
+    </div>
+    <div id="mapScroll"><svg id="mapEdges"></svg><div id="mapNodes"></div></div>
+  </div>
+
+  <!-- ===== 전투 보상 (카드 3택 1) ===== -->
+  <div id="rewardScreen">
+    <h1>승리! 카드를 선택하세요</h1>
+    <div class="rewardRow" id="rewardRow"></div>
+    <div id="rewardSkip">건너뛰기</div>
+  </div>
+
+  <!-- ===== 모닥불(휴식) ===== -->
+  <div id="restScreen">
+    <h1>모닥불</h1>
+    <div class="restRow">
+      <div class="restCard" id="restHeal"><div class="rIcon">🔥</div><div class="rTitle">휴식</div><div class="rDesc">최대 HP의 30% 회복</div></div>
+    </div>
+  </div>
+
+  <!-- ===== 덱 보기 ===== -->
+  <div id="deckView">
+    <h1>현재 덱 (<span id="deckViewCount">0</span>)</h1>
+    <div class="deckViewRow" id="deckViewRow"></div>
+    <div id="deckViewClose">닫기</div>
+  </div>
+  <div id="deckViewBtn">덱 보기</div>
+
   <div id="loadMsg">게임 데이터를 불러오는 중…</div>
 </div></div>
 
@@ -77,16 +96,13 @@
   <div id="errBox">
     <h2>⚠️ 오류가 발생했습니다</h2>
     <pre id="errText"></pre>
-    <div class="errBtns">
-      <button id="errCopy">복사</button>
-      <button id="errClose" class="primary">닫기</button>
-    </div>
+    <div class="errBtns"><button id="errCopy">복사</button><button id="errClose" class="primary">닫기</button></div>
   </div>
 </div>
 
 <script>
 /* ===================================================================
-   에러 팝업 시스템
+   에러 팝업
 =================================================================== */
 (function(){
   const overlay=document.getElementById("errOverlay");
@@ -94,27 +110,13 @@
   window.showError=function(msg){
     const stamp=new Date().toLocaleTimeString();
     const line=`[${stamp}] ${msg}`;
-    textEl.textContent = overlay.classList.contains("on")
-      ? (textEl.textContent + "\n\n" + line)
-      : line;
+    textEl.textContent = overlay.classList.contains("on") ? (textEl.textContent + "\n\n" + line) : line;
     overlay.classList.add("on");
   };
-  document.getElementById("errClose").addEventListener("click",()=>{
-    overlay.classList.remove("on"); textEl.textContent="";
-  });
-  document.getElementById("errCopy").addEventListener("click",()=>{
-    const t=textEl.textContent;
-    if(navigator.clipboard) navigator.clipboard.writeText(t).catch(()=>{});
-  });
-  window.addEventListener("error",e=>{
-    const m=e.error && e.error.stack ? e.error.stack : (e.message || String(e));
-    showError("JS 오류:\n"+m);
-  });
-  window.addEventListener("unhandledrejection",e=>{
-    const r=e.reason;
-    const m=r && r.stack ? r.stack : (r && r.message ? r.message : String(r));
-    showError("처리되지 않은 Promise 거부:\n"+m);
-  });
+  document.getElementById("errClose").addEventListener("click",()=>{ overlay.classList.remove("on"); textEl.textContent=""; });
+  document.getElementById("errCopy").addEventListener("click",()=>{ const t=textEl.textContent; if(navigator.clipboard) navigator.clipboard.writeText(t).catch(()=>{}); });
+  window.addEventListener("error",e=>{ const m=e.error && e.error.stack ? e.error.stack : (e.message || String(e)); showError("JS 오류:\n"+m); });
+  window.addEventListener("unhandledrejection",e=>{ const r=e.reason; const m=r && r.stack ? r.stack : (r && r.message ? r.message : String(r)); showError("처리되지 않은 Promise 거부:\n"+m); });
 })();
 
 /* ===== 제스처 차단 ===== */
@@ -137,26 +139,15 @@ const BOSS_IMG=MON+"dragon.png";
 const SWORD=IC+"lorc/pointy-sword.svg";
 const SHIELD=IC+"sbed/shield.svg";
 
-/* ===================================================================
-   [레이아웃] 18×32 그리드 시스템 — 한 칸 = 60×60px
-=================================================================== */
+/* ===== 18×32 그리드 ===== */
 const STAGE_W=1080, STAGE_H=1920;
 const GRID_COLS=18, GRID_ROWS=32;
-const CW=STAGE_W/GRID_COLS;   // 60
-const CH=STAGE_H/GRID_ROWS;   // 60
+const CW=STAGE_W/GRID_COLS;
+const CH=STAGE_H/GRID_ROWS;
 function GX(col){ return (col-1)*CW; }
 function GY(row){ return (row-1)*CH; }
-function gridArea(colA,rowA,colB,rowB){
-  return { left:GX(colA), top:GY(rowA), w:(colB-colA+1)*CW, h:(rowB-rowA+1)*CH };
-}
-function placeGrid(el, colA,rowA,colB,rowB){
-  const a=gridArea(colA,rowA,colB,rowB);
-  el.style.left=a.left+"px"; el.style.top=a.top+"px";
-  el.style.width=a.w+"px"; el.style.height=a.h+"px";
-  return a;
-}
-
-/* 셀 크기: 3×3칸 = 180×180 정사각형 (좌우 마진 3칸) */
+function gridArea(colA,rowA,colB,rowB){ return { left:GX(colA), top:GY(rowA), w:(colB-colA+1)*CW, h:(rowB-rowA+1)*CH }; }
+function placeGrid(el, colA,rowA,colB,rowB){ const a=gridArea(colA,rowA,colB,rowB); el.style.left=a.left+"px"; el.style.top=a.top+"px"; el.style.width=a.w+"px"; el.style.height=a.h+"px"; return a; }
 const CELL_W = 3*CW;   // 180
 const CELL_H = 3*CH;   // 180
 
@@ -168,15 +159,29 @@ let MERGE_CAP = 16;
 let FCOLS=4, FROWS=2, BCOLS=4, BROWS=4;
 let GAME_CONFIG = {};
 let ENEMY_PHASES = [];
-
 let CARD_HALF = 100;
 
-/* ===== 카드/덱 데이터 ===== */
+/* 현재 전투가 쓰는 적 설정(노드마다 교체) */
+let CUR_ENEMY = null;   // { files, phases, bossImg, bossTitle, maxPhases }
+
 let CARDS={}, DECKS={};
 function cardCost(def){ return def.cost; }
 function coverNeed(def){ return def.coverNeed; }
 function hasKW(def,kw){ return def.kw && def.kw.includes(kw); }
 function iconURL(def){ return IC+def.icon; }
+
+/* ===================================================================
+   [런 상태] 맵/덱빌딩 레벨의 지속 상태
+=================================================================== */
+const RUN = {
+  arch:null,
+  deckList:[],        // 카드 key 배열 (지속 덱)
+  hp:0, maxHp:0,
+  gold:0,
+  map:null,           // { rows:[[node,...],...] }
+  curNodeId:null,     // 현재 위치한 노드 id (null=시작)
+  finished:false
+};
 
 /* ===== 데이터 로딩 ===== */
 async function loadData(){
@@ -186,7 +191,6 @@ async function loadData(){
       fetch("./assets/cards.json",{cache:"no-store"}),
       fetch("./assets/template_deck.json",{cache:"no-store"})
     ]);
-
     if(!paramsRes.ok) throw new Error("params.json HTTP "+paramsRes.status);
     if(!cardsRes.ok) throw new Error("cards.json HTTP "+cardsRes.status);
     if(!deckRes.ok)  throw new Error("template_deck.json HTTP "+deckRes.status);
@@ -207,7 +211,6 @@ async function loadData(){
     SLIDE_COST = boardConfig.slideCost || 2;
     MERGE_CAP = boardConfig.mergeLimit || 16;
     MON_FILES = enemyConfig.files || [];
-
     ENEMY_PHASES = enemyConfig.phases || [];
 
     CARDS = cardsData.cards || {};
@@ -221,11 +224,34 @@ async function loadData(){
       if(c.tile === undefined) c.tile = c.placesTile ? c.cost*2 : 0;
       if(c.exhaust === undefined) c.exhaust = false;
     }
-
     validateDecks();
-  } catch(err) {
-    showLoadError(err);
-    throw err;
+  } catch(err) { showLoadError(err); throw err; }
+}
+
+/* 적 데이터 와꾸: enemyId 로 ./assets/enemies/enemy_XX.json 로드, 실패 시 params.enemy 폴백 */
+async function loadEnemy(enemyId){
+  const fallback = {
+    files: (PARAMS.enemy && PARAMS.enemy.files) || MON_FILES,
+    phases: (PARAMS.enemy && PARAMS.enemy.phases) || ENEMY_PHASES,
+    bossImg: BOSS_IMG,
+    bossTitle: "용용이",
+    maxPhases: (GAME_CONFIG.maxPhases || 4)
+  };
+  if(!enemyId) return fallback;
+  try{
+    const res = await fetch(`./assets/enemies/${enemyId}.json`, {cache:"no-store"});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const d = await res.json();
+    return {
+      files:  d.files  || fallback.files,
+      phases: d.phases || fallback.phases,
+      bossImg: d.bossImg ? (d.bossImg.startsWith("http")? d.bossImg : MON+d.bossImg) : fallback.bossImg,
+      bossTitle: d.bossTitle || fallback.bossTitle,
+      maxPhases: d.maxPhases || (d.phases ? d.phases.length : fallback.maxPhases)
+    };
+  }catch(e){
+    /* 파일이 아직 없으면 조용히 폴백 (개발 중 정상 동작) */
+    return fallback;
   }
 }
 
@@ -233,51 +259,35 @@ function validateDecks(){
   const missing=[];
   for(const dk in DECKS){
     const t=DECKS[dk];
-    (t.cards||[]).forEach(entry=>{
-      if(!CARDS[entry.id] && !missing.some(m=>m.deck===dk && m.id===entry.id)){
-        missing.push({deck:dk, id:entry.id});
-      }
-    });
+    (t.cards||[]).forEach(entry=>{ if(!CARDS[entry.id] && !missing.some(m=>m.deck===dk && m.id===entry.id)){ missing.push({deck:dk, id:entry.id}); } });
   }
   if(missing.length){
     const lines=missing.map(m=>` · 덱 "${m.deck}" 의 카드 id "${m.id}" 가 cards.json 에 없음`).join("\n");
-    showError("덱 데이터 오류: 아래 카드 id 가 cards.json 에 정의되어 있지 않습니다.\n"+lines+
-      "\n\n→ template_deck.json 의 id 철자를 확인하거나 cards.json 에 카드를 추가하세요.");
+    showError("덱 데이터 오류:\n"+lines);
   }
 }
-
 function showLoadError(err){
   const el=document.getElementById("loadMsg");
   el.classList.remove("hidden");
-  el.innerHTML=
-    `<div><b>데이터를 불러오지 못했습니다.</b><br><br>`+
-    `<code>assets/</code> 폴더에 다음 파일들이 있는지 확인하세요:<br>`+
-    `<code>params.json</code>, <code>cards.json</code>, <code>template_deck.json</code><br><br>`+
-    `로컬 서버로 실행해야 합니다 (예: <code>python -m http.server</code>).<br><br>`+
-    `<span style="color:#ff8a5a;font-size:20px">(${(err&&err.message)||err})</span></div>`;
+  el.innerHTML=`<div><b>데이터를 불러오지 못했습니다.</b><br><br><code>assets/</code> 폴더 확인, 로컬 서버(<code>python -m http.server</code>)로 실행하세요.<br><br><span style="color:#ff8a5a;font-size:20px">(${(err&&err.message)||err})</span></div>`;
   showError("데이터 로드 실패:\n"+((err&&err.message)||err));
 }
 
 function getPhaseData(p) {
+  const phases = (CUR_ENEMY && CUR_ENEMY.phases) || ENEMY_PHASES;
   const idx = p - 1;
-  if (idx >= 0 && idx < ENEMY_PHASES.length) return ENEMY_PHASES[idx];
+  if (idx >= 0 && idx < phases.length) return phases[idx];
   return { bossHp: 100, bossAttack: 20, spawnHp: 30, spawnAtk: 10 };
 }
 
 function fieldSlotLocal(r,c){ return { left:c*CELL_W, top:r*CELL_H, w:CELL_W, h:CELL_H }; }
 function boardSlotLocal(r,c){ return { left:c*CELL_W, top:r*CELL_H, w:CELL_W, h:CELL_H }; }
 
-/* ===== 상태 변수 ===== */
+/* ===== 전투 상태 변수 ===== */
 let field,board,deck,hand,discard,exhaustPile,mana,maxMana,hp,maxHp,bossHp,bossMax,turnCount,
-    colDef,busy,bossIntent,bossStun,strength,tempStrMult,thornsOn,blockedThisTurn,chosenArch,phase;
+    colDef,busy,bossIntent,bossStun,strength,tempStrMult,thornsOn,blockedThisTurn,phase,maxPhases;
 
-/* ▼ 신규 카드 효과용 상태 */
-let keepDefNext=0;          // 탑쌓기: 다음 턴 방어도 초기화를 건너뛸 횟수
-let evadeCols=new Set();    // 회피: 이번 적 턴에 데미지를 무효화할 열
-let capNextDmg=null;        // 기합: 다음에 받는 데미지를 이 값으로 고정 (1회)
-let dmgDealtThisTurn=0;     // 흡혈: 이번 턴 누적 가한 데미지
-let lifestealPct=0;         // 흡혈: 턴 종료 시 회복 비율(%)
-let pendingHandNextTurn=[]; // 사혈/몰아붙이기: 다음 턴 시작 시 손에 추가할 카드 id
+let keepDefNext=0, evadeCols=new Set(), capNextDmg=null, dmgDealtThisTurn=0, lifestealPct=0, pendingHandNextTurn=[];
 
 const stageEl=document.getElementById("stage"),
       gameEl=document.getElementById("game"),
@@ -292,13 +302,28 @@ function stageScale(){ return Math.min(innerWidth/1080,innerHeight/1920); }
 function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} }
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
-function buildDeck(arch){
-  const t=DECKS[arch]; const d=[];
-  (t.cards||[]).forEach(entry=>{ const n=entry.count||1; for(let i=0;i<n;i++) d.push(entry.id); });
-  shuffle(d);
-  return d;
+/* ===================================================================
+   [화면 전환] 여러 오버레이를 배타적으로 표시
+=================================================================== */
+function showScreen(name){
+  const map=document.getElementById("mapScreen");
+  const reward=document.getElementById("rewardScreen");
+  const rest=document.getElementById("restScreen");
+  const arch=document.getElementById("archSelect");
+  const dvBtn=document.getElementById("deckViewBtn");
+  [map,reward,rest,arch].forEach(el=>el.classList.remove("on"));
+  arch.style.display = (name==="arch") ? "flex" : "none";
+  if(name==="map") map.classList.add("on");
+  if(name==="reward") reward.classList.add("on");
+  if(name==="rest") rest.classList.add("on");
+  /* 덱 보기 버튼은 맵에서만 */
+  dvBtn.style.display = (name==="map") ? "flex" : "none";
 }
 
+/* ===== 덱 구성 (전투용 draw pile) ===== */
+function buildDeckFromList(list){ const d=list.slice(); shuffle(d); return d; }
+
+/* ===== 아키타입 선택 ===== */
 function initArchSelect(){
   const row=document.getElementById("archRow"); row.innerHTML="";
   for(const key in DECKS){
@@ -306,92 +331,262 @@ function initArchSelect(){
     const el=document.createElement("div");
     el.className="archCard "+key; el.dataset.arch=key;
     el.innerHTML=`<div class="aTitle">${t.label||key}</div><div class="aIcon">${t.icon||"🎴"}</div><div class="aDesc">${t.desc||""}</div>`;
-    el.addEventListener("click",()=>{ chosenArch=key; document.getElementById("archSelect").style.display="none"; newGame(); });
+    el.addEventListener("click",()=>{ startRun(key); });
     row.appendChild(el);
   }
 }
 
-async function newGame(){
-  field=Array.from({length:FROWS},()=>Array(FCOLS).fill(null));
-  board=Array.from({length:BROWS},()=>Array(BCOLS).fill(null));
-  deck=buildDeck(chosenArch); hand=[]; discard=[]; exhaustPile=[];
-
-  hp = GAME_CONFIG.initialHp || 30;
-  maxHp = hp;
-  phase = 1;
-
-  const p1Data = getPhaseData(1);
-  bossMax = p1Data.bossHp;
-  bossHp = bossMax;
-
-  turnCount = 0;
-  colDef = Array(BCOLS).fill(0);
-  busy = false;
-  bossIntent = null;
-  bossStun = 0;
-  strength = 0;
-  tempStrMult = 1;
-  thornsOn = false;
-  blockedThisTurn = 0;
-
-  /* 신규 상태 초기화 */
-  keepDefNext=0; evadeCols=new Set(); capNextDmg=null;
-  dmgDealtThisTurn=0; lifestealPct=0; pendingHandNextTurn=[];
-
-  document.getElementById("bossImg").src = BOSS_IMG;
-  updatePhaseTag();
-  buildSlots();
-
-  renderAll();
-
-  busy = true;
-  try {
-    maxMana = GAME_CONFIG.initialMana || 12;
-    mana = maxMana;
-    decideBossIntent();
-    updateHUD();
-    await sleep(300);
-
-    await enemyPhase();
-    if(hp<=0){ lose(); return; }
-
-    await startTurn();
-  }
-  catch(err){ showError("newGame 시작 중 오류:\n"+(err&&err.stack?err.stack:err)); }
-  finally { busy = false; }
+/* ===================================================================
+   [런 시작] 아키타입 확정 → 지속 덱/HP 세팅 → 맵 생성
+=================================================================== */
+function startRun(arch){
+  RUN.arch=arch;
+  const t=DECKS[arch];
+  const list=[]; (t.cards||[]).forEach(entry=>{ const n=entry.count||1; for(let i=0;i<n;i++) list.push(entry.id); });
+  RUN.deckList=list;
+  RUN.maxHp = GAME_CONFIG.initialHp || 48;
+  RUN.hp = RUN.maxHp;
+  RUN.gold = 0;
+  RUN.finished=false;
+  RUN.map = generateMap();
+  RUN.curNodeId = null;
+  showScreen("map");
+  renderMap();
 }
 
-function updatePhaseTag(){ document.getElementById("phaseTag").textContent=`[${phase}페이즈]`; }
+/* ===================================================================
+   [맵 생성] 슬더스식 분기 그래프 (MVP)
+   rows[0] = 시작 근처, rows[last] = 보스
+   각 노드: {id,row,col,type,enemyId,next:[id...],x,y,visited,cleared}
+=================================================================== */
+function generateMap(){
+  const FLOORS = 9;                 // 0..8 (마지막이 보스층)
+  const rows=[];
+  let idc=0;
+  for(let r=0;r<FLOORS;r++){
+    let count;
+    if(r===FLOORS-1) count=1;            // 보스
+    else if(r===0) count=2 + (Math.random()*2|0); // 시작 2~3
+    else count=2 + (Math.random()*3|0);  // 2~4
+    const nodes=[];
+    for(let c=0;c<count;c++){
+      nodes.push({ id:idc++, row:r, col:c, type:null, enemyId:null, next:[], visited:false, cleared:false });
+    }
+    rows.push(nodes);
+  }
+  /* 노드 타입 배정 */
+  rows.forEach((nodes,r)=>{
+    nodes.forEach(n=>{
+      if(r===rows.length-1){ n.type="boss"; n.enemyId="enemy_boss"; return; }
+      if(r===0){ n.type="battle"; n.enemyId=pickEnemyId(r); return; }
+      const roll=Math.random();
+      if(r>=2 && roll<0.15){ n.type="rest"; }
+      else if(roll<0.28){ n.type="treasure"; }
+      else { n.type="battle"; n.enemyId=pickEnemyId(r); }
+    });
+  });
+  /* 연결: 각 노드는 다음 층의 1~2개 노드로 이어짐 (근접 우선) */
+  for(let r=0;r<rows.length-1;r++){
+    const cur=rows[r], nxt=rows[r+1];
+    cur.forEach(n=>{
+      /* 비율 기반으로 가장 가까운 다음 노드 선택 */
+      const ratio = cur.length>1 ? n.col/(cur.length-1) : 0.5;
+      let base = Math.round(ratio*(nxt.length-1));
+      const targets=new Set();
+      targets.add(clamp(base,0,nxt.length-1));
+      if(Math.random()<0.5){ targets.add(clamp(base+(Math.random()<0.5?-1:1),0,nxt.length-1)); }
+      n.next=[...targets];
+    });
+    /* 다음 층 모든 노드가 최소 1개 부모를 갖도록 보정 */
+    nxt.forEach((m,ci)=>{
+      const hasParent = cur.some(n=>n.next.includes(ci));
+      if(!hasParent){
+        /* 가장 가까운 부모에 연결 */
+        let best=cur[0], bestD=1e9;
+        cur.forEach(n=>{ const d=Math.abs((n.col/(Math.max(1,cur.length-1))) - (m.col/(Math.max(1,nxt.length-1)))); if(d<bestD){bestD=d;best=n;} });
+        best.next.push(ci);
+      }
+    });
+  }
+  return { rows };
+}
+function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+let __enemyCounter=0;
+function pickEnemyId(row){
+  /* enemy_00, enemy_01 ... 순환. 파일 없으면 loadEnemy 가 폴백 */
+  const id = "enemy_"+String(__enemyCounter%3).padStart(2,"0");
+  __enemyCounter++;
+  return id;
+}
+
+/* ===================================================================
+   [맵 렌더]
+=================================================================== */
+const mapNodesEl=document.getElementById("mapNodes");
+const mapEdgesEl=document.getElementById("mapEdges");
+const mapScrollEl=document.getElementById("mapScroll");
+
+function nodeById(id){ for(const row of RUN.map.rows) for(const n of row) if(n.id===id) return n; return null; }
+function nodeIdByRowCol(r,c){ const row=RUN.map.rows[r]; return row&&row[c]?row[c].id:null; }
+
+/* 현재 선택 가능한 노드 집합 */
+function selectableNodeIds(){
+  if(RUN.curNodeId==null){ return new Set(RUN.map.rows[0].map(n=>n.id)); }
+  const cur=nodeById(RUN.curNodeId);
+  const nextRow=RUN.map.rows[cur.row+1]||[];
+  return new Set((cur.next||[]).map(ci=>nextRow[ci]?nextRow[ci].id:null).filter(x=>x!=null));
+}
+
+function nodeIcon(type){
+  return type==="battle"?"⚔️" : type==="boss"?"🐉" : type==="rest"?"🔥" : type==="treasure"?"🎁" : "❓";
+}
+
+function renderMap(){
+  document.getElementById("mapHp").textContent=`${RUN.hp}/${RUN.maxHp}`;
+  document.getElementById("mapGold").textContent=RUN.gold;
+  document.getElementById("mapDeck").textContent=RUN.deckList.length;
+  const curRow = RUN.curNodeId==null ? 0 : (nodeById(RUN.curNodeId).row+1);
+  document.getElementById("mapFloorLabel").textContent=(Math.min(curRow+1,RUN.map.rows.length))+"층 / "+RUN.map.rows.length;
+
+  const rows=RUN.map.rows;
+  const W=1080, colGapTop=40;
+  const rowH=180;                     // 층 간 세로 간격
+  const totalH = rows.length*rowH + colGapTop*2;
+  mapScrollEl.style.height=totalH+"px";
+  mapEdgesEl.setAttribute("width", W);
+  mapEdgesEl.setAttribute("height", totalH);
+
+  /* 좌표 계산 (아래=1층, 위=보스). row 0 을 맨 아래로 */
+  rows.forEach((nodes,r)=>{
+    const y = totalH - colGapTop - (r*rowH) - rowH/2;
+    nodes.forEach((n,ci)=>{
+      const x = W*( (ci+1)/(nodes.length+1) );
+      n.x=x; n.y=y;
+    });
+  });
+
+  /* 엣지 그리기 */
+  let svg="";
+  for(let r=0;r<rows.length-1;r++){
+    const nxt=rows[r+1];
+    rows[r].forEach(n=>{
+      (n.next||[]).forEach(ci=>{
+        const m=nxt[ci]; if(!m) return;
+        svg+=`<line x1="${n.x}" y1="${n.y}" x2="${m.x}" y2="${m.y}" stroke="#5a4a7a" stroke-width="4" stroke-linecap="round"/>`;
+      });
+    });
+  }
+  mapEdgesEl.innerHTML=svg;
+
+  /* 노드 그리기 */
+  const sel=selectableNodeIds();
+  mapNodesEl.innerHTML="";
+  rows.forEach(nodes=>{
+    nodes.forEach(n=>{
+      const el=document.createElement("div");
+      el.className="mapNode t-"+n.type;
+      if(n.cleared) el.classList.add("cleared");
+      if(RUN.curNodeId===n.id) el.classList.add("current");
+      const can = sel.has(n.id) && !RUN.finished;
+      if(can) el.classList.add("selectable");
+      el.style.left=(n.x)+"px"; el.style.top=(n.y)+"px";
+      el.innerHTML=`<span class="mnIcon">${nodeIcon(n.type)}</span>`;
+      if(can){ el.addEventListener("click",()=>enterNode(n.id)); }
+      mapNodesEl.appendChild(el);
+    });
+  });
+
+  /* 선택 가능한 가장 아래 노드로 스크롤 */
+  requestAnimationFrame(()=>{
+    let ty=totalH;
+    sel.forEach(id=>{ const nn=nodeById(id); if(nn && nn.y<ty) ty=nn.y; });
+    mapScrollEl.parentElement.scrollTop = Math.max(0, ty-500);
+  });
+}
+
+/* ===================================================================
+   [노드 진입]
+=================================================================== */
+async function enterNode(id){
+  const n=nodeById(id);
+  if(!n) return;
+  RUN.curNodeId=id; n.visited=true;
+
+  if(n.type==="battle" || n.type==="boss"){
+    await startBattle(n);   // 승리 후 처리(보상/복귀)는 전투 종료 흐름에서
+  } else if(n.type==="rest"){
+    openRest(n);
+  } else if(n.type==="treasure"){
+    n.cleared=true;
+    openReward(false);      // 보물: 즉시 카드 보상
+  }
+}
+
+/* ===================================================================
+   [전투 시작] 노드 단위. RUN 상태를 전투 변수로 주입
+=================================================================== */
+async function startBattle(node){
+  CUR_ENEMY = await loadEnemy(node.enemyId);
+  maxPhases = node.type==="boss" ? (CUR_ENEMY.maxPhases || 4) : Math.min(2, CUR_ENEMY.phases.length); // 일반 전투는 짧게(2페이즈)
+  MON_FILES = CUR_ENEMY.files;
+
+  document.getElementById("bossImg").src = CUR_ENEMY.bossImg || BOSS_IMG;
+  document.getElementById("bossTitle").textContent = CUR_ENEMY.bossTitle || "적";
+
+  showScreen(null); // 모든 오버레이 숨김 → 전투 화면 노출
+  showBattleUI(true);
+
+  await newBattle();
+}
+
+/* 전투 UI 요소 표시/숨김 (맵일 때 전투판을 감춤) */
+function showBattleUI(on){
+  const ids=["topbar","bossArt","bossHpBar","bossStun","strBadge","buffBar","fieldWrap","colStats","boardWrap","hpBadge","manaBadge","deckPile","endTurnBtn","hand"];
+  ids.forEach(i=>{ const el=document.getElementById(i); if(el) el.style.display = on ? "" : "none"; });
+}
+
+/* ===================================================================
+   [전투 초기화] — 기존 newGame 을 노드 전투용으로 개조
+=================================================================== */
+async function newBattle(){
+  field=Array.from({length:FROWS},()=>Array(FCOLS).fill(null));
+  board=Array.from({length:BROWS},()=>Array(BCOLS).fill(null));
+  deck=buildDeckFromList(RUN.deckList); hand=[]; discard=[]; exhaustPile=[];
+
+  maxHp = RUN.maxHp; hp = RUN.hp;         // 런 HP 이어받기
+  phase = 1;
+  const p1=getPhaseData(1); bossMax=p1.bossHp; bossHp=bossMax;
+
+  turnCount=0; colDef=Array(BCOLS).fill(0); busy=false; bossIntent=null; bossStun=0;
+  strength=0; tempStrMult=1; thornsOn=false; blockedThisTurn=0;
+  keepDefNext=0; evadeCols=new Set(); capNextDmg=null; dmgDealtThisTurn=0; lifestealPct=0; pendingHandNextTurn=[];
+
+  updatePhaseTag(); buildSlots(); renderAll();
+
+  busy=true;
+  try{
+    maxMana = GAME_CONFIG.initialMana || 8; mana=maxMana;
+    decideBossIntent(); updateHUD(); await sleep(300);
+    await enemyPhase();
+    if(hp<=0){ battleLost(); return; }
+    await startTurn();
+  }catch(err){ showError("전투 시작 오류:\n"+(err&&err.stack?err.stack:err)); }
+  finally{ busy=false; }
+}
+
+function updatePhaseTag(){ document.getElementById("phaseTag").textContent=`[${phase}/${maxPhases}페이즈]`; }
 
 function buildSlots(){
   placeGrid(document.getElementById("fieldWrap"), 4,7, 15,12);
   placeGrid(document.getElementById("boardWrap"), 4,15, 15,26);
-
   fieldEl.style.width=(FCOLS*CELL_W)+"px"; fieldEl.style.height=(FROWS*CELL_H)+"px";
   boardEl.style.width=(BCOLS*CELL_W)+"px"; boardEl.style.height=(BROWS*CELL_H)+"px";
-
   fieldEl.innerHTML=""; boardEl.innerHTML="";
-  for(let r=0;r<FROWS;r++)for(let c=0;c<FCOLS;c++){
-    const f=document.createElement("div"); f.className="fslot"; f.dataset.r=r; f.dataset.c=c;
-    const p=fieldSlotLocal(r,c);
-    f.style.left=p.left+"px"; f.style.top=p.top+"px"; f.style.width=p.w+"px"; f.style.height=p.h+"px";
-    fieldEl.appendChild(f);
-  }
-  for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){
-    const b=document.createElement("div"); b.className="bslot"; b.dataset.r=r; b.dataset.c=c;
-    const p=boardSlotLocal(r,c);
-    b.style.left=p.left+"px"; b.style.top=p.top+"px"; b.style.width=p.w+"px"; b.style.height=p.h+"px";
-    boardEl.appendChild(b);
-  }
-
+  for(let r=0;r<FROWS;r++)for(let c=0;c<FCOLS;c++){ const f=document.createElement("div"); f.className="fslot"; f.dataset.r=r; f.dataset.c=c; const p=fieldSlotLocal(r,c); f.style.left=p.left+"px"; f.style.top=p.top+"px"; f.style.width=p.w+"px"; f.style.height=p.h+"px"; fieldEl.appendChild(f); }
+  for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){ const b=document.createElement("div"); b.className="bslot"; b.dataset.r=r; b.dataset.c=c; const p=boardSlotLocal(r,c); b.style.left=p.left+"px"; b.style.top=p.top+"px"; b.style.width=p.w+"px"; b.style.height=p.h+"px"; boardEl.appendChild(b); }
   placeGrid(colStatsEl, 4,14, 15,14);
   colStatsEl.innerHTML="";
-  for(let c=0;c<BCOLS;c++){
-    const d=document.createElement("div"); d.className="colStat";
-    d.style.left=(c*CELL_W)+"px"; d.style.top="0"; d.style.width=CELL_W+"px"; d.style.height=CH+"px";
-    colStatsEl.appendChild(d);
-  }
-
+  for(let c=0;c<BCOLS;c++){ const d=document.createElement("div"); d.className="colStat"; d.style.left=(c*CELL_W)+"px"; d.style.top="0"; d.style.width=CELL_W+"px"; d.style.height=CH+"px"; colStatsEl.appendChild(d); }
   placeGrid(document.getElementById("bossArt"),   6,2, 13,5);
   placeGrid(document.getElementById("bossHpBar"), 6,6, 13,6);
   placeGrid(bossIntentEl,                          15,2, 16,3);
@@ -416,37 +611,23 @@ function updateHUD(){
   bossHpText.textContent=`${Math.max(0,bossHp)} / ${bossMax}`;
   hand.forEach(c=>c.el.classList.toggle("unaffordable",+c.el.dataset.cost>mana));
 }
-function renderStrBadge(bump){
-  strText.textContent=strength; strBadge.classList.toggle("show", strength!==0);
-  if(bump && strength!==0){ strBadge.classList.remove("bump"); void strBadge.offsetWidth; strBadge.classList.add("bump"); }
-}
+function renderStrBadge(bump){ strText.textContent=strength; strBadge.classList.toggle("show", strength!==0); if(bump && strength!==0){ strBadge.classList.remove("bump"); void strBadge.offsetWidth; strBadge.classList.add("bump"); } }
 function activeBuffs(){
   const list=[];
-  if(thornsOn) list.push({icon:"🌵", name:"가시", tip:"<b>가시</b><br>이번 턴에 방어력으로 막아낸 데미지만큼 보스에게 반사합니다. (턴 종료 시 해제)"});
-  if(tempStrMult>1) list.push({icon:"⚡", name:"압도적인힘", tip:"<b>압도적인힘</b><br>이번 턴 동안 힘 효과가 2 배로 적용됩니다. (턴 종료 시 해제)"});
-  if(keepDefNext>0) list.push({icon:"🏰", name:"탑", tip:"<b>탑 쌓기</b><br>다음 턴 시작 시 방어도를 잃지 않습니다. (남은 횟수 "+keepDefNext+")"});
-  if(evadeCols.size>0) list.push({icon:"💨", name:"회피", tip:"<b>회피</b><br>이번 적 턴에 지정한 열의 공격 데미지를 받지 않습니다."});
-  if(capNextDmg!=null) list.push({icon:"🛑", name:"기합", tip:"<b>기합</b><br>다음에 받는 데미지를 "+capNextDmg+"(으)로 고정합니다. (1회)"});
-  if(lifestealPct>0) list.push({icon:"🧛", name:"흡혈", tip:"<b>흡혈</b><br>이번 턴 종료 시 입힌 데미지의 "+lifestealPct+"% 를 회복합니다."});
+  if(thornsOn) list.push({icon:"🌵", tip:"<b>가시</b><br>막아낸 데미지를 보스에게 반사합니다."});
+  if(tempStrMult>1) list.push({icon:"⚡", tip:"<b>압도적인힘</b><br>이번 턴 힘 2배."});
+  if(keepDefNext>0) list.push({icon:"🏰", tip:"<b>탑 쌓기</b><br>다음 턴 방어도 유지 (x"+keepDefNext+")"});
+  if(evadeCols.size>0) list.push({icon:"💨", tip:"<b>회피</b><br>지정 열 공격 무효."});
+  if(capNextDmg!=null) list.push({icon:"🛑", tip:"<b>기합</b><br>다음 피해 "+capNextDmg+" 고정."});
+  if(lifestealPct>0) list.push({icon:"🧛", tip:"<b>흡혈</b><br>턴 종료 시 딜의 "+lifestealPct+"% 회복."});
   return list;
 }
 function renderBuffs(bump){
-  const buffs=activeBuffs();
-  buffBarEl.innerHTML="";
-  buffs.forEach(b=>{
-    const chip=document.createElement("div"); chip.className="buffChip"; chip.textContent=b.icon;
-    chip.addEventListener("click",ev=>{ ev.stopPropagation(); showBuffTip(chip,b.tip); });
-    buffBarEl.appendChild(chip);
-    if(bump){ chip.classList.remove("bump"); void chip.offsetWidth; chip.classList.add("bump"); }
-  });
+  const buffs=activeBuffs(); buffBarEl.innerHTML="";
+  buffs.forEach(b=>{ const chip=document.createElement("div"); chip.className="buffChip"; chip.textContent=b.icon; chip.addEventListener("click",ev=>{ ev.stopPropagation(); showBuffTip(chip,b.tip); }); buffBarEl.appendChild(chip); if(bump){ chip.classList.remove("bump"); void chip.offsetWidth; chip.classList.add("bump"); } });
   if(!buffs.length) hideBuffTip();
 }
-function showBuffTip(anchor,html){
-  buffTipEl.innerHTML=html; buffTipEl.classList.add("on");
-  const r=anchor.getBoundingClientRect(), s=stageScale(), st=stageEl.getBoundingClientRect();
-  buffTipEl.style.left=((r.right-st.left)/s+12)+"px";
-  buffTipEl.style.top=((r.top-st.top)/s)+"px";
-}
+function showBuffTip(anchor,html){ buffTipEl.innerHTML=html; buffTipEl.classList.add("on"); const r=anchor.getBoundingClientRect(), s=stageScale(), st=stageEl.getBoundingClientRect(); buffTipEl.style.left=((r.right-st.left)/s+12)+"px"; buffTipEl.style.top=((r.top-st.top)/s)+"px"; }
 function hideBuffTip(){ buffTipEl.classList.remove("on"); }
 document.addEventListener("click",e=>{ if(!e.target.closest(".buffChip")) hideBuffTip(); });
 function renderBossStun(){ bossStunEl.classList.toggle("on", bossStun>0); }
@@ -457,65 +638,35 @@ function renderEnemies(){
   for(let r=0;r<FROWS;r++)for(let c=0;c<FCOLS;c++){
     const e=field[r][c]; if(!e)continue;
     if(!e.el){ const d=document.createElement("div"); d.className="enemy";
-      d.innerHTML=`<div class="estun">😵</div><img src="${MON+e.file}" onerror="this.style.background='#c0392b'">
-        <div class="estat"><span class="eatk">🗡${e.atk}</span><span class="ehpn"></span></div>
-        <div class="ehp"><div class="ehpfill"></div></div>`;
+      d.innerHTML=`<div class="estun">😵</div><img src="${MON+e.file}" onerror="this.style.background='#c0392b'"><div class="estat"><span class="eatk">🗡${e.atk}</span><span class="ehpn"></span></div><div class="ehp"><div class="ehpfill"></div></div>`;
       fieldEl.appendChild(d); e.el=d; }
     const p=fieldSlotLocal(r,c);
-    e.el.style.width=p.w+"px"; e.el.style.height=p.h+"px";
-    e.el.style.left=p.left+"px"; e.el.style.top=p.top+"px";
+    e.el.style.width=p.w+"px"; e.el.style.height=p.h+"px"; e.el.style.left=p.left+"px"; e.el.style.top=p.top+"px";
     e.el.classList.toggle("stunned", e.stun>0);
     e.el.querySelector(".ehpfill").style.width=Math.max(0,e.hp/e.maxHp*100)+"%";
     e.el.querySelector(".ehpn").textContent="❤"+Math.max(0,e.hp);
   }
 }
-
 function renderCards(){
   for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){
     const f=board[r][c]; if(!f)continue;
-    if(!f.el){ const d=document.createElement("div"); d.className="fcard "+f.type;
-      d.innerHTML=`<div class="fval">${f.val}</div><img class="ficon" src="${f.type==='atk'?SWORD:SHIELD}" onerror="this.style.background='#888'">`;
-      boardEl.appendChild(d); f.el=d;
-    } else { f.el.querySelector(".fval").textContent=f.val; f.el.className="fcard "+f.type; f.el.querySelector(".ficon").src=f.type==='atk'?SWORD:SHIELD; }
-    const p=boardSlotLocal(r,c);
-    f.el.style.width=p.w+"px"; f.el.style.height=p.h+"px";
-    f.el.style.left=p.left+"px"; f.el.style.top=p.top+"px";
+    if(!f.el){ const d=document.createElement("div"); d.className="fcard "+f.type; d.innerHTML=`<div class="fval">${f.val}</div><img class="ficon" src="${f.type==='atk'?SWORD:SHIELD}" onerror="this.style.background='#888'">`; boardEl.appendChild(d); f.el=d; }
+    else { f.el.querySelector(".fval").textContent=f.val; f.el.className="fcard "+f.type; f.el.querySelector(".ficon").src=f.type==='atk'?SWORD:SHIELD; }
+    const p=boardSlotLocal(r,c); f.el.style.width=p.w+"px"; f.el.style.height=p.h+"px"; f.el.style.left=p.left+"px"; f.el.style.top=p.top+"px";
   }
 }
 function effStrength(mult){ return strength*tempStrMult*(mult||1); }
 
-/* ===== 턴 시작 ===== */
 async function startTurn(){
   turnCount++;
-
-  /* 탑쌓기: 방어도 유지 1회 소비, 아니면 초기화 */
-  if(keepDefNext>0){ keepDefNext--; }
-  else { colDef=Array(BCOLS).fill(0); }
-
-  thornsOn=false; blockedThisTurn=0; tempStrMult=1;
-  evadeCols=new Set(); capNextDmg=null;
-  dmgDealtThisTurn=0; lifestealPct=0;
-
-  const baseMana = GAME_CONFIG.initialMana || 12;
-  const growth = GAME_CONFIG.manaGrowth || 4;
-  const maxCap = GAME_CONFIG.maxManaCap || 40;
-
-  maxMana = Math.min(maxCap, baseMana + (turnCount-1)*growth);
-  mana = maxMana;
-
-  spawnBoardTile();
-  decideBossIntent();
+  if(keepDefNext>0){ keepDefNext--; } else { colDef=Array(BCOLS).fill(0); }
+  thornsOn=false; blockedThisTurn=0; tempStrMult=1; evadeCols=new Set(); capNextDmg=null; dmgDealtThisTurn=0; lifestealPct=0;
+  const baseMana=GAME_CONFIG.initialMana||8, growth=GAME_CONFIG.manaGrowth||2, maxCap=GAME_CONFIG.maxManaCap||20;
+  maxMana=Math.min(maxCap, baseMana+(turnCount-1)*growth); mana=maxMana;
+  spawnBoardTile(); decideBossIntent();
   renderCards(); renderColStats(); renderStrBadge(); renderBuffs(); updateHUD();
-
-  const drawCount = GAME_CONFIG.cardsPerTurn || 5;
-  await drawCards(drawCount);
-
-  /* 사혈/몰아붙이기: 예약된 카드를 손으로 추가 */
-  if(pendingHandNextTurn.length){
-    const ids=pendingHandNextTurn.slice(); pendingHandNextTurn.length=0;
-    for(const id of ids){ await drawSpecific(id); }
-    layoutHand(); updateHUD();
-  }
+  await drawCards(GAME_CONFIG.cardsPerTurn || 5);
+  if(pendingHandNextTurn.length){ const ids=pendingHandNextTurn.slice(); pendingHandNextTurn.length=0; for(const id of ids){ await drawSpecific(id); } layoutHand(); updateHUD(); }
 }
 
 document.getElementById("endTurnBtn").addEventListener("click",endTurn);
@@ -525,172 +676,146 @@ async function endTurn(){
   try {
     await defenseResolve();
     await playerColumnResolve();
-
-    /* 흡혈: 이번 턴 입힌 데미지의 일정 % 회복 */
-    if(lifestealPct>0 && dmgDealtThisTurn>0){
-      const healed=Math.floor(dmgDealtThisTurn*lifestealPct/100);
-      if(healed>0){ hp=Math.min(maxHp, hp+healed); dmgPop(hpBadgeEl(),"🧛+"+healed,"#8affa0"); updateHUD(); await sleep(200); }
-    }
-
-    if(bossHp<=0){ await nextPhaseOrWin(); if(phase>(GAME_CONFIG.maxPhases||4)){ return; } }
+    if(lifestealPct>0 && dmgDealtThisTurn>0){ const healed=Math.floor(dmgDealtThisTurn*lifestealPct/100); if(healed>0){ hp=Math.min(maxHp,hp+healed); dmgPop(hpBadgeEl(),"🧛+"+healed,"#8affa0"); updateHUD(); await sleep(200); } }
+    if(bossHp<=0){ await nextPhaseOrWin(); if(phase>maxPhases){ return; } }
     refreshDestroyTarget(); clearBossMarks();
     await discardHand();
     await enemyPhase();
-    if(hp<=0){ lose(); return; }
+    if(hp<=0){ battleLost(); return; }
     await startTurn();
-  } catch(err) {
-    showError("endTurn 처리 중 오류:\n"+(err&&err.stack?err.stack:err));
-  } finally {
-    busy=false;
-  }
+  } catch(err) { showError("endTurn 오류:\n"+(err&&err.stack?err.stack:err)); }
+  finally { busy=false; }
 }
 
 async function defenseResolve(){
-  for(let c=0;c<BCOLS;c++){
-    for(let r=0;r<BROWS;r++){
-      const f=board[r][c];
-      if(f&&f.type==="def"){
-        punch(f.el); colDef[c]+=f.val; defGainAnim(c); dmgPop(f.el,"+"+f.val+"🛡","#7ec8ff");
-        renderColStats(); await sleep(180);
-      }
-    }
-  }
+  for(let c=0;c<BCOLS;c++)for(let r=0;r<BROWS;r++){ const f=board[r][c]; if(f&&f.type==="def"){ punch(f.el); colDef[c]+=f.val; defGainAnim(c); dmgPop(f.el,"+"+f.val+"🛡","#7ec8ff"); renderColStats(); await sleep(180); } }
 }
 async function playerColumnResolve(){
-  for(let c=0;c<BCOLS;c++){
-    for(let r=BROWS-1;r>=0;r--){
-      const f=board[r][c];
-      if(f&&f.type==="atk"){ punch(f.el); await sleep(140); dealToColumn(c, f.val + effStrength()); await sleep(180); if(bossHp<=0) return; }
-    }
-  }
+  for(let c=0;c<BCOLS;c++)for(let r=BROWS-1;r>=0;r--){ const f=board[r][c]; if(f&&f.type==="atk"){ punch(f.el); await sleep(140); dealToColumn(c, f.val + effStrength()); await sleep(180); if(bossHp<=0) return; } }
 }
+function spawnBoardTile(){ const empties=[]; for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++) if(!board[r][c]) empties.push([r,c]); if(!empties.length) return null; const [r,c]=empties[Math.random()*empties.length|0]; board[r][c]={type:Math.random()<0.5?"atk":"def",val:2,el:null}; return [r,c]; }
 
-function spawnBoardTile(){
-  const empties=[]; for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++) if(!board[r][c]) empties.push([r,c]);
-  if(!empties.length) return null;
-  const [r,c]=empties[Math.random()*empties.length|0];
-  board[r][c]={type:Math.random()<0.5?"atk":"def",val:2,el:null};
-  return [r,c];
-}
-
+/* ===== 페이즈 전환 / 전투 승리 ===== */
 async function nextPhaseOrWin(){
-  const maxPh = GAME_CONFIG.maxPhases || 4;
-  if(phase>=maxPh){ win(); phase=maxPh+1; return; }
-
+  if(phase>=maxPhases){ await battleWon(); phase=maxPhases+1; return; }
   phase++;
-  showBanner(phase+"페이즈!");
+  showBanner(phase+"페이즈!"); await sleep(900);
+  const pData=getPhaseData(phase); bossMax=pData.bossHp; bossHp=bossMax;
+  bossStun=0; renderBossStun(); updatePhaseTag(); updateHUD(); decideBossIntent(); await sleep(300);
+}
+
+/* 전투 승리 → RUN 반영 → 보상/복귀 */
+async function battleWon(){
+  hideBossIntent(); clearBossMarks(); showBanner("승리!");
+  RUN.hp = Math.max(1, hp);   // 남은 HP 저장
+  const node = nodeById(RUN.curNodeId); if(node) node.cleared=true;
+  RUN.gold += 20 + (Math.random()*15|0);
   await sleep(900);
-
-  const pData = getPhaseData(phase);
-  bossMax = pData.bossHp;
-  bossHp = bossMax;
-
-  bossStun=0; renderBossStun();
-  updatePhaseTag(); updateHUD();
-  decideBossIntent();
-  await sleep(300);
+  showBattleUI(false);
+  if(node && node.type==="boss"){ RUN.finished=true; showBanner("최종 승리! 축하합니다"); openRunClear(); return; }
+  openReward(true);           // 전투 보상: 카드 3택
 }
 
-function layoutHand(){
-  const n=hand.length; if(n===0) return;
-  const areaW = handEl.clientWidth || (12*CW);
-  const centerX = areaW/2;
-  const maxAngle = Math.min(7, 24/Math.max(1,n));
-  const cardW = CARD_HALF*2;
-  const cardH = cardW * 1.42;
-
-  function halfSpan(angleDeg){
-    const t=Math.abs(angleDeg)*Math.PI/180;
-    return (cardW/2)*Math.cos(t) + (cardH/2)*Math.sin(t);
-  }
-  function fits(sp){
-    const mid=(n-1)/2;
-    for(let i=0;i<n;i++){
-      const off=i-mid, x=centerX+off*sp, hs=halfSpan(off*maxAngle);
-      if(x-hs < -0.5 || x+hs > areaW+0.5) return false;
-    }
-    return true;
-  }
-  let spread = n>1 ? Math.min(120, (areaW-cardW)/(n-1)) : 0;
-  while(spread>0 && !fits(spread)) spread-=1;
-  if(spread<0) spread=0;
-
-  hand.forEach((h,i)=>{
-    if(h.el.classList.contains("dragging")||h.el.classList.contains("zoomed")) return;
-    const mid=(n-1)/2, off=i-mid;
-    const angle=off*maxAngle;
-    let x=centerX+off*spread;
-    const hs=halfSpan(angle);
-    const minX=hs, maxX=areaW-hs;
-    if(minX<=maxX){ if(x<minX)x=minX; if(x>maxX)x=maxX; }
-    else x=centerX;
-
-    const lift=Math.abs(off)*Math.abs(off)*4;
-    h.el.style.transition="transform .3s cubic-bezier(.2,.8,.3,1),left .3s,bottom .3s,opacity .3s";
-    h.el.style.left = x+"px";
-    h.el.style.bottom = (20 - lift)+"px";
-    h.el.style.transform = `translateX(-${CARD_HALF}px) rotate(${angle}deg)`;
-    h.el.style.zIndex = 100+i;
-    h.el.style.opacity = "1";
-  });
+/* 전투 패배 */
+function battleLost(){
+  hideBossIntent(); clearBossMarks(); showBanner("패배...");
+  setTimeout(()=>{ if(confirm("패배! 처음부터 다시 시작?")) location.reload(); },800);
 }
 
-async function drawCards(n){
-  const maxHand = GAME_CONFIG.maxHandSize || 10;
-  for(let i=0;i<n;i++){
-    if(hand.length>=maxHand) break;
-    if(deck.length===0){ deck=discard.slice(); discard=[]; shuffle(deck); }
-    if(deck.length===0){
-      showError(`드로우 중단: 뽑을 카드가 없습니다.\n`+
-        `요청 ${n}장 중 ${i}장만 뽑음.\n`+
-        `deck=${deck.length}, discard=${discard.length}, hand=${hand.length}, exhaust=${exhaustPile.length}`);
-      break;
-    }
-    await drawOne(deck.pop());
-  }
-  layoutHand(); updateHUD();
+/* ===================================================================
+   [카드 보상] 3장 중 1택 (풀에서 랜덤)
+=================================================================== */
+function rewardPool(){
+  /* 스킬/공격/방어 전체 중 아무 카드나 (스타팅과 무관하게 풀 확장 가능) */
+  return Object.keys(CARDS);
 }
-
-/* 특정 id 카드를 덱과 무관하게 손으로 생성 (사혈/몰아붙이기 복귀용) */
-async function drawSpecific(key){
-  const maxHand = GAME_CONFIG.maxHandSize || 10;
-  if(hand.length>=maxHand){ discard.push(key); return; }
-  await drawOne(key);
-}
-
-function drawOne(key){
-  return new Promise(res=>{
+function openReward(canSkip){
+  const pool=rewardPool(); shuffle(pool);
+  const picks=pool.slice(0,3);
+  const row=document.getElementById("rewardRow"); row.innerHTML="";
+  picks.forEach(key=>{
     const def=CARDS[key];
-    if(!def){
-      showError(`정의되지 않은 카드 key: "${key}"\ncards.json 에 해당 카드가 없습니다.\n`+
-        `→ template_deck.json 의 id 철자를 확인하거나 cards.json 에 추가하세요.`);
-      res();
-      return;
-    }
-    const cost=cardCost(def), el=document.createElement("div");
-    el.className="hcard "+def.type; el.dataset.cost=cost; el.dataset.key=key;
-    el.style.left="900px"; el.style.bottom="-300px"; el.style.opacity="0"; el.style.transform=`translateX(-${CARD_HALF}px)`;
-    const kwStr = def.kw && def.kw.length ? def.kw.join(" · ") : "";
-    const tierLabel = def.type==="skill" ? "스킬" : def.tile;
-    const tierCls = def.type==="skill" ? "htier skill" : "htier";
-    const fallbackIcon = def.type==="def" ? SHIELD : SWORD;
-    el.innerHTML=`<div class="hcost">${cost}</div><div class="${tierCls}">${tierLabel}</div>
+    const el=document.createElement("div");
+    el.className="rwCard "+def.type;
+    const kwStr=def.kw&&def.kw.length?def.kw.join(" · "):"";
+    const tierLabel=def.type==="skill"?"스킬":def.tile;
+    const fallbackIcon=def.type==="def"?SHIELD:SWORD;
+    el.innerHTML=`<div class="hcost">${def.cost}</div><div class="htier${def.type==="skill"?" skill":""}">${tierLabel}</div>
       <img class="hicon" src="${iconURL(def)}" onerror="this.src='${fallbackIcon}'">
       <div class="hname">${def.name}</div><div class="hdesc">${(def.desc||"").replace(/\n/g,"<br>")}</div>
       ${kwStr?`<div class="hkw">${kwStr}</div>`:""}`;
+    el.addEventListener("click",()=>{ RUN.deckList.push(key); closeRewardToMap(); });
+    row.appendChild(el);
+  });
+  const skip=document.getElementById("rewardSkip");
+  skip.style.display = canSkip ? "block" : "none";
+  skip.onclick = ()=> closeRewardToMap();
+  showBattleUI(false);
+  showScreen("reward");
+}
+function closeRewardToMap(){ showScreen("map"); renderMap(); }
+
+/* ===================================================================
+   [모닥불]
+=================================================================== */
+function openRest(node){
+  showBattleUI(false);
+  showScreen("rest");
+  document.getElementById("restHeal").onclick=()=>{
+    const heal=Math.floor(RUN.maxHp*0.3);
+    RUN.hp=Math.min(RUN.maxHp, RUN.hp+heal);
+    node.cleared=true;
+    showScreen("map"); renderMap();
+  };
+}
+
+/* ===================================================================
+   [런 클리어]
+=================================================================== */
+function openRunClear(){
+  setTimeout(()=>{ if(confirm("던전 클리어! 다시 도전?")) location.reload(); }, 1200);
+}
+
+/* ===== 손패 배치 ===== */
+function layoutHand(){
+  const n=hand.length; if(n===0) return;
+  const areaW=handEl.clientWidth||(12*CW), centerX=areaW/2, maxAngle=Math.min(7,24/Math.max(1,n));
+  const cardW=CARD_HALF*2, cardH=cardW*1.42;
+  function halfSpan(a){ const t=Math.abs(a)*Math.PI/180; return (cardW/2)*Math.cos(t)+(cardH/2)*Math.sin(t); }
+  function fits(sp){ const mid=(n-1)/2; for(let i=0;i<n;i++){ const off=i-mid,x=centerX+off*sp,hs=halfSpan(off*maxAngle); if(x-hs<-0.5||x+hs>areaW+0.5) return false; } return true; }
+  let spread=n>1?Math.min(120,(areaW-cardW)/(n-1)):0; while(spread>0&&!fits(spread))spread-=1; if(spread<0)spread=0;
+  hand.forEach((h,i)=>{
+    if(h.el.classList.contains("dragging")||h.el.classList.contains("zoomed")) return;
+    const mid=(n-1)/2,off=i-mid,angle=off*maxAngle; let x=centerX+off*spread; const hs=halfSpan(angle),minX=hs,maxX=areaW-hs;
+    if(minX<=maxX){ if(x<minX)x=minX; if(x>maxX)x=maxX; } else x=centerX;
+    const lift=Math.abs(off)*Math.abs(off)*4;
+    h.el.style.transition="transform .3s cubic-bezier(.2,.8,.3,1),left .3s,bottom .3s,opacity .3s";
+    h.el.style.left=x+"px"; h.el.style.bottom=(20-lift)+"px"; h.el.style.transform=`translateX(-${CARD_HALF}px) rotate(${angle}deg)`; h.el.style.zIndex=100+i; h.el.style.opacity="1";
+  });
+}
+async function drawCards(n){
+  const maxHand=GAME_CONFIG.maxHandSize||10;
+  for(let i=0;i<n;i++){ if(hand.length>=maxHand) break; if(deck.length===0){ deck=discard.slice(); discard=[]; shuffle(deck); } if(deck.length===0){ break; } await drawOne(deck.pop()); }
+  layoutHand(); updateHUD();
+}
+async function drawSpecific(key){ const maxHand=GAME_CONFIG.maxHandSize||10; if(hand.length>=maxHand){ discard.push(key); return; } await drawOne(key); }
+function drawOne(key){
+  return new Promise(res=>{
+    const def=CARDS[key];
+    if(!def){ showError(`정의되지 않은 카드 key: "${key}"`); res(); return; }
+    const cost=cardCost(def), el=document.createElement("div");
+    el.className="hcard "+def.type; el.dataset.cost=cost; el.dataset.key=key;
+    el.style.left="900px"; el.style.bottom="-300px"; el.style.opacity="0"; el.style.transform=`translateX(-${CARD_HALF}px)`;
+    const kwStr=def.kw&&def.kw.length?def.kw.join(" · "):""; const tierLabel=def.type==="skill"?"스킬":def.tile; const tierCls=def.type==="skill"?"htier skill":"htier"; const fallbackIcon=def.type==="def"?SHIELD:SWORD;
+    el.innerHTML=`<div class="hcost">${cost}</div><div class="${tierCls}">${tierLabel}</div><img class="hicon" src="${iconURL(def)}" onerror="this.src='${fallbackIcon}'"><div class="hname">${def.name}</div><div class="hdesc">${(def.desc||"").replace(/\n/g,"<br>")}</div>${kwStr?`<div class="hkw">${kwStr}</div>`:""}`;
     handEl.appendChild(el);
-    const card={key,def,el}; el.__card=card; hand.push(card);
-    attachDrag(card);
-    requestAnimationFrame(()=>{ layoutHand(); });
-    updateHUD(); setTimeout(res,110);
+    const card={key,def,el}; el.__card=card; hand.push(card); attachDrag(card);
+    requestAnimationFrame(()=>{ layoutHand(); }); updateHUD(); setTimeout(res,110);
   });
 }
 async function discardHand(){
   const copy=hand.slice(); hand.length=0;
-  const proms=copy.map(c=>{ discard.push(c.key);
-    c.el.style.transition="transform .38s,opacity .38s,bottom .38s";
-    c.el.style.bottom="700px"; c.el.style.opacity="0"; c.el.style.transform=`translateX(-${CARD_HALF}px) rotate(25deg) scale(.6)`;
-    return new Promise(r=>setTimeout(()=>{ if(c._cleanupDrag) c._cleanupDrag(); c.el.remove(); r(); },400)); });
+  const proms=copy.map(c=>{ discard.push(c.key); c.el.style.transition="transform .38s,opacity .38s,bottom .38s"; c.el.style.bottom="700px"; c.el.style.opacity="0"; c.el.style.transform=`translateX(-${CARD_HALF}px) rotate(25deg) scale(.6)`; return new Promise(r=>setTimeout(()=>{ if(c._cleanupDrag) c._cleanupDrag(); c.el.remove(); r(); },400)); });
   await Promise.all(proms);
 }
 
@@ -703,252 +828,94 @@ function attachDrag(card){
   function zoomIn(){ zoomed=true; el.classList.add("zoomed"); dim.classList.add("on"); }
   function zoomOut(){ if(!zoomed) return; zoomed=false; el.classList.remove("zoomed"); dim.classList.remove("on"); }
   function beginDragVisual(){ el.style.transition="none"; el.classList.add("dragging"); el.style.transform=`translateX(-${CARD_HALF}px)`; ox=CARD_HALF; oy=120; }
-  function down(e){
-    if(busy) return;
-    if(+el.dataset.cost>mana){ flashBadge("manaBadge"); return; }
-    dragging=true; startP=pt(e);
-    beginDragVisual();
-    const s=stageScale(), st=stageEl.getBoundingClientRect();
-    setPos(pt(e),s,st); highlightValid(card,true); e.preventDefault();
-    armHold();
-  }
-  function setPos(p,s,st){
-    const lx=(p.x-st.left)/s, ly=(p.y-st.top)/s;
-    const handLeft = handEl.offsetLeft;
-    el.style.left=(lx - handLeft)+"px";
-    el.style.bottom=(1920 - ly - (240-oy))+"px";
-    el.style.transform=`translateX(-${CARD_HALF}px)`;
-    const slot=slotUnder(p.x,p.y);
-    boardEl.querySelectorAll(".bslot").forEach(b=>b.classList.toggle("hover", !!(slot&&b.classList.contains("valid")&&+b.dataset.r===slot.r&&+b.dataset.c===slot.c)));
-  }
-  function move(e){
-    if(!dragging)return;
-    const p=pt(e);
-    if(startP){ const d=Math.hypot(p.x-startP.x,p.y-startP.y);
-      if(d>14){ startP=p;
-        if(zoomed){ zoomOut(); beginDragVisual(); highlightValid(card,true); }
-        armHold();
-      } }
-    if(zoomed){ if(e.cancelable)e.preventDefault(); return; }
-    const s=stageScale(), st=stageEl.getBoundingClientRect(); setPos(p,s,st);
-    if(e.cancelable)e.preventDefault();
-  }
-  function up(e){
-    if(!dragging)return; dragging=false; clearHold();
-    el.classList.remove("dragging");
-    const wasZoomed=zoomed; zoomOut(); highlightValid(card,false);
-    if(wasZoomed){ layoutHand(); return; }
-    const p=e.changedTouches?{x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY}:{x:e.clientX,y:e.clientY};
-    const slot=slotUnder(p.x,p.y);
-    if(slot && canPlace(card,slot.r,slot.c)) doPlace(card,slot.r,slot.c);
-    else layoutHand();
-  }
-  card._cleanupDrag=function(){
-    removeEventListener("mousemove",move); removeEventListener("mouseup",up);
-    removeEventListener("touchmove",move); removeEventListener("touchend",up);
-    clearHold();
-  };
+  function down(e){ if(busy) return; if(+el.dataset.cost>mana){ flashBadge("manaBadge"); return; } dragging=true; startP=pt(e); beginDragVisual(); const s=stageScale(), st=stageEl.getBoundingClientRect(); setPos(pt(e),s,st); highlightValid(card,true); e.preventDefault(); armHold(); }
+  function setPos(p,s,st){ const lx=(p.x-st.left)/s, ly=(p.y-st.top)/s; const handLeft=handEl.offsetLeft; el.style.left=(lx-handLeft)+"px"; el.style.bottom=(1920-ly-(240-oy))+"px"; el.style.transform=`translateX(-${CARD_HALF}px)`; const slot=slotUnder(p.x,p.y); boardEl.querySelectorAll(".bslot").forEach(b=>b.classList.toggle("hover", !!(slot&&b.classList.contains("valid")&&+b.dataset.r===slot.r&&+b.dataset.c===slot.c))); }
+  function move(e){ if(!dragging)return; const p=pt(e); if(startP){ const d=Math.hypot(p.x-startP.x,p.y-startP.y); if(d>14){ startP=p; if(zoomed){ zoomOut(); beginDragVisual(); highlightValid(card,true); } armHold(); } } if(zoomed){ if(e.cancelable)e.preventDefault(); return; } const s=stageScale(), st=stageEl.getBoundingClientRect(); setPos(p,s,st); if(e.cancelable)e.preventDefault(); }
+  function up(e){ if(!dragging)return; dragging=false; clearHold(); el.classList.remove("dragging"); const wasZoomed=zoomed; zoomOut(); highlightValid(card,false); if(wasZoomed){ layoutHand(); return; } const p=e.changedTouches?{x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY}:{x:e.clientX,y:e.clientY}; const slot=slotUnder(p.x,p.y); if(slot && canPlace(card,slot.r,slot.c)) doPlace(card,slot.r,slot.c); else layoutHand(); }
+  card._cleanupDrag=function(){ removeEventListener("mousemove",move); removeEventListener("mouseup",up); removeEventListener("touchmove",move); removeEventListener("touchend",up); clearHold(); };
   el.addEventListener("mousedown",down); addEventListener("mousemove",move); addEventListener("mouseup",up);
   el.addEventListener("touchstart",down,{passive:false}); addEventListener("touchmove",move,{passive:false}); addEventListener("touchend",up);
 }
 function bslotEl(r,c){ return boardEl.querySelector(`.bslot[data-r="${r}"][data-c="${c}"]`); }
 function fslotEl(r,c){ return fieldEl.querySelector(`.fslot[data-r="${r}"][data-c="${c}"]`); }
-
-function slotUnder(px,py){
-  for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){
-    const el=bslotEl(r,c); if(!el) continue;
-    const rc=el.getBoundingClientRect();
-    if(px>=rc.left && px<=rc.right && py>=rc.top && py<=rc.bottom) return {r,c};
-  }
-  return null;
-}
-function canPlace(card,r,c){
-  const t=board[r][c]; const need=coverNeed(card.def);
-  return !!(t && t.val===need);
-}
-function highlightValid(card,on){
-  for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){
-    const slot=bslotEl(r,c);
-    slot.classList.toggle("valid", on&&canPlace(card,r,c)); if(!on)slot.classList.remove("hover");
-  }
-}
+function slotUnder(px,py){ for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){ const el=bslotEl(r,c); if(!el) continue; const rc=el.getBoundingClientRect(); if(px>=rc.left&&px<=rc.right&&py>=rc.top&&py<=rc.bottom) return {r,c}; } return null; }
+function canPlace(card,r,c){ const t=board[r][c]; const need=coverNeed(card.def); return !!(t && t.val===need); }
+function highlightValid(card,on){ for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){ const slot=bslotEl(r,c); slot.classList.toggle("valid", on&&canPlace(card,r,c)); if(!on)slot.classList.remove("hover"); } }
 function doPlace(card,r,c){
-  const cost=+card.el.dataset.cost;
-  if(mana<cost){ layoutHand(); return; }
-  mana-=cost;
-  const i=hand.indexOf(card); if(i>=0) hand.splice(i,1);
+  const cost=+card.el.dataset.cost; if(mana<cost){ layoutHand(); return; }
+  mana-=cost; const i=hand.indexOf(card); if(i>=0) hand.splice(i,1);
   if(card.def.exhaust) exhaustPile.push(card.key); else discard.push(card.key);
-  if(card._cleanupDrag) card._cleanupDrag();
-  card.el.remove(); layoutHand();
-  applyPlaceEffect(card.def,r,c,board[r][c]);
-  updateHUD();
+  if(card._cleanupDrag) card._cleanupDrag(); card.el.remove(); layoutHand();
+  applyPlaceEffect(card.def,r,c,board[r][c]); updateHUD();
 }
 function applyPlaceEffect(def,r,c,covered){
   const key=def.__key || Object.keys(CARDS).find(k=>CARDS[k]===def);
   if(def.placesTile){
     if(covered && covered.el) covered.el.remove();
-    board[r][c]={type:(def.type==="def"?"def":"atk"),val:def.tile,el:null};
-    renderCards();
-    const nc=board[r][c];
-    if(nc&&nc.el){ nc.el.classList.add("spawning"); setTimeout(()=>nc.el&&nc.el.classList.remove("spawning"),300); if(hasKW(def,"타격")||def.type==="atk") punch(nc.el); }
+    board[r][c]={type:(def.type==="def"?"def":"atk"),val:def.tile,el:null}; renderCards();
+    const nc=board[r][c]; if(nc&&nc.el){ nc.el.classList.add("spawning"); setTimeout(()=>nc.el&&nc.el.classList.remove("spawning"),300); if(hasKW(def,"타격")||def.type==="atk") punch(nc.el); }
     runCardEffect(key,def,r,c);
-  } else {
-    runCardEffect(key,def,r,c);
-    if(def.destroysCover) destroyCard(r,c);
-  }
-  renderCards(); renderColStats(); renderStrBadge(); renderBuffs(true); renderEnemies();
-  refreshDestroyTarget();
+  } else { runCardEffect(key,def,r,c); if(def.destroysCover) destroyCard(r,c); }
+  renderCards(); renderColStats(); renderStrBadge(); renderBuffs(true); renderEnemies(); refreshDestroyTarget();
 }
-function runCardEffect(key,def,r,c){
-  const eff=def.effect;
-  if(!eff){ return; }
-  if(eff.type==="simple"){ runOps(eff.ops||[], key, def, r, c); }
-  else if(eff.type==="custom"){ runCustom(eff.handler, key, def, r, c); }
-}
+function runCardEffect(key,def,r,c){ const eff=def.effect; if(!eff) return; if(eff.type==="simple"){ runOps(eff.ops||[],key,def,r,c); } else if(eff.type==="custom"){ runCustom(eff.handler,key,def,r,c); } }
 
-/* ===== op 실행 ===== */
 function runOps(ops, key, def, r, c){
   for(const op of ops){
     switch(op.op){
       case "damageColumn": {
-        const times=op.times||1;
-        const bonus=op.useStr ? effStrength(op.strMult||1) : 0;
+        const times=op.times||1; const bonus=op.useStr ? effStrength(op.strMult||1) : 0;
         for(let i=0;i<times;i++){
-          let amt=op.amount+bonus;
-          /* 대상 상태 선조회 (기절/뒤칸) */
-          const info=peekColumnTarget(c);
+          let amt=op.amount+bonus; const info=peekColumnTarget(c);
           if(op.bonusIfStunned && info && info.isEnemy && info.stunned) amt+=op.bonusIfStunned;
           if(op.bonusIfBackOccupied && info && info.isEnemy && info.backOccupied) amt+=op.bonusIfBackOccupied;
           const res=dealToColumn(c, amt, { stun:!!op.stun, pushBack:op.pushBack||0 });
-          if(res && res.killed && op.onKill){
-            if(op.onKill.healHp){ const b=hp; hp=Math.min(maxHp,hp+op.onKill.healHp); const h=hp-b; if(h>0) dmgPop(hpBadgeEl(),"+"+h,"#8affa0"); }
-            if(op.onKill.draw){ drawCards(op.onKill.draw); }
-          }
+          if(res && res.killed && op.onKill){ if(op.onKill.healHp){ const b=hp; hp=Math.min(maxHp,hp+op.onKill.healHp); const h=hp-b; if(h>0) dmgPop(hpBadgeEl(),"+"+h,"#8affa0"); } if(op.onKill.draw){ drawCards(op.onKill.draw); } }
         }
         break;
       }
-      case "damageAll": {
-        const bonus=op.useStr ? effStrength(op.strMult||1) : 0;
-        for(let rr=0;rr<FROWS;rr++)for(let cc=0;cc<FCOLS;cc++){ if(field[rr][cc]) dealDirect(field[rr][cc], op.amount+bonus, rr, cc); }
-        break;
-      }
+      case "damageAll": { const bonus=op.useStr ? effStrength(op.strMult||1) : 0; for(let rr=0;rr<FROWS;rr++)for(let cc=0;cc<FCOLS;cc++){ if(field[rr][cc]) dealDirect(field[rr][cc], op.amount+bonus, rr, cc); } break; }
       case "addColDef": addColDef(c, op.amount); break;
       case "addAllColDef": for(let cc=0;cc<BCOLS;cc++) addColDef(cc, op.amount); break;
-      case "multiplyAllColDef": {
-        const m=op.mult||1;
-        for(let cc=0;cc<BCOLS;cc++){ if(colDef[cc]>0){ const add=colDef[cc]*(m-1); colDef[cc]=colDef[cc]*m; if(add>0){ defGainAnim(cc); dmgPop(colStatsEl.children[cc],"×"+m,"#7ec8ff"); } } }
-        renderColStats();
-        break;
-      }
-      case "addStrength":
-        strength+=op.amount; renderStrBadge(true);
-        dmgPop(strBadge,(op.amount>0?"+":"")+op.amount+"💪","#ffb56b");
-        break;
-      case "setTempStrMult":
-        tempStrMult=op.mult; renderStrBadge(true); dmgPop(strBadge,"힘×"+op.mult,"#ffb56b");
-        break;
-      case "loseHp":
-        hp=Math.max(0,hp-op.amount);
-        if(op.flash) redFlash();
-        if(op.pop) dmgPop(hpBadgeEl(),"-"+op.amount,"#ff5a5a");
-        break;
-      case "healHp": {
-        const before = hp;
-        hp = Math.min(maxHp, hp + op.amount);
-        const healed = hp - before;
-        if(healed > 0) dmgPop(hpBadgeEl(), "+" + healed, "#8affa0");
-        break;
-      }
-      case "gainMana": {
-        const before = mana;
-        mana = Math.min(maxMana, mana + op.amount);
-        const gained = mana - before;
-        if(gained > 0) dmgPop(document.getElementById("manaBadge"), "+" + gained, "#7ec8ff");
-        break;
-      }
+      case "multiplyAllColDef": { const m=op.mult||1; for(let cc=0;cc<BCOLS;cc++){ if(colDef[cc]>0){ colDef[cc]=colDef[cc]*m; defGainAnim(cc); dmgPop(colStatsEl.children[cc],"×"+m,"#7ec8ff"); } } renderColStats(); break; }
+      case "addStrength": strength+=op.amount; renderStrBadge(true); dmgPop(strBadge,(op.amount>0?"+":"")+op.amount+"💪","#ffb56b"); break;
+      case "setTempStrMult": tempStrMult=op.mult; renderStrBadge(true); dmgPop(strBadge,"힘×"+op.mult,"#ffb56b"); break;
+      case "loseHp": hp=Math.max(0,hp-op.amount); if(op.flash) redFlash(); if(op.pop) dmgPop(hpBadgeEl(),"-"+op.amount,"#ff5a5a"); break;
+      case "healHp": { const b=hp; hp=Math.min(maxHp,hp+op.amount); const h=hp-b; if(h>0) dmgPop(hpBadgeEl(),"+"+h,"#8affa0"); break; }
+      case "gainMana": { const b=mana; mana=Math.min(maxMana,mana+op.amount); const g=mana-b; if(g>0) dmgPop(document.getElementById("manaBadge"),"+"+g,"#7ec8ff"); break; }
       case "draw": drawCards(op.amount); break;
-
-      /* ▼ 신규 op */
-      case "keepDefNextTurn":
-        keepDefNext += (op.amount||1);
-        dmgPop(colStatsEl.children[c]||hpBadgeEl(),"🏰","#7ec8ff");
-        break;
-      case "evadeColumn":
-        evadeCols.add(c);
-        dmgPop(colStatsEl.children[c]||hpBadgeEl(),"💨회피","#bfe4ff");
-        break;
-      case "capNextDamage":
-        capNextDmg = op.amount;
-        dmgPop(hpBadgeEl(),"🛑기합","#bfe4ff");
-        break;
-      case "lifestealThisTurn":
-        lifestealPct = Math.max(lifestealPct, op.pct||0);
-        dmgPop(hpBadgeEl(),"🧛흡혈","#8affa0");
-        break;
-      case "returnToHandNextTurn":
-        pendingHandNextTurn.push(op.id || key);
-        break;
-      case "addCardToHand":
-        pendingHandNextTurn.push(op.id || key);
-        break;
-
-      default:
-        showError("알 수 없는 op: "+op.op+" (카드: "+(def&&def.name||key)+")");
-        break;
+      case "keepDefNextTurn": keepDefNext+=(op.amount||1); dmgPop(colStatsEl.children[c]||hpBadgeEl(),"🏰","#7ec8ff"); break;
+      case "evadeColumn": evadeCols.add(c); dmgPop(colStatsEl.children[c]||hpBadgeEl(),"💨회피","#bfe4ff"); break;
+      case "capNextDamage": capNextDmg=op.amount; dmgPop(hpBadgeEl(),"🛑기합","#bfe4ff"); break;
+      case "lifestealThisTurn": lifestealPct=Math.max(lifestealPct,op.pct||0); dmgPop(hpBadgeEl(),"🧛흡혈","#8affa0"); break;
+      case "returnToHandNextTurn": pendingHandNextTurn.push(op.id||key); break;
+      case "addCardToHand": pendingHandNextTurn.push(op.id||key); break;
+      default: showError("알 수 없는 op: "+op.op+" (카드: "+(def&&def.name||key)+")"); break;
     }
   }
 }
 function runCustom(handler, key, def, r, c){
   switch(handler){
-    case "shieldbash": {
-      const d=colDef[c]; colDef[c]=0; renderColStats();
-      if(d>0) dealToColumn(c, d+effStrength());
-      break;
-    }
-    case "thorns": {
-      thornsOn=true; dmgPop(hpBadgeEl(),"가시","#8affa0");
-      break;
-    }
-    default:
-      showError("알 수 없는 custom 핸들러: "+handler+" (카드: "+(def&&def.name||key)+")");
-      break;
+    case "shieldbash": { const d=colDef[c]; colDef[c]=0; renderColStats(); if(d>0) dealToColumn(c, d+effStrength()); break; }
+    case "thorns": { thornsOn=true; dmgPop(hpBadgeEl(),"가시","#8affa0"); break; }
+    default: showError("알 수 없는 custom 핸들러: "+handler+" (카드: "+(def&&def.name||key)+")"); break;
   }
 }
 function hpBadgeEl(){ return document.getElementById("hpBadge"); }
-function addColDef(c, amt){
-  if(amt>0){ colDef[c]+=amt; defGainAnim(c); dmgPop(colStatsEl.children[c],"+"+amt+"🛡","#7ec8ff"); }
-  renderColStats();
-}
+function addColDef(c, amt){ if(amt>0){ colDef[c]+=amt; defGainAnim(c); dmgPop(colStatsEl.children[c],"+"+amt+"🛡","#7ec8ff"); } renderColStats(); }
 function destroyCard(r,c){ const t=board[r][c]; if(t){ if(t.el){ t.el.classList.add("destroying"); const el=t.el; setTimeout(()=>el.remove(),400);} board[r][c]=null; } }
 
-/* ===== 데미지 로직 ===== */
-/* 열의 공격 대상(맨 앞 적) 상태를 파괴 없이 조회 */
-function peekColumnTarget(col){
-  for(let r=FROWS-1;r>=0;r--){
-    if(field[r][col]){
-      const backOccupied = (r-1>=0) ? !!field[r-1][col] : false;
-      return { isEnemy:true, row:r, stunned: field[r][col].stun>0, backOccupied };
-    }
-  }
-  return { isEnemy:false };  // 대상 없음 → 보스
-}
-
-/* 반환: {isEnemy, killed} — onKill 처리를 위해 사용 */
+function peekColumnTarget(col){ for(let r=FROWS-1;r>=0;r--){ if(field[r][col]){ const backOccupied=(r-1>=0)?!!field[r-1][col]:false; return { isEnemy:true, row:r, stunned:field[r][col].stun>0, backOccupied }; } } return { isEnemy:false }; }
 function dealToColumn(col,amt,opt){
-  opt=opt||{};
-  let target=null,tr=-1;
+  opt=opt||{}; let target=null,tr=-1;
   for(let r=FROWS-1;r>=0;r--){ if(field[r][col]){ target=field[r][col]; tr=r; break; } }
   let killed=false, isEnemy=false;
-
   if(target){
     isEnemy=true;
     if(amt>0){ target.hp-=amt; dmgDealtThisTurn+=amt; hurt(target.el); slashAtSlot(fslotEl(tr,col),fieldEl); dmgPop(target.el,"-"+amt,"#ffde59"); }
     if(opt.stun){ target.stun=1; if(target.el) target.el.classList.add("stunned"); }
     if(target.hp<=0){ killed=true; killEnemy(target); }
-    else if(opt.pushBack && tr-1>=0 && !field[tr-1][col]){
-      /* 밀쳐내기: 뒤가 비면 한 칸 뒤로 */
-      field[tr-1][col]=target; field[tr][col]=null;
-    }
+    else if(opt.pushBack && tr-1>=0 && !field[tr-1][col]){ field[tr-1][col]=target; field[tr][col]=null; }
     renderEnemies();
   } else {
     if(amt>0){ bossHp-=amt; dmgDealtThisTurn+=amt; bossHurt(); dmgPop(document.getElementById("bossArt"),"-"+amt,"#ffde59"); }
@@ -957,86 +924,45 @@ function dealToColumn(col,amt,opt){
   updateHUD();
   return { isEnemy, killed };
 }
-function dealDirect(target,amt,r,c){
-  if(!target) return;
-  target.hp-=amt; dmgDealtThisTurn+=amt; hurt(target.el); slashAtSlot(fslotEl(r,c),fieldEl); dmgPop(target.el,"-"+amt,"#ffde59");
-  if(target.hp<=0) killEnemy(target); renderEnemies(); updateHUD();
-}
-function killEnemy(e){ for(let r=0;r<FROWS;r++)for(let c=0;c<FCOLS;c++) if(field[r][c]===e) field[r][c]=null;
-  if(e.el){ e.el.style.transition="transform .3s,opacity .3s"; e.el.style.transform="scale(0)"; e.el.style.opacity="0"; const el=e.el; setTimeout(()=>el.remove(),300);} }
-
+function dealDirect(target,amt,r,c){ if(!target) return; target.hp-=amt; dmgDealtThisTurn+=amt; hurt(target.el); slashAtSlot(fslotEl(r,c),fieldEl); dmgPop(target.el,"-"+amt,"#ffde59"); if(target.hp<=0) killEnemy(target); renderEnemies(); updateHUD(); }
+function killEnemy(e){ for(let r=0;r<FROWS;r++)for(let c=0;c<FCOLS;c++) if(field[r][c]===e) field[r][c]=null; if(e.el){ e.el.style.transition="transform .3s,opacity .3s"; e.el.style.transform="scale(0)"; e.el.style.opacity="0"; const el=e.el; setTimeout(()=>el.remove(),300);} }
 function applyDamageToPlayer(dmg,c){
-  /* 회피: 이 열이면 데미지 무효 */
   if(evadeCols.has(c)){ dmgPop(document.getElementById("hpBadge"),"💨회피!","#bfe4ff"); return; }
-
-  /* 기합: 다음 받는 데미지를 고정값으로 (1회) */
   if(capNextDmg!=null){ dmg=Math.min(dmg,capNextDmg); capNextDmg=null; renderBuffs(); }
-
-  let remain=dmg, absorbed=0;
-  const useDef=Math.min(colDef[c],remain); colDef[c]-=useDef; remain-=useDef; absorbed+=useDef;
-  if(absorbed>0){ defHitAnim(c); blockedThisTurn+=absorbed; }
-  renderColStats();
-  if(remain>0){ hp-=remain; redFlash(); centerDmg(remain); }
-  else { dmgPop(document.getElementById("hpBadge"),"방어!","#7ec8ff"); }
+  let remain=dmg, absorbed=0; const useDef=Math.min(colDef[c],remain); colDef[c]-=useDef; remain-=useDef; absorbed+=useDef;
+  if(absorbed>0){ defHitAnim(c); blockedThisTurn+=absorbed; } renderColStats();
+  if(remain>0){ hp-=remain; redFlash(); centerDmg(remain); } else { dmgPop(document.getElementById("hpBadge"),"방어!","#7ec8ff"); }
   if(thornsOn && absorbed>0){ bossHp-=absorbed; bossHurt(); dmgPop(document.getElementById("bossArt"),"⟳-"+absorbed,"#9cff5a"); }
   updateHUD();
 }
 
 async function enemyPhase(){
-  const animCfg = PARAMS.animations || {};
-  showBanner("적의 턴"); await sleep(animCfg.turnEndDelay || 450);
+  const animCfg=PARAMS.animations||{};
+  showBanner("적의 턴"); await sleep(animCfg.turnEndDelay||450);
   for(let c=0;c<FCOLS;c++){ const e=field[FROWS-1][c]; if(e){ if(e.stun>0){ e.stun=0; e.el&&e.el.classList.remove("stunned"); dmgPop(e.el,"기절!","#ffec5a"); await sleep(200); } else { await enemyAttack(e,c); if(hp<=0)return; } } }
   for(let c=0;c<FCOLS;c++){ const e=field[0][c]; if(e && !field[1][c]){ if(e.stun>0){ e.stun=0; e.el&&e.el.classList.remove("stunned"); } else { field[1][c]=e; field[0][c]=null; } } }
   renderEnemies(); await sleep(300);
-  await bossAct(); if(hp<=0)return;
-  renderEnemies(); renderColStats(); await sleep(250);
+  await bossAct(); if(hp<=0)return; renderEnemies(); renderColStats(); await sleep(250);
 }
 async function enemyAttack(e,c){ punch(e.el); applyDamageToPlayer(e.atk,c); await sleep(320); }
 
 function fieldCount(){ let n=0; for(let r=0;r<FROWS;r++)for(let c=0;c<FCOLS;c++) if(field[r][c]) n++; return n; }
 function openTopCols(){ const arr=[]; for(let c=0;c<FCOLS;c++) if(!field[0][c]) arr.push(c); return arr; }
-function lowestDefCols(n){
-  const arr=[]; for(let c=0;c<BCOLS;c++) arr.push({c,d:colDefTotal(c)});
-  arr.sort((a,b)=>a.d-b.d);
-  return arr.slice(0,n).map(o=>o.c);
-}
-function highestCards(n){
-  const arr=[];
-  for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){ const f=board[r][c]; if(f) arr.push({r,c,v:f.val}); }
-  arr.sort((a,b)=>b.v-a.v);
-  return arr.slice(0,n).map(o=>({r:o.r,c:o.c}));
-}
+function lowestDefCols(n){ const arr=[]; for(let c=0;c<BCOLS;c++) arr.push({c,d:colDefTotal(c)}); arr.sort((a,b)=>a.d-b.d); return arr.slice(0,n).map(o=>o.c); }
+function highestCards(n){ const arr=[]; for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){ const f=board[r][c]; if(f) arr.push({r,c,v:f.val}); } arr.sort((a,b)=>b.v-a.v); return arr.slice(0,n).map(o=>({r:o.r,c:o.c})); }
 function decideBossIntent(){
-  const aiCfg = PARAMS.ai || {};
-  const pData = getPhaseData(phase);
-
+  const aiCfg=PARAMS.ai||{}; const pData=getPhaseData(phase);
   if(bossStun>0){ bossStun=0; renderBossStun(); bossIntent={type:"stunned"}; renderBossIntent(); showBossMarks(); return; }
-
-  const mult=phase, n=fieldCount();
-  let choices;
-
-  const destroyTh = aiCfg.destroyIfEnemiesMoreThan || 3;
-  const summonTh = aiCfg.summonIfEnemiesLessThan || 2;
-
-  if(n >= destroyTh) choices=["attack","destroy"];
-  else if(n <= summonTh) choices=["summon"];
-  else choices=["summon","attack","destroy"];
-
+  const mult=phase, n=fieldCount(); let choices;
+  const destroyTh=aiCfg.destroyIfEnemiesMoreThan||3, summonTh=aiCfg.summonIfEnemiesLessThan||2;
+  if(n>=destroyTh) choices=["attack","destroy"]; else if(n<=summonTh) choices=["summon"]; else choices=["summon","attack","destroy"];
   const action=choices[Math.random()*choices.length|0];
-  if(action==="attack"){
-    bossIntent={type:"attack", val: pData.bossAttack, cols:lowestDefCols(mult)};
-  } else if(action==="destroy"){
-    bossIntent={type:"destroy", targets:highestCards(mult)};
-  } else {
-    const open=openTopCols();
-    bossIntent={type:"summon", cols:open.slice(0,mult)};
-  }
+  if(action==="attack"){ bossIntent={type:"attack", val:pData.bossAttack, cols:lowestDefCols(mult)}; }
+  else if(action==="destroy"){ bossIntent={type:"destroy", targets:highestCards(mult)}; }
+  else { bossIntent={type:"summon", cols:openTopCols().slice(0,mult)}; }
   renderBossIntent(); showBossMarks();
 }
-function refreshDestroyTarget(){
-  if(!bossIntent || bossIntent.type!=="destroy") return;
-  bossIntent.targets=highestCards(phase); showBossMarks();
-}
+function refreshDestroyTarget(){ if(!bossIntent || bossIntent.type!=="destroy") return; bossIntent.targets=highestCards(phase); showBossMarks(); }
 function renderBossIntent(){
   const icon=bossIntentEl.querySelector(".iIcon"), val=bossIntentEl.querySelector(".iVal");
   bossIntentEl.classList.remove("attack","summon","destroy");
@@ -1049,155 +975,75 @@ function renderBossIntent(){
 }
 function hideBossIntent(){ bossIntentEl.style.display="none"; bossIntentEl.classList.remove("pulse"); }
 function clearBossMarks(){ document.querySelectorAll(".colOverlay,.summonMark,.destroyMark").forEach(e=>e.remove()); }
-
 function showBossMarks(){
-  clearBossMarks();
-  if(!bossIntent) return;
-  if(bossIntent.type==="attack"){
-    (bossIntent.cols||[]).forEach(col=>{
-      const o=document.createElement("div"); o.className="colOverlay atkLine";
-      o.style.left=(col*CELL_W)+"px"; o.style.top="0";
-      o.style.width=CELL_W+"px"; o.style.height=(BROWS*CELL_H)+"px";
-      boardEl.appendChild(o);
-    });
-  } else if(bossIntent.type==="summon"){
-    (bossIntent.cols||[]).forEach(col=>{
-      const p=fieldSlotLocal(0,col);
-      const m=document.createElement("div"); m.className="summonMark"; m.textContent="🧌";
-      m.style.left=p.left+"px"; m.style.top=p.top+"px"; m.style.width=p.w+"px"; m.style.height=p.h+"px"; fieldEl.appendChild(m);
-    });
-  } else if(bossIntent.type==="destroy"){
-    (bossIntent.targets||[]).forEach(h=>{
-      if(h && board[h.r] && board[h.r][h.c]){
-        const p=boardSlotLocal(h.r,h.c);
-        const m=document.createElement("div"); m.className="destroyMark"; m.textContent="💥";
-        m.style.left=p.left+"px"; m.style.top=p.top+"px"; m.style.width=p.w+"px"; m.style.height=p.h+"px"; boardEl.appendChild(m);
-      }
-    });
-  }
+  clearBossMarks(); if(!bossIntent) return;
+  if(bossIntent.type==="attack"){ (bossIntent.cols||[]).forEach(col=>{ const o=document.createElement("div"); o.className="colOverlay atkLine"; o.style.left=(col*CELL_W)+"px"; o.style.top="0"; o.style.width=CELL_W+"px"; o.style.height=(BROWS*CELL_H)+"px"; boardEl.appendChild(o); }); }
+  else if(bossIntent.type==="summon"){ (bossIntent.cols||[]).forEach(col=>{ const p=fieldSlotLocal(0,col); const m=document.createElement("div"); m.className="summonMark"; m.textContent="🧌"; m.style.left=p.left+"px"; m.style.top=p.top+"px"; m.style.width=p.w+"px"; m.style.height=p.h+"px"; fieldEl.appendChild(m); }); }
+  else if(bossIntent.type==="destroy"){ (bossIntent.targets||[]).forEach(h=>{ if(h && board[h.r] && board[h.r][h.c]){ const p=boardSlotLocal(h.r,h.c); const m=document.createElement("div"); m.className="destroyMark"; m.textContent="💥"; m.style.left=p.left+"px"; m.style.top=p.top+"px"; m.style.width=p.w+"px"; m.style.height=p.h+"px"; boardEl.appendChild(m); } }); }
 }
 async function bossAct(){
   if(!bossIntent) return; clearBossMarks();
   if(bossIntent.type==="stunned"){ dmgPop(document.getElementById("bossArt"),"기절!","#ffec5a"); await sleep(300); return; }
-  if(bossIntent.type==="summon"){
-    let cols=(bossIntent.cols||[]).slice();
-    for(let i=0;i<cols.length;i++){ if(field[0][cols[i]]){ const alt=openTopCols().find(x=>!cols.includes(x)); if(alt!=null) cols[i]=alt; } }
-    for(const col of cols){ if(col!=null && !field[0][col]){ spawnAt(0,col); await sleep(260); } }
-  } else if(bossIntent.type==="attack"){
-    const art=document.getElementById("bossArt");
-    const pData = getPhaseData(phase);
-    for(const col of (bossIntent.cols||[])){ punch(art); applyDamageToPlayer(pData.bossAttack,col); await sleep(300); if(hp<=0) return; }
-  } else if(bossIntent.type==="destroy"){
-    const art=document.getElementById("bossArt"); punch(art);
-    let targets=(bossIntent.targets||[]);
-    if(!targets.length || targets.some(h=>!board[h.r]||!board[h.r][h.c])) targets=highestCards(phase);
-    for(const h of targets){ if(h && board[h.r] && board[h.r][h.c]){ destroyCard(h.r,h.c); await sleep(220); } }
-    renderColStats();
-  }
+  if(bossIntent.type==="summon"){ let cols=(bossIntent.cols||[]).slice(); for(let i=0;i<cols.length;i++){ if(field[0][cols[i]]){ const alt=openTopCols().find(x=>!cols.includes(x)); if(alt!=null) cols[i]=alt; } } for(const col of cols){ if(col!=null && !field[0][col]){ spawnAt(0,col); await sleep(260); } } }
+  else if(bossIntent.type==="attack"){ const art=document.getElementById("bossArt"); const pData=getPhaseData(phase); for(const col of (bossIntent.cols||[])){ punch(art); applyDamageToPlayer(pData.bossAttack,col); await sleep(300); if(hp<=0) return; } }
+  else if(bossIntent.type==="destroy"){ const art=document.getElementById("bossArt"); punch(art); let targets=(bossIntent.targets||[]); if(!targets.length || targets.some(h=>!board[h.r]||!board[h.r][h.c])) targets=highestCards(phase); for(const h of targets){ if(h && board[h.r] && board[h.r][h.c]){ destroyCard(h.r,h.c); await sleep(220); } } renderColStats(); }
 }
 function spawnAt(r,c,silent){
-  const pData = getPhaseData(phase);
-  const files = MON_FILES;
-  if(!files || files.length===0) return;
+  const pData=getPhaseData(phase); const files=MON_FILES; if(!files||files.length===0) return;
   const file=files[Math.random()*files.length|0];
-  const e={file,hp:pData.spawnHp,maxHp:pData.spawnHp,atk:pData.spawnAtk,stun:0,el:null};
-  field[r][c]=e;
+  const e={file,hp:pData.spawnHp,maxHp:pData.spawnHp,atk:pData.spawnAtk,stun:0,el:null}; field[r][c]=e;
   if(!silent){ renderEnemies(); if(e.el){ e.el.style.transition="none"; e.el.style.transform="scale(0)"; requestAnimationFrame(()=>{ e.el.style.transition="transform .3s"; e.el.style.transform="scale(1)"; }); } }
 }
 
 function slide(dir){
-  if(busy)return;
-  if(mana<SLIDE_COST){ flashBadge("manaBadge"); return; }
-
+  if(busy)return; if(mana<SLIDE_COST){ flashBadge("manaBadge"); return; }
   const nb=Array.from({length:BROWS},()=>Array(BCOLS).fill(null));
-  const boardCfg = PARAMS.board || {};
-  const slideRules = boardCfg.slideSpawnRules || {};
-
-  const rule = slideRules[dir] || { type: "def", val: 2 };
-  const spawnType = rule.type;
-  const spawnVal = rule.val;
-
-  function proc(getList,setList){
-    const K=(dir==='left'||dir==='right')?BROWS:BCOLS;
-    for(let k=0;k<K;k++){
-      const items=getList(k).filter(x=>x), out=[]; let i=0;
-      while(i<items.length){
-        if(i+1<items.length && items[i].val===items[i+1].val && items[i].val*2<=MERGE_CAP){
-          if(items[i].el) items[i].el.remove();
-          out.push({type:items[i+1].type, val:items[i].val*2, el:items[i+1].el, _merged:true});
-          i+=2;
-        } else { out.push(items[i]); i++; }
-      }
-      setList(k,out);
-    }
-  }
+  const boardCfg=PARAMS.board||{}; const slideRules=boardCfg.slideSpawnRules||{};
+  const rule=slideRules[dir]||{type:"def",val:2}; const spawnType=rule.type, spawnVal=rule.val;
+  function proc(getList,setList){ const K=(dir==='left'||dir==='right')?BROWS:BCOLS; for(let k=0;k<K;k++){ const items=getList(k).filter(x=>x), out=[]; let i=0; while(i<items.length){ if(i+1<items.length && items[i].val===items[i+1].val && items[i].val*2<=MERGE_CAP){ if(items[i].el) items[i].el.remove(); out.push({type:items[i+1].type, val:items[i].val*2, el:items[i+1].el, _merged:true}); i+=2; } else { out.push(items[i]); i++; } } setList(k,out); } }
   if(dir==='left') proc(r=>board[r],(r,o)=>{for(let c=0;c<BCOLS;c++)nb[r][c]=o[c]||null;});
   else if(dir==='right') proc(r=>board[r].slice().reverse(),(r,o)=>{for(let c=0;c<BCOLS;c++)nb[r][BCOLS-1-c]=o[c]||null;});
   else if(dir==='up') proc(c=>board.map(row=>row[c]),(c,o)=>{for(let r=0;r<BROWS;r++)nb[r][c]=o[r]||null;});
   else proc(c=>board.map(row=>row[c]).reverse(),(c,o)=>{for(let r=0;r<BROWS;r++)nb[BROWS-1-r][c]=o[r]||null;});
-
   const before=JSON.stringify(board.map(row=>row.map(x=>x?x.val+x.type:0)));
   board=nb;
   const after=JSON.stringify(board.map(row=>row.map(x=>x?x.val+x.type:0)));
-
   if(before===after){ renderCards(); return; }
-
-  mana-=SLIDE_COST;
-  renderCards();
-
-  for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){ const f=board[r][c];
-    if(f&&f._merged){ delete f._merged; if(f.el){ f.el.classList.remove("merged"); void f.el.offsetWidth; f.el.classList.add("merged"); setTimeout(()=>f.el&&f.el.classList.remove("merged"),260); } } }
-
-  setTimeout(()=>{
-    const empties=[];
-    for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++) if(!board[r][c]) empties.push([r,c]);
-
-    if(empties.length > 0) {
-      const [r,c] = empties[Math.random()*empties.length|0];
-      board[r][c] = { type: spawnType, val: spawnVal, el: null };
-      const nf=board[r][c];
-      renderCards();
-      if(nf&&nf.el){ nf.el.classList.add("spawning"); setTimeout(()=>nf.el&&nf.el.classList.remove("spawning"),300); }
-    }
-    renderColStats(); updateHUD(); refreshDestroyTarget();
-  },180);
-
+  mana-=SLIDE_COST; renderCards();
+  for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++){ const f=board[r][c]; if(f&&f._merged){ delete f._merged; if(f.el){ f.el.classList.remove("merged"); void f.el.offsetWidth; f.el.classList.add("merged"); setTimeout(()=>f.el&&f.el.classList.remove("merged"),260); } } }
+  setTimeout(()=>{ const empties=[]; for(let r=0;r<BROWS;r++)for(let c=0;c<BCOLS;c++) if(!board[r][c]) empties.push([r,c]); if(empties.length>0){ const [r,c]=empties[Math.random()*empties.length|0]; board[r][c]={type:spawnType,val:spawnVal,el:null}; const nf=board[r][c]; renderCards(); if(nf&&nf.el){ nf.el.classList.add("spawning"); setTimeout(()=>nf.el&&nf.el.classList.remove("spawning"),300); } } renderColStats(); updateHUD(); refreshDestroyTarget(); },180);
   renderColStats(); updateHUD(); refreshDestroyTarget();
 }
 
 function punch(el){ if(!el)return; el.classList.remove("punch"); void el.offsetWidth; el.classList.add("punch"); }
 function hurt(el){ if(!el)return; el.classList.remove("hurt"); void el.offsetWidth; el.classList.add("hurt"); setTimeout(()=>el.classList.remove("hurt"),400); }
-function slashAtSlot(slotEl,parent){
-  if(!slotEl) return;
-  const s=document.createElement("div"); s.className="slash";
-  s.style.left=slotEl.style.left; s.style.top=slotEl.style.top; s.style.width=slotEl.style.width; s.style.height=slotEl.style.height;
-  parent.appendChild(s); setTimeout(()=>s.remove(),320);
-}
+function slashAtSlot(slotEl,parent){ if(!slotEl) return; const s=document.createElement("div"); s.className="slash"; s.style.left=slotEl.style.left; s.style.top=slotEl.style.top; s.style.width=slotEl.style.width; s.style.height=slotEl.style.height; parent.appendChild(s); setTimeout(()=>s.remove(),320); }
 function defHitAnim(c){ const el=colStatsEl.children[c]; if(!el)return; el.classList.remove("defhit"); void el.offsetWidth; el.classList.add("defhit"); setTimeout(()=>el.classList.remove("defhit"),400); }
 function defGainAnim(c){ const el=colStatsEl.children[c]; if(!el)return; el.classList.remove("defgain"); void el.offsetWidth; el.classList.add("defgain"); setTimeout(()=>el.classList.remove("defgain"),400); }
-function bossHurt(){
-  const art=document.getElementById("bossArt");
-  art.classList.remove("hurt"); void art.offsetWidth; art.classList.add("hurt"); setTimeout(()=>art.classList.remove("hurt"),400);
-  const s=stageScale(), rect=art.getBoundingClientRect(), st=stageEl.getBoundingClientRect();
-  const el=document.createElement("div"); el.className="slash";
-  el.style.left=((rect.left-st.left)/s+rect.width/s/2-85)+"px"; el.style.top=((rect.top-st.top)/s+10)+"px";
-  el.style.width="170px"; el.style.height="170px";
-  gameEl.appendChild(el); setTimeout(()=>el.remove(),320);
-}
+function bossHurt(){ const art=document.getElementById("bossArt"); art.classList.remove("hurt"); void art.offsetWidth; art.classList.add("hurt"); setTimeout(()=>art.classList.remove("hurt"),400); const s=stageScale(), rect=art.getBoundingClientRect(), st=stageEl.getBoundingClientRect(); const el=document.createElement("div"); el.className="slash"; el.style.left=((rect.left-st.left)/s+rect.width/s/2-85)+"px"; el.style.top=((rect.top-st.top)/s+10)+"px"; el.style.width="170px"; el.style.height="170px"; gameEl.appendChild(el); setTimeout(()=>el.remove(),320); }
 function redFlash(){ const f=document.getElementById("redFlash"); f.classList.remove("on"); void f.offsetWidth; f.classList.add("on"); }
 function centerDmg(n){ const b=document.getElementById("centerDmg"); document.getElementById("centerDmgText").textContent="-"+n; b.classList.remove("show"); void b.offsetWidth; b.classList.add("show"); }
-function dmgPop(anchor,text,color){
-  if(!anchor) return;
-  const s=stageScale(), rect=anchor.getBoundingClientRect(), st=stageEl.getBoundingClientRect();
-  const p=document.createElement("div"); p.className="dmgPop"; p.textContent=text; p.style.color=color;
-  p.style.left=((rect.left-st.left)/s+rect.width/s/2-20)+"px"; p.style.top=((rect.top-st.top)/s)+"px";
-  gameEl.appendChild(p); setTimeout(()=>p.remove(),800);
-}
+function dmgPop(anchor,text,color){ if(!anchor) return; const s=stageScale(), rect=anchor.getBoundingClientRect(), st=stageEl.getBoundingClientRect(); const p=document.createElement("div"); p.className="dmgPop"; p.textContent=text; p.style.color=color; p.style.left=((rect.left-st.left)/s+rect.width/s/2-20)+"px"; p.style.top=((rect.top-st.top)/s)+"px"; gameEl.appendChild(p); setTimeout(()=>p.remove(),800); }
 function flashBadge(id){ const b=document.getElementById(id); b.animate([{transform:'scale(1)'},{transform:'scale(1.15)'},{transform:'scale(1)'}],{duration:250}); }
 function showBanner(t){ const b=document.getElementById("banner"); document.getElementById("bannerText").textContent=t; b.classList.remove("show"); void b.offsetWidth; b.classList.add("show"); }
-function win(){ hideBossIntent(); clearBossMarks(); showBanner("최종 승리!"); }
-function lose(){ hideBossIntent(); clearBossMarks(); showBanner("패배..."); setTimeout(()=>{ if(confirm("패배! 다시 시작?")) location.reload(); },800); }
 
+/* ===== 덱 보기 ===== */
+document.getElementById("deckViewBtn").addEventListener("click",()=>{
+  const row=document.getElementById("deckViewRow"); row.innerHTML="";
+  document.getElementById("deckViewCount").textContent=RUN.deckList.length;
+  const counts={}; RUN.deckList.forEach(k=>counts[k]=(counts[k]||0)+1);
+  Object.keys(counts).forEach(key=>{
+    const def=CARDS[key]; if(!def) return;
+    const el=document.createElement("div"); el.className="rwCard "+def.type;
+    const fallbackIcon=def.type==="def"?SHIELD:SWORD;
+    el.innerHTML=`<div class="hcost">${def.cost}</div><div class="hname">${def.name} ×${counts[key]}</div><img class="hicon" src="${iconURL(def)}" onerror="this.src='${fallbackIcon}'"><div class="hdesc">${(def.desc||"").replace(/\n/g,"<br>")}</div>`;
+    row.appendChild(el);
+  });
+  document.getElementById("deckView").classList.add("on");
+});
+document.getElementById("deckViewClose").addEventListener("click",()=>{ document.getElementById("deckView").classList.remove("on"); });
+
+/* ===== 입력 처리 ===== */
 let tsx,tsy,swiping=false;
 boardEl.addEventListener("touchstart",e=>{ tsx=e.touches[0].clientX; tsy=e.touches[0].clientY; swiping=true; },{passive:true});
 boardEl.addEventListener("touchend",e=>{ if(!swiping)return; swiping=false; const t=e.changedTouches[0]; doSwipe(t.clientX-tsx,t.clientY-tsy); },{passive:true});
@@ -1205,21 +1051,18 @@ let bmx,bmy,bmdown=false;
 boardEl.addEventListener("mousedown",e=>{ bmx=e.clientX; bmy=e.clientY; bmdown=true; });
 addEventListener("mouseup",e=>{ if(!bmdown)return; bmdown=false; doSwipe(e.clientX-bmx,e.clientY-bmy); });
 function doSwipe(dx,dy){ if(Math.abs(dx)<30&&Math.abs(dy)<30)return; if(Math.abs(dx)>Math.abs(dy)) slide(dx>0?'right':'left'); else slide(dy>0?'down':'up'); }
-addEventListener("keydown",e=>{
-  if(e.key==="ArrowLeft")slide('left'); else if(e.key==="ArrowRight")slide('right');
-  else if(e.key==="ArrowUp")slide('up'); else if(e.key==="ArrowDown")slide('down');
-  else if(e.key===" "||e.key==="Enter"){ e.preventDefault(); endTurn(); }
-});
+addEventListener("keydown",e=>{ if(e.key==="ArrowLeft")slide('left'); else if(e.key==="ArrowRight")slide('right'); else if(e.key==="ArrowUp")slide('up'); else if(e.key==="ArrowDown")slide('down'); else if(e.key===" "||e.key==="Enter"){ e.preventDefault(); if(!document.getElementById("mapScreen").classList.contains("on")) endTurn(); } });
 
+/* ===== 부트스트랩 ===== */
 (async function boot(){
   try{
     await loadData();
     for(const k in CARDS){ CARDS[k].__key = k; }
     document.getElementById("loadMsg").classList.add("hidden");
+    showBattleUI(false);
     initArchSelect();
-  }catch(err){
-    // showLoadError / showError 에서 이미 처리됨
-  }
+    showScreen("arch");
+  }catch(err){ /* showLoadError 처리됨 */ }
 })();
 </script>
 </body>
