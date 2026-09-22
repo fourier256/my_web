@@ -262,5 +262,381 @@
         ]
       }
     }
+    "shield_bash": {
+      "id": "shield_bash",
+      "name": "방패 밀쳐내기",
+      "type": "skill",
+      "cost": 4,
+      "tile": 0,
+      "icon": "sbed/shield-bash.svg",
+      "desc": "이 열의 방어력만큼의 데미지로 공격합니다.",
+      "kw": ["스킬", "타격"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": { "type": "custom", "handler": "shieldbash" }
+    },
+
+    "shield_lift": {
+      "id": "shield_lift",
+      "name": "방패 들어올리기",
+      "type": "skill",
+      "cost": 4,
+      "tile": 0,
+      "icon": "sbed/round-shield.svg",
+      "desc": "방어력을 8 얻고 카드를 3 장 뽑습니다.",
+      "kw": ["스킬", "드로우"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "addColDef", "amount": 8 },
+          { "op": "draw", "amount": 3 }
+        ]
+      }
+    },
+
+    "absolute_defense": {
+      "id": "absolute_defense",
+      "name": "절대적 방어",
+      "type": "skill",
+      "cost": 8,
+      "tile": 0,
+      "icon": "sbed/fortress.svg",
+      "desc": "전역 방어력을 2 배로 올리고 카드를 2 장 뽑습니다.",
+      "kw": ["스킬", "전역"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "multiplyAllColDef", "mult": 2 },
+          { "op": "draw", "amount": 2 }
+        ]
+      }
+    },
+
+    "build_tower": {
+      "id": "build_tower",
+      "name": "탑 쌓기",
+      "type": "skill",
+      "cost": 8,
+      "tile": 0,
+      "icon": "sbed/stone-tower.svg",
+      "desc": "다음 턴이 시작될 때 방어력을 1 회 잃지 않습니다.",
+      "kw": ["스킬"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "keepDefNextTurn", "amount": 1 }
+        ]
+      }
+    },
+
+    "evade": {
+      "id": "evade",
+      "name": "회피",
+      "type": "skill",
+      "cost": 4,
+      "tile": 0,
+      "icon": "lorc/wingfoot.svg",
+      "desc": "이 열에서 받는 공격 데미지를 받지 않습니다.",
+      "kw": ["스킬"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "evadeColumn" }
+        ]
+      }
+    },
+
+    "brace": {
+      "id": "brace",
+      "name": "기합",
+      "type": "skill",
+      "cost": 4,
+      "tile": 0,
+      "icon": "lorc/muscle-up.svg",
+      "desc": "다음에 받는 데미지를 1 로 고정합니다.",
+      "kw": ["스킬"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "capNextDamage", "amount": 1 }
+        ]
+      }
+    },
+
+    "bloodletting": {
+      "id": "bloodletting",
+      "name": "사혈",
+      "type": "skill",
+      "cost": 2,
+      "tile": 0,
+      "icon": "lorc/bleeding-wound.svg",
+      "desc": "체력을 4 잃고 마나를 6 회복하며 카드를 3 장 뽑습니다. 다음 턴이 시작되면 이 카드를 손으로 가져옵니다.",
+      "kw": ["스킬", "드로우"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "loseHp", "amount": 4, "flash": true, "pop": true },
+          { "op": "gainMana", "amount": 6 },
+          { "op": "draw", "amount": 3 },
+          { "op": "returnToHandNextTurn", "id": "bloodletting" }
+        ]
+      }
+    },
+
+    "berserk_strike": {
+      "id": "berserk_strike",
+      "name": "광전사의 일격",
+      "type": "skill",
+      "cost": 4,
+      "tile": 0,
+      "icon": "lorc/saber-slash.svg",
+      "desc": "체력을 4 잃고 24 데미지로 공격합니다. 이 공격으로 적이 죽으면 체력을 6 회복합니다.",
+      "kw": ["스킬", "타격"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "loseHp", "amount": 4, "flash": true, "pop": true },
+          { "op": "damageColumn", "amount": 24, "useStr": false, "onKill": { "healHp": 6 } }
+        ]
+      }
+    },
+
+    "pommel_strike": {
+      "id": "pommel_strike",
+      "name": "포멜 타격",
+      "type": "skill",
+      "cost": 4,
+      "tile": 0,
+      "icon": "lorc/pommel-horse.svg",
+      "desc": "8 데미지를 입히고 카드를 2 장 뽑습니다. 이 공격으로 적이 죽으면 2 장을 추가로 뽑습니다.",
+      "kw": ["스킬", "타격", "드로우"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "damageColumn", "amount": 8, "useStr": false, "onKill": { "draw": 2 } },
+          { "op": "draw", "amount": 2 }
+        ]
+      }
+    },
+
+    "thorn_armor": {
+      "id": "thorn_armor",
+      "name": "가시 갑옷",
+      "type": "def",
+      "cost": 8,
+      "tile": 16,
+      "icon": "lorc/thorny-vine.svg",
+      "desc": "다음 적 턴에 막아낸 데미지를 그대로 반사합니다.",
+      "kw": ["가시"],
+      "effect": { "type": "custom", "handler": "thorns" }
+    },
+
+    "lifesteal": {
+      "id": "lifesteal",
+      "name": "흡혈",
+      "type": "skill",
+      "cost": 2,
+      "tile": 0,
+      "icon": "lorc/vampire-dracula.svg",
+      "desc": "이번 턴이 끝날 때, 이번 턴에 입힌 데미지의 10% 를 체력으로 회복합니다.",
+      "kw": ["스킬"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "lifestealThisTurn", "pct": 10 }
+        ]
+      }
+    },
+
+    "head_smash": {
+      "id": "head_smash",
+      "name": "머리 후려치기",
+      "type": "skill",
+      "cost": 4,
+      "tile": 0,
+      "icon": "lorc/mace-head.svg",
+      "desc": "4 데미지를 입히고 기절시킵니다.",
+      "kw": ["스킬", "타격", "기절"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "damageColumn", "amount": 4, "useStr": false, "stun": true }
+        ]
+      }
+    },
+
+    "skull_crack": {
+      "id": "skull_crack",
+      "name": "뚝배기 깨기",
+      "type": "skill",
+      "cost": 4,
+      "tile": 0,
+      "icon": "lorc/cracked-helm.svg",
+      "desc": "8 데미지를 입힙니다. 대상이 기절 상태라면 18 데미지를 입힙니다.",
+      "kw": ["스킬", "타격"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "damageColumn", "amount": 8, "useStr": false, "bonusIfStunned": 10 }
+        ]
+      }
+    },
+
+    "shove": {
+      "id": "shove",
+      "name": "밀쳐내기",
+      "type": "skill",
+      "cost": 4,
+      "tile": 0,
+      "icon": "lorc/push.svg",
+      "desc": "8 데미지를 입히고, 뒤가 비어 있다면 1 칸 밀어냅니다. 카드를 2 장 뽑습니다.",
+      "kw": ["스킬", "타격", "드로우"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "damageColumn", "amount": 8, "useStr": false, "pushBack": 1 },
+          { "op": "draw", "amount": 2 }
+        ]
+      }
+    },
+
+    "multi_strike": {
+      "id": "multi_strike",
+      "name": "다단 공격",
+      "type": "skill",
+      "cost": 4,
+      "tile": 0,
+      "icon": "lorc/divert.svg",
+      "desc": "6 데미지로 2 번 공격합니다.",
+      "kw": ["스킬", "타격"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "damageColumn", "amount": 6, "useStr": false, "times": 2 }
+        ]
+      }
+    },
+
+    "dempsey_roll": {
+      "id": "dempsey_roll",
+      "name": "뎀프시 롤",
+      "type": "skill",
+      "cost": 8,
+      "tile": 0,
+      "icon": "lorc/boxing-glove.svg",
+      "desc": "4 데미지로 6 번 공격합니다.",
+      "kw": ["스킬", "타격"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "damageColumn", "amount": 4, "useStr": false, "times": 6 }
+        ]
+      }
+    },
+
+    "gradual_overload": {
+      "id": "gradual_overload",
+      "name": "점진적 과부하",
+      "type": "def",
+      "cost": 2,
+      "tile": 4,
+      "icon": "lorc/weight-lifting-up.svg",
+      "desc": "힘을 1 얻습니다.",
+      "kw": [],
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "addStrength", "amount": 1 }
+        ]
+      }
+    },
+
+    "gluttony": {
+      "id": "gluttony",
+      "name": "폭식",
+      "type": "skill",
+      "cost": 8,
+      "tile": 0,
+      "icon": "lorc/meal.svg",
+      "desc": "힘을 4 얻습니다.",
+      "kw": ["스킬"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "addStrength", "amount": 4 }
+        ]
+      }
+    },
+
+    "absolute_power": {
+      "id": "absolute_power",
+      "name": "절대적인 힘",
+      "type": "skill",
+      "cost": 8,
+      "tile": 0,
+      "icon": "lorc/fist.svg",
+      "desc": "이번 턴에 힘을 2 배로 올리고 마나를 4 회복하며 카드를 2 장 뽑습니다.",
+      "kw": ["스킬", "압도적인힘"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "setTempStrMult", "mult": 2 },
+          { "op": "gainMana", "amount": 4 },
+          { "op": "draw", "amount": 2 }
+        ]
+      }
+    },
+
+    "press_on": {
+      "id": "press_on",
+      "name": "몰아붙이기",
+      "type": "skill",
+      "cost": 2,
+      "tile": 0,
+      "icon": "lorc/charging-bull.svg",
+      "desc": "2 데미지를 입힙니다. 대상 뒤가 비어 있지 않다면 8 데미지를 입힙니다. 이 카드를 한 장 손으로 가져옵니다.",
+      "kw": ["스킬", "타격"],
+      "placesTile": false,
+      "destroysCover": true,
+      "effect": {
+        "type": "simple",
+        "ops": [
+          { "op": "damageColumn", "amount": 2, "useStr": false, "bonusIfBackOccupied": 6 },
+          { "op": "addCardToHand", "id": "press_on" }
+        ]
+      }
+    }
   }
 }
