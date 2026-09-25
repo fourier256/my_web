@@ -1,0 +1,76 @@
+file	korean	english	section	px
+card_strike.webp	타격	Strike	3.1. 시작	192x272
+card_eruption.webp	분화	Eruption	3.1. 시작	192x272
+card_defend.webp	수비	Defend	3.1. 시작	193x271
+card_vigilance.webp	경각	Vigilance	3.1. 시작	193x271
+card_crush_joints.webp	관절 부수기	Crush Joints	3.2.1. 일반	192x272
+card_follow_up.webp	뒤처리	Follow-Up	3.2.1. 일반	192x272
+card_sash_whip.webp	벨트 휘두르기	Sash Whip	3.2.1. 일반	192x272
+card_just_lucky.webp	요행	Just Lucky	3.2.1. 일반	192x272
+card_cut_through_fate.webp	운명 가르기	Cut Through Fate	3.2.1. 일반	192x272
+card_flurry_of_blows.webp	일진광풍	Flurry of Blows	3.2.1. 일반	192x272
+card_empty_fist.webp	정권 수양	Empty Fist	3.2.1. 일반	192x272
+card_consecrate.webp	축성	Consecrate	3.2.1. 일반	192x272
+card_bowling_bash.webp	충돌 강타	Bowling Bash	3.2.1. 일반	192x272
+card_flying_sleeves.webp	흩날리는 소매	Flying Sleeves	3.2.1. 일반	192x272
+card_signature_move.webp	개인기	Signature Move	3.2.2. 특별	192x272
+card_tantrum.webp	격분	Tantrum	3.2.2. 특별	192x272
+card_conclude.webp	결론	Conclude	3.2.2. 특별	192x272
+card_wheel_kick.webp	돌려차기	Wheel Kick	3.2.2. 특별	192x272
+card_wallop.webp	맹공	Wallop	3.2.2. 특별	192x272
+card_fear_no_evil.webp	무외	Fear No Evil	3.2.2. 특별	192x272
+card_talk_to_the_hand.webp	손절	Talk to the Hand	3.2.2. 특별	194x271
+card_sands_of_time.webp	시간의 모래	Sands of Time	3.2.2. 특별	192x272
+card_reach_heaven.webp	천국의 계단	Reach Heaven	3.2.2. 특별	192x272
+card_carve_reality.webp	현실 개척	Carve Reality	3.2.2. 특별	192x272
+card_windmill_strike.webp	회오리 타격	Windmill Strike	3.2.2. 특별	192x272
+card_weave.webp	횡행	Weave	3.2.2. 특별	192x272
+card_lesson_learned.webp	교훈	Lesson Learned	3.2.3. 희귀	192x272
+card_brilliance.webp	광휘	Brilliance	3.2.3. 희귀	192x272
+card_ragnarok.webp	라그나로크	Ragnarok	3.2.3. 희귀	192x272
+card_tranquility.webp	고요함	Tranquility	3.3.1. 일반	193x271
+card_pressure_points.webp	급소	Pressure Points	3.3.1. 일반	193x271
+card_crescendo.webp	백열	Crescendo	3.3.1. 일반	193x271
+card_protect.webp	보호	Protect	3.3.1. 일반	193x271
+card_prostrate.webp	부복	Prostrate	3.3.1. 일반	193x271
+card_empty_body.webp	육체 수양	Empty Body	3.3.1. 일반	193x271
+card_halt.webp	저지	Halt	3.3.1. 일반	193x271
+card_third_eye.webp	제 3의 눈	Third Eye	3.3.1. 일반	193x271
+card_evaluate.webp	평가	Evaluate	3.3.1. 일반	193x271
+card_pray.webp	기도	Pray	3.3.2. 특별	193x271
+card_inner_peace.webp	내면의 평화	Inner Peace	3.3.2. 특별	193x271
+card_simmering_fury.webp	들끓는 울화	Simmering Fury	3.3.2. 특별	193x271
+card_indignation.webp	분개	Indignation	3.3.2. 특별	193x271
+card_wreath_of_flame.webp	불의 고리	Wreath of Flame	3.3.2. 특별	193x271
+card_meditate.webp	사색	Meditate	3.3.2. 특별	193x271
+card_perseverance.webp	인내	Perseverance	3.3.2. 특별	193x271
+card_wave_of_the_hand.webp	장법	Wave of the Hand	3.3.2. 특별	193x271
+card_empty_mind.webp	정신 수양	Empty Mind	3.3.2. 특별	193x271
+card_sanctity.webp	존엄	Sanctity	3.3.2. 특별	193x271
+card_deceive_reality.webp	현실 속이기	Deceive Reality	3.3.2. 특별	193x271
+card_collect.webp	수집	Collect	3.3.2. 특별	193x271
+card_worship.webp	숭배	Worship	3.3.2. 특별	193x271
+card_foreign_influence.webp	외세	Foreign Influence	3.3.2. 특별	193x271
+card_swivel.webp	회전	Swivel	3.3.2. 특별	193x271
+card_deus_ex_machina.webp	데엑마	Deus Ex Machina	3.3.3. 희귀	193x271
+card_conjure_blade.webp	마술 칼날	Conjure Blade	3.3.3. 희귀	193x271
+card_blasphemy.webp	신성 모독	Blasphemy	3.3.3. 희귀	193x271
+card_judgment.webp	심판	Judgment	3.3.3. 희귀	193x271
+card_alpha.webp	알파	Alpha	3.3.3. 희귀	193x271
+card_wish.webp	염원	Wish	3.3.3. 희귀	193x271
+card_spirit_shield.webp	영혼 방패	Spirit Shield	3.3.3. 희귀	193x271
+card_omniscience.webp	전지	Omniscience	3.3.3. 희귀	193x271
+card_vault.webp	회피 도약	Vault	3.3.3. 희귀	193x271
+card_scrawl.webp	휘갈김	Scrawl	3.3.3. 희귀	193x271
+card_fasting.webp	단식	Fasting	3.4.1. 특별	192x264
+card_mental_fortress.webp	마음의 요새	Mental Fortress	3.4.1. 특별	189x266
+card_foresight.webp	선견지명	Foresight	3.4.1. 특별	189x266
+card_like_water.webp	여류	Like Water	3.4.1. 특별	185x266
+card_nirvana.webp	열반	Nirvana	3.4.1. 특별	187x265
+card_battle_hymn.webp	전투 찬가	Battle Hymn	3.4.1. 특별	187x265
+card_rushdown.webp	추월	Rushdown	3.4.1. 특별	187x265
+card_study.webp	학습	Study	3.4.1. 특별	187x265
+card_establishment.webp	지배	Establishment	3.4.2. 희귀	187x265
+card_devotion.webp	헌신	Devotion	3.4.2. 희귀	187x265
+card_master_reality.webp	현실 지배	Master Reality	3.4.2. 희귀	187x265
+card_deva_form.webp	천신의 형상	Deva Form	3.4.2. 희귀	187x265
