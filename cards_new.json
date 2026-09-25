@@ -1,0 +1,6300 @@
+{
+  "cards": {
+    "strike": {
+      "name": "타격",
+      "en": "Strike",
+      "type": "atk",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [],
+      "desc": "공격 타일(2)을 놓는다.\n턴 종료 시 그 열에 2+힘 피해."
+    },
+    "defend": {
+      "name": "수비",
+      "en": "Defend",
+      "type": "def",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "sbed/shield.svg",
+      "kw": [],
+      "desc": "방어 타일(2)을 놓는다.\n턴 종료 시 그 열 방어 +2."
+    },
+    "bash": {
+      "name": "강타",
+      "en": "Bash",
+      "type": "atk",
+      "cost": 2,
+      "coverNeed": 2,
+      "tile": 4,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "기절"
+      ],
+      "desc": "공격 타일(4)을 놓고, 그 열에 즉시 4 피해를 주고 앞의 적을 기절시킨다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4,
+            "stun": true
+          }
+        ]
+      }
+    },
+    "ascenders_bane": {
+      "name": "승천의 재앙",
+      "en": "Ascender's Bane",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 99,
+      "placesTile": false,
+      "destroysCover": false,
+      "status": true,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "저주"
+      ],
+      "desc": "플레이할 수 없다.\n턴 종료 시 버려진다."
+    },
+    "anger": {
+      "name": "분노",
+      "en": "Anger",
+      "type": "atk",
+      "cost": 0,
+      "coverNeed": 2,
+      "tile": 2,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [],
+      "desc": "공격 타일(2)을 놓는다.\n다음 턴 손에 분노가 추가된다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addCardToHand",
+            "id": "anger"
+          }
+        ]
+      }
+    },
+    "armaments": {
+      "name": "무장",
+      "en": "Armaments",
+      "type": "def",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "sbed/shield.svg",
+      "kw": [],
+      "desc": "방어 타일(2)을 놓고 열 방어 +5.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "body_slam": {
+      "name": "몸통 박치기",
+      "en": "Body Slam",
+      "type": "atk",
+      "cost": 1,
+      "coverNeed": 8,
+      "tile": 8,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "lorc/broadsword.svg",
+      "kw": [
+        "변환"
+      ],
+      "desc": "타일(8)을 공격 타일(8)로 뒤집는다.\n주로 두꺼운 방어 타일을 공격으로 바꾼다."
+    },
+    "clash": {
+      "name": "충돌",
+      "en": "Clash",
+      "type": "atk",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "밀어내기"
+      ],
+      "desc": "공격 타일(2)을 놓고 3 피해를 주며\n앞의 적을 뒤로 밀어낸다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3,
+            "pushBack": 1
+          }
+        ]
+      }
+    },
+    "cleave": {
+      "name": "횡베기",
+      "en": "Cleave",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 적에게 4 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "clothesline": {
+      "name": "의수",
+      "en": "Clothesline",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "밀어내기"
+      ],
+      "desc": "6 피해를 주고 앞의 적을 뒤로 밀어낸다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 6,
+            "pushBack": 1
+          }
+        ]
+      }
+    },
+    "flex": {
+      "name": "유연성",
+      "en": "Flex",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": false,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "힘",
+        "즉시"
+      ],
+      "desc": "이번 턴 힘 2배.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "setTempStrMult",
+            "mult": 2
+          }
+        ]
+      }
+    },
+    "havoc": {
+      "name": "난동",
+      "en": "Havoc",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "exhaust": true,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "마나 +3, 카드를 1장 뽑는다. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 3
+          },
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "headbutt": {
+      "name": "박치기",
+      "en": "Headbutt",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [],
+      "desc": "5 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "heavy_blade": {
+      "name": "대검",
+      "en": "Heavy Blade",
+      "type": "atk",
+      "cost": 2,
+      "coverNeed": 4,
+      "tile": 4,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "lorc/broadsword.svg",
+      "kw": [
+        "힘연동"
+      ],
+      "desc": "공격 타일(4)을 놓고,\n힘의 3배만큼 즉시 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 0,
+            "useStr": true,
+            "strMult": 3
+          }
+        ]
+      }
+    },
+    "iron_wave": {
+      "name": "강철 파도",
+      "en": "Iron Wave",
+      "type": "atk",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [],
+      "desc": "공격 타일(2)을 놓고 열 방어 +5.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "perfected_strike": {
+      "name": "완벽한 타격",
+      "en": "Perfected Strike",
+      "type": "atk",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [],
+      "desc": "공격 타일(2)을 놓고 2 피해.\n같은 열에 적이 2명이면 +4 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 2,
+            "bonusIfBackOccupied": 4
+          }
+        ]
+      }
+    },
+    "pommel_strike": {
+      "name": "칼등 치기",
+      "en": "Pommel Strike",
+      "type": "atk",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [],
+      "desc": "공격 타일(2)을 놓고 카드를 1장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "shrug_it_off": {
+      "name": "어깨 털기",
+      "en": "Shrug It Off",
+      "type": "def",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "sbed/shield.svg",
+      "kw": [],
+      "desc": "방어 타일(2)을 놓고 카드를 1장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "sword_and_board": {
+      "name": "검과 방패",
+      "en": "Sword and Board",
+      "type": "def",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 4,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "sbed/shield.svg",
+      "kw": [],
+      "desc": "방어 타일(4)을 놓고 2 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "thunderclap": {
+      "name": "천둥소리",
+      "en": "Thunderclap",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": false,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 적에게 2 피해.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "twin_strike": {
+      "name": "이중 타격",
+      "en": "Twin Strike",
+      "type": "atk",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [],
+      "desc": "공격 타일(2)을 놓고 2 피해를 두 번 준다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 2,
+            "times": 2
+          }
+        ]
+      }
+    },
+    "wild_strike": {
+      "name": "거친 타격",
+      "en": "Wild Strike",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "상태"
+      ],
+      "desc": "7 피해.\n다음 턴 손에 상처가 추가된다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 7
+          },
+          {
+            "op": "addCardToHand",
+            "id": "wound"
+          }
+        ]
+      }
+    },
+    "battle_trance": {
+      "name": "전투 몰입",
+      "en": "Battle Trance",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [],
+      "desc": "타일을 태우고 카드를 3장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "blood_for_blood": {
+      "name": "피의 대가",
+      "en": "Blood for Blood",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/blood.svg",
+      "kw": [],
+      "desc": "10 피해. 기절한 적에게 +6 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 10,
+            "bonusIfStunned": 6
+          }
+        ]
+      }
+    },
+    "bloodletting": {
+      "name": "사혈",
+      "en": "Bloodletting",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": false,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "체력을 3 잃고 마나 +4.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "loseHp",
+            "amount": 3
+          },
+          {
+            "op": "gainMana",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "burning_pact": {
+      "name": "불타는 서약",
+      "en": "Burning Pact",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/campfire.svg",
+      "kw": [],
+      "desc": "덮은 타일을 태워 없애고\n카드를 2장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "carnage": {
+      "name": "학살",
+      "en": "Carnage",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [],
+      "desc": "12 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 12
+          }
+        ]
+      }
+    },
+    "combust": {
+      "name": "연소",
+      "en": "Combust",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "흑마법",
+        "전체"
+      ],
+      "desc": "체력을 2 잃고 모든 적에게 5 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "loseHp",
+            "amount": 2
+          },
+          {
+            "op": "damageAll",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "dark_embrace": {
+      "name": "어둠의 포옹",
+      "en": "Dark Embrace",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "exhaust": true,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "타일을 태우고 카드를 3장 뽑는다. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "disarm": {
+      "name": "무장 해제",
+      "en": "Disarm",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "exhaust": true,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "기절",
+        "소멸"
+      ],
+      "desc": "앞의 적(없으면 보스)을 기절시킨다. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 0,
+            "stun": true
+          }
+        ]
+      }
+    },
+    "dropkick": {
+      "name": "드롭킥",
+      "en": "Dropkick",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [],
+      "desc": "5 피해. 기절한 적에게 +5 피해.\n처치하면 카드를 1장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 5,
+            "bonusIfStunned": 5,
+            "onKill": {
+              "draw": 1
+            }
+          }
+        ]
+      }
+    },
+    "dual_wield": {
+      "name": "쌍수",
+      "en": "Dual Wield",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": false,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [],
+      "desc": "카드를 2장 뽑는다.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "entrench": {
+      "name": "참호",
+      "en": "Entrench",
+      "type": "def",
+      "cost": 2,
+      "coverNeed": 2,
+      "tile": 8,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "유지"
+      ],
+      "desc": "방어 타일(8)을 놓고,\n이번 턴 방어가 다음 턴에도 유지된다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "keepDefNextTurn",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "fiend_fire": {
+      "name": "마귀의 화염",
+      "en": "Fiend Fire",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "exhaust": true,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "5 피해를 3번 준다. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 5,
+            "times": 3
+          }
+        ]
+      }
+    },
+    "flame_barrier": {
+      "name": "화염 방벽",
+      "en": "Flame Barrier",
+      "type": "def",
+      "cost": 2,
+      "coverNeed": 2,
+      "tile": 4,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "가시"
+      ],
+      "desc": "방어 타일(4)을 놓고 가시를 두른다 —\n이번 턴 막아낸 피해를 보스에게 되돌린다.",
+      "effect": {
+        "type": "custom",
+        "handler": "thorns"
+      }
+    },
+    "ghostly_armor": {
+      "name": "유령 갑주",
+      "en": "Ghostly Armor",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "회피"
+      ],
+      "desc": "카드를 낸 열로 오는 공격을\n이번 턴 완전히 회피한다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "evadeColumn"
+          }
+        ]
+      }
+    },
+    "hemokinesis": {
+      "name": "혈역학",
+      "en": "Hemokinesis",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "체력을 2 잃고 8 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "loseHp",
+            "amount": 2
+          },
+          {
+            "op": "damageColumn",
+            "amount": 8
+          }
+        ]
+      }
+    },
+    "inflame": {
+      "name": "격화",
+      "en": "Inflame",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": false,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "힘"
+      ],
+      "desc": "힘 +2 (전투가 끝날 때까지).\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addStrength",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "intimidate": {
+      "name": "위압",
+      "en": "Intimidate",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "기합"
+      ],
+      "desc": "위압적으로 노려\n다음 받는 피해를 4로 고정한다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "capNextDamage",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "metallicize": {
+      "name": "금속화",
+      "en": "Metallicize",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": false,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "유지",
+        "전체"
+      ],
+      "desc": "모든 열 방어 +3,\n방어가 다음 턴에도 유지된다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addAllColDef",
+            "amount": 3
+          },
+          {
+            "op": "keepDefNextTurn",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "power_through": {
+      "name": "강행",
+      "en": "Power Through",
+      "type": "def",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 4,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "상태"
+      ],
+      "desc": "방어 타일(4)을 놓는다.\n다음 턴 손에 상처가 2장 추가된다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addCardToHand",
+            "id": "wound"
+          },
+          {
+            "op": "addCardToHand",
+            "id": "wound"
+          }
+        ]
+      }
+    },
+    "pummel": {
+      "name": "연타",
+      "en": "Pummel",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [],
+      "desc": "2 피해를 4번 준다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 2,
+            "times": 4
+          }
+        ]
+      }
+    },
+    "rage": {
+      "name": "격노",
+      "en": "Rage",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [],
+      "desc": "열 방어 +6.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 6
+          }
+        ]
+      }
+    },
+    "rampage": {
+      "name": "폭주",
+      "en": "Rampage",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "힘연동"
+      ],
+      "desc": "힘이 닿는 6 피해 (힘 1당 +1).",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 6,
+            "useStr": true
+          }
+        ]
+      }
+    },
+    "reckless_charge": {
+      "name": "무모한 돌진",
+      "en": "Reckless Charge",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "상태"
+      ],
+      "desc": "7 피해.\n다음 턴 손에 혼미가 추가된다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 7
+          },
+          {
+            "op": "addCardToHand",
+            "id": "dazed"
+          }
+        ]
+      }
+    },
+    "rupture": {
+      "name": "파열",
+      "en": "Rupture",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": false,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "힘",
+        "흑마법"
+      ],
+      "desc": "체력을 3 잃고 힘 +2.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "loseHp",
+            "amount": 3
+          },
+          {
+            "op": "addStrength",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "searing_blow": {
+      "name": "작열하는 일격",
+      "en": "Searing Blow",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 4,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/campfire.svg",
+      "kw": [],
+      "desc": "8 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 8
+          }
+        ]
+      }
+    },
+    "second_wind": {
+      "name": "숨 고르기",
+      "en": "Second Wind",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 열 방어 +8.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addAllColDef",
+            "amount": 8
+          }
+        ]
+      }
+    },
+    "seeing_red": {
+      "name": "적열",
+      "en": "Seeing Red",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "exhaust": true,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "마나 +4. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "sentinel": {
+      "name": "파수꾼",
+      "en": "Sentinel",
+      "type": "def",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 4,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "sbed/shield.svg",
+      "kw": [],
+      "desc": "방어 타일(4)을 놓고 열 방어 +4.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "shockwave": {
+      "name": "충격파",
+      "en": "Shockwave",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "exhaust": true,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "전체",
+        "소멸"
+      ],
+      "desc": "모든 적에게 6 피해. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 6
+          }
+        ]
+      }
+    },
+    "spot_weakness": {
+      "name": "빈틈 찾기",
+      "en": "Spot Weakness",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "힘"
+      ],
+      "desc": "3 피해, 힘 +1.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3
+          },
+          {
+            "op": "addStrength",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "uppercut": {
+      "name": "어퍼컷",
+      "en": "Uppercut",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "기절",
+        "밀어내기"
+      ],
+      "desc": "7 피해를 주고 앞의 적을\n기절시켜 뒤로 밀어낸다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 7,
+            "stun": true,
+            "pushBack": 1
+          }
+        ]
+      }
+    },
+    "whirlwind": {
+      "name": "회오리",
+      "en": "Whirlwind",
+      "type": "skill",
+      "cost": 3,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 적에게 5 피해를 두 번 준다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 5
+          },
+          {
+            "op": "damageAll",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "fire_breathing": {
+      "name": "화염 뿜기",
+      "en": "Fire Breathing",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": false,
+      "exhaust": true,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "전체",
+        "소멸"
+      ],
+      "desc": "모든 적에게 4 피해. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "barricade": {
+      "name": "방벽",
+      "en": "Barricade",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": false,
+      "exhaust": true,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "유지",
+        "소멸"
+      ],
+      "desc": "이번 전투에서 방어가\n턴 종료 후에도 사라지지 않는다. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "keepDefNextTurn",
+            "amount": 99
+          }
+        ]
+      }
+    },
+    "berserk": {
+      "name": "광폭화",
+      "en": "Berserk",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": false,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "체력을 4 잃고 마나 +4.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "loseHp",
+            "amount": 4
+          },
+          {
+            "op": "gainMana",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "bludgeon": {
+      "name": "몽둥이질",
+      "en": "Bludgeon",
+      "type": "atk",
+      "cost": 4,
+      "coverNeed": 8,
+      "tile": 16,
+      "placesTile": true,
+      "destroysCover": false,
+      "icon": "lorc/broadsword.svg",
+      "kw": [
+        "궁극"
+      ],
+      "desc": "공격 타일(16)을 놓는다.\n매 턴 16+힘 피해 — 병합 상한에 직접 도달."
+    },
+    "corruption": {
+      "name": "타락",
+      "en": "Corruption",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": false,
+      "exhaust": true,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "마나 +6. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 6
+          }
+        ]
+      }
+    },
+    "demon_form": {
+      "name": "마신화",
+      "en": "Demon Form",
+      "type": "skill",
+      "cost": 3,
+      "coverNeed": 4,
+      "placesTile": false,
+      "destroysCover": false,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "힘"
+      ],
+      "desc": "힘 +5 (전투가 끝날 때까지).\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addStrength",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "feed": {
+      "name": "포식",
+      "en": "Feed",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "exhaust": true,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "소멸",
+        "흡혈"
+      ],
+      "desc": "6 피해. 이로 적을 처치하면\n체력을 4 회복. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 6,
+            "onKill": {
+              "healHp": 4
+            }
+          }
+        ]
+      }
+    },
+    "feel_no_pain": {
+      "name": "고통 무시",
+      "en": "Feel No Pain",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 열 방어 +5.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addAllColDef",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "immolate": {
+      "name": "불사르기",
+      "en": "Immolate",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 4,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "전체",
+        "상태"
+      ],
+      "desc": "모든 적에게 12 피해.\n다음 턴 손에 화상이 추가된다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 12
+          },
+          {
+            "op": "addCardToHand",
+            "id": "burn"
+          }
+        ]
+      }
+    },
+    "impervious": {
+      "name": "불굴",
+      "en": "Impervious",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 4,
+      "placesTile": false,
+      "destroysCover": true,
+      "exhaust": true,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "전체",
+        "소멸"
+      ],
+      "desc": "모든 열 방어 +10. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addAllColDef",
+            "amount": 10
+          }
+        ]
+      }
+    },
+    "juggernaut": {
+      "name": "강철 전차",
+      "en": "Juggernaut",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 4,
+      "placesTile": false,
+      "destroysCover": true,
+      "icon": "lorc/broadsword.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 열 방어 +4, 모든 적에게 4 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addAllColDef",
+            "amount": 4
+          },
+          {
+            "op": "damageAll",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "limit_break": {
+      "name": "한계 돌파",
+      "en": "Limit Break",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 4,
+      "placesTile": false,
+      "destroysCover": true,
+      "exhaust": true,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "힘",
+        "소멸"
+      ],
+      "desc": "힘 +4. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addStrength",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "offering": {
+      "name": "바침",
+      "en": "Offering",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "placesTile": false,
+      "destroysCover": true,
+      "exhaust": true,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "체력을 5 잃고 마나 +4,\n카드를 3장 뽑는다. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "loseHp",
+            "amount": 5
+          },
+          {
+            "op": "gainMana",
+            "amount": 4
+          },
+          {
+            "op": "draw",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "reaper": {
+      "name": "사신",
+      "en": "Reaper",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 4,
+      "placesTile": false,
+      "destroysCover": true,
+      "exhaust": true,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "전체",
+        "소멸",
+        "흡혈"
+      ],
+      "desc": "모든 적에게 6 피해.\n이번 턴 준 피해의 50%를 회복. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 6
+          },
+          {
+            "op": "lifestealThisTurn",
+            "pct": 50
+          }
+        ]
+      }
+    },
+    "wound": {
+      "name": "상처",
+      "en": "Wound",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 99,
+      "placesTile": false,
+      "destroysCover": false,
+      "status": true,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "상태"
+      ],
+      "desc": "플레이할 수 없다. 턴 종료 시 버려진다."
+    },
+    "burn": {
+      "name": "화상",
+      "en": "Burn",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 99,
+      "placesTile": false,
+      "destroysCover": false,
+      "status": true,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "상태"
+      ],
+      "desc": "플레이할 수 없다. 턴 종료 시 버려진다."
+    },
+    "dazed": {
+      "name": "혼미",
+      "en": "Dazed",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 99,
+      "placesTile": false,
+      "destroysCover": false,
+      "status": true,
+      "exhaust": true,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "상태",
+        "소멸"
+      ],
+      "desc": "플레이할 수 없다.\n턴 종료 시 소멸된다."
+    },
+    "void": {
+      "name": "공허",
+      "en": "Void",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 99,
+      "placesTile": false,
+      "destroysCover": false,
+      "status": true,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "상태"
+      ],
+      "desc": "플레이할 수 없다. 턴 종료 시 버려진다."
+    },
+    "sil_neutralize": {
+      "name": "무력화",
+      "en": "Neutralize",
+      "type": "atk",
+      "cost": 0,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "공격 타일(2)을 놓고\n앞의 적을 뒤로 밀어낸다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 2,
+            "pushBack": 1
+          }
+        ]
+      }
+    },
+    "sil_survivor": {
+      "name": "생존자",
+      "en": "Survivor",
+      "type": "def",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "sbed/shield.svg",
+      "desc": "방어 타일(2)을 놓고\n덮은 타일을 버린다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "sil_acrobatics": {
+      "name": "곡예",
+      "en": "Acrobatics",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "desc": "덮은 타일을 태우고\n카드를 2장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "sil_backflip": {
+      "name": "백플립",
+      "en": "Backflip",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "덮은 타일을 태우고, 열 방어 +3,\n카드를 2장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 3
+          },
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "sil_bane": {
+      "name": "파멸",
+      "en": "Bane",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "연속"
+      ],
+      "desc": "4 피해를 두 번 준다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4,
+            "times": 2
+          }
+        ]
+      }
+    },
+    "sil_blade_dance": {
+      "name": "검무",
+      "en": "Blade Dance",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "시브",
+        "연속"
+      ],
+      "desc": "3 연격 (각 3 피해).",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3,
+            "times": 3
+          }
+        ]
+      }
+    },
+    "sil_cloak_and_dagger": {
+      "name": "은신 단검",
+      "en": "Cloak and Dagger",
+      "type": "def",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "시브"
+      ],
+      "desc": "방어 타일(2)을 놓고 2 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "sil_dagger_spray": {
+      "name": "단검 살포",
+      "en": "Dagger Spray",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 적에게 2 피해씩 두 번.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 2
+          },
+          {
+            "op": "damageAll",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "sil_dagger_throw": {
+      "name": "단검 던지기",
+      "en": "Dagger Throw",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "버림"
+      ],
+      "desc": "4 피해, 카드를 1장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4
+          },
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "sil_deadly_poison": {
+      "name": "맹독",
+      "en": "Deadly Poison",
+      "type": "atk",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 4,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "독"
+      ],
+      "desc": "공격 타일(4)을 놓는다 —\n매 턴 4 피해(독 타일). 병합으로 중첩."
+    },
+    "sil_deflect": {
+      "name": "튕겨내기",
+      "en": "Deflect",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "desc": "열 방어 +3.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "sil_dodge_and_roll": {
+      "name": "구르기",
+      "en": "Dodge and Roll",
+      "type": "def",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "sbed/shield.svg",
+      "desc": "방어 타일(2)을 놓고 열 방어 +2.\n타일이 남아 다음 턴에도 발동.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "sil_flying_knee": {
+      "name": "비행 무릎",
+      "en": "Flying Knee",
+      "type": "atk",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "공격 타일(2)을 놓고 마나 +2.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "sil_outmaneuver": {
+      "name": "기동전",
+      "en": "Outmaneuver",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "마나 +4.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "sil_piercing_wail": {
+      "name": "절규",
+      "en": "Piercing Wail",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "기합",
+        "소멸"
+      ],
+      "desc": "다음 받는 피해를 6으로 고정. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "capNextDamage",
+            "amount": 6
+          }
+        ]
+      }
+    },
+    "sil_poisoned_stab": {
+      "name": "독 찌르기",
+      "en": "Poisoned Stab",
+      "type": "atk",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "독"
+      ],
+      "desc": "공격 타일(2)을 놓고 3 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "sil_prepared": {
+      "name": "준비 동작",
+      "en": "Prepared",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "desc": "카드를 1장 뽑는다.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "sil_quick_slash": {
+      "name": "빠른 베기",
+      "en": "Quick Slash",
+      "type": "atk",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "공격 타일(2)을 놓고 카드를 1장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "sil_slice": {
+      "name": "베기",
+      "en": "Slice",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "3 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "sil_sneaky_strike": {
+      "name": "습격",
+      "en": "Sneaky Strike",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "버림",
+        "흑마법"
+      ],
+      "desc": "덮은 타일을 태우고 6 피해, 마나 +2.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 6
+          },
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "sil_sucker_punch": {
+      "name": "기습",
+      "en": "Sucker Punch",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "밀어내기"
+      ],
+      "desc": "3 피해, 앞의 적을 뒤로 밀어낸다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3,
+            "pushBack": 1
+          }
+        ]
+      }
+    },
+    "sil_accuracy": {
+      "name": "정확도",
+      "en": "Accuracy",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "힘"
+      ],
+      "desc": "힘 +1 (전투가 끝날 때까지).\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addStrength",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "sil_all_out_attack": {
+      "name": "전면 공격",
+      "en": "All-Out Attack",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 적에게 5 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "sil_backstab": {
+      "name": "배후 습격",
+      "en": "Backstab",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "5 피해. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "sil_blur": {
+      "name": "흐려지기",
+      "en": "Blur",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "유지"
+      ],
+      "desc": "열 방어 +4,\n방어가 다음 턴에도 유지된다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 4
+          },
+          {
+            "op": "keepDefNextTurn",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "sil_bouncing_flask": {
+      "name": "튀는 플라스크",
+      "en": "Bouncing Flask",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "독",
+        "전체"
+      ],
+      "desc": "모든 적에게 3 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "sil_calculated_gamble": {
+      "name": "계산된 도박",
+      "en": "Calculated Gamble",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "버림",
+        "소멸"
+      ],
+      "desc": "덮은 타일을 태우고\n카드를 3장 뽑는다. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "sil_caltrops": {
+      "name": "도시울",
+      "en": "Caltrops",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "가시"
+      ],
+      "desc": "가시를 두른다 —\n이번 턴 막아낸 피해를 되돌린다.",
+      "effect": {
+        "type": "custom",
+        "handler": "thorns"
+      }
+    },
+    "sil_catalyst": {
+      "name": "촉매",
+      "en": "Catalyst",
+      "type": "atk",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 4,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "독",
+        "소멸"
+      ],
+      "desc": "독 타일(2)을 두 배로 —\n공격 타일(4)로 교체. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": []
+      }
+    },
+    "sil_choke": {
+      "name": "숨통",
+      "en": "Choke",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [],
+      "desc": "5 피해, 카드를 1장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 5
+          },
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "sil_concentrate": {
+      "name": "집중",
+      "en": "Concentrate",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "버림",
+        "흑마법"
+      ],
+      "desc": "덮은 타일을 태우고 마나 +3.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "sil_crippling_cloud": {
+      "name": "무력화의 구름",
+      "en": "Crippling Cloud",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "독",
+        "전체",
+        "소멸"
+      ],
+      "desc": "모든 적에게 5 피해. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "sil_dash": {
+      "name": "돌진",
+      "en": "Dash",
+      "type": "atk",
+      "cost": 2,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "공격 타일(2)을 놓고 열 방어 +5.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "sil_distraction": {
+      "name": "주의 분산",
+      "en": "Distraction",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "카드를 1장 뽑는다. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "sil_endless_agony": {
+      "name": "끝없는 고통",
+      "en": "Endless Agony",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "4 피해. 소멸.\n다음 턴 손에 다시 추가된다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4
+          },
+          {
+            "op": "addCardToHand",
+            "id": "sil_endless_agony"
+          }
+        ]
+      }
+    },
+    "sil_escape_plan": {
+      "name": "탈출 계획",
+      "en": "Escape Plan",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "desc": "카드를 1장 뽑고 열 방어 +2.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 1
+          },
+          {
+            "op": "addColDef",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "sil_eviscerate": {
+      "name": "적출",
+      "en": "Eviscerate",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "버림",
+        "연속"
+      ],
+      "desc": "6 피해를 두 번 준다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 6,
+            "times": 2
+          }
+        ]
+      }
+    },
+    "sil_expertise": {
+      "name": "전문 기술",
+      "en": "Expertise",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "desc": "카드를 2장 뽑는다.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "sil_finisher": {
+      "name": "마무리 일격",
+      "en": "Finisher",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "10 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 10
+          }
+        ]
+      }
+    },
+    "sil_flechettes": {
+      "name": "화살촉",
+      "en": "Flechettes",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 적에게 4 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "sil_footwork": {
+      "name": "발놀림",
+      "en": "Footwork",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 열 방어 +2.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addAllColDef",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "sil_heel_hook": {
+      "name": "발꿈치 후리기",
+      "en": "Heel Hook",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "3 피해, 마나 +2.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3
+          },
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "sil_infinite_blades": {
+      "name": "무한 칼날",
+      "en": "Infinite Blades",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "시브"
+      ],
+      "desc": "다음 턴 손에 시브가 추가된다.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addCardToHand",
+            "id": "sil_shiv"
+          }
+        ]
+      }
+    },
+    "sil_leg_sweep": {
+      "name": "다리 후리기",
+      "en": "Leg Sweep",
+      "type": "def",
+      "cost": 2,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "밀어내기"
+      ],
+      "desc": "방어 타일(2)을 놓고 열 방어 +5.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "sil_masterful_stab": {
+      "name": "절묘한 찌르기",
+      "en": "Masterful Stab",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "6 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 6
+          }
+        ]
+      }
+    },
+    "sil_noxious_fumes": {
+      "name": "유독 가스",
+      "en": "Noxious Fumes",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "독",
+        "전체"
+      ],
+      "desc": "모든 적에게 3 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "sil_predator": {
+      "name": "포식자",
+      "en": "Predator",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "7 피해, 카드를 2장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 7
+          },
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "sil_reflex": {
+      "name": "반사신경",
+      "en": "Reflex",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "카드를 2장 뽑는다. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "sil_riddle_with_holes": {
+      "name": "구멍투성이로",
+      "en": "Riddle with Holes",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "연속"
+      ],
+      "desc": "3 피해를 네 번 준다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3,
+            "times": 4
+          }
+        ]
+      }
+    },
+    "sil_setup": {
+      "name": "셋업",
+      "en": "Setup",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "desc": "카드를 1장 뽑고 마나 +1.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 1
+          },
+          {
+            "op": "gainMana",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "sil_skewer": {
+      "name": "꿰뚫기",
+      "en": "Skewer",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "연속"
+      ],
+      "desc": "4 피해를 세 번 준다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4,
+            "times": 3
+          }
+        ]
+      }
+    },
+    "sil_tactician": {
+      "name": "전술가",
+      "en": "Tactician",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "버림",
+        "소멸",
+        "흑마법"
+      ],
+      "desc": "마나 +2. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "sil_terror": {
+      "name": "공포",
+      "en": "Terror",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "힘"
+      ],
+      "desc": "이번 턴 힘 2배.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "setTempStrMult",
+            "mult": 2
+          }
+        ]
+      }
+    },
+    "sil_thousand_cuts": {
+      "name": "수천 번의 일격",
+      "en": "A Thousand Cuts",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 적에게 3 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "sil_adrenaline": {
+      "name": "아드레날린",
+      "en": "Adrenaline",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "소멸",
+        "흑마법"
+      ],
+      "desc": "마나 +3, 카드를 2장 뽑는다. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 3
+          },
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "sil_after_image": {
+      "name": "잔상",
+      "en": "After Image",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 열 방어 +3.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addAllColDef",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "sil_alchemize": {
+      "name": "연금술",
+      "en": "Alchemize",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "소멸",
+        "흑마법"
+      ],
+      "desc": "마나 +2, 카드를 1장 뽑는다. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 2
+          },
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "sil_bullet_time": {
+      "name": "총알 시간",
+      "en": "Bullet Time",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "덮은 타일을 태우고 마나 +5.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "sil_burst": {
+      "name": "버스트",
+      "en": "Burst",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "desc": "덮은 타일을 태우고\n카드를 2장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "sil_corpse_explosion": {
+      "name": "시체 폭발",
+      "en": "Corpse Explosion",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "독"
+      ],
+      "desc": "6 피해. 이로 적을 처치하면\n카드를 2장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 6,
+            "onKill": {
+              "draw": 2
+            }
+          }
+        ]
+      }
+    },
+    "sil_die_die_die": {
+      "name": "죽어라 죽어라 죽어라",
+      "en": "Die Die Die",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "전체",
+        "소멸"
+      ],
+      "desc": "모든 적에게 6 피해. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 6
+          }
+        ]
+      }
+    },
+    "sil_doppelganger": {
+      "name": "도플갱어",
+      "en": "Doppelganger",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "desc": "덮은 타일을 태우고\n카드를 3장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "sil_envenom": {
+      "name": "사독",
+      "en": "Envenom",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "독",
+        "힘"
+      ],
+      "desc": "2 피해, 힘 +1.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 2
+          },
+          {
+            "op": "addStrength",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "sil_glass_knife": {
+      "name": "유리 칼날",
+      "en": "Glass Knife",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "연속"
+      ],
+      "desc": "4 피해를 두 번 준다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4,
+            "times": 2
+          }
+        ]
+      }
+    },
+    "sil_grand_finale": {
+      "name": "대단원",
+      "en": "Grand Finale",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 4,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "전체",
+        "궁극"
+      ],
+      "desc": "성장한 타일(4)을 태우고\n모든 적에게 12 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 12
+          }
+        ]
+      }
+    },
+    "sil_malaise": {
+      "name": "권태감",
+      "en": "Malaise",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "기합",
+        "소멸"
+      ],
+      "desc": "4 피해,\n다음 받는 피해를 8로 고정. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4
+          },
+          {
+            "op": "capNextDamage",
+            "amount": 8
+          }
+        ]
+      }
+    },
+    "sil_nightmare": {
+      "name": "악몽",
+      "en": "Nightmare",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "시브"
+      ],
+      "desc": "덮은 타일을 태우고\n다음 턴 손에 시브 3장.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addCardToHand",
+            "id": "sil_shiv"
+          },
+          {
+            "op": "addCardToHand",
+            "id": "sil_shiv"
+          },
+          {
+            "op": "addCardToHand",
+            "id": "sil_shiv"
+          }
+        ]
+      }
+    },
+    "sil_phantasmal_killer": {
+      "name": "환영 살인자",
+      "en": "Phantasmal Killer",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "힘",
+        "소멸"
+      ],
+      "desc": "이번 턴 힘 2배, 카드를 1장 뽑는다.\n소멸. 타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "setTempStrMult",
+            "mult": 2
+          },
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "sil_storm_of_steel": {
+      "name": "강철 폭풍",
+      "en": "Storm of Steel",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "시브",
+        "연속"
+      ],
+      "desc": "3 연격 (각 3 피해).",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3,
+            "times": 3
+          }
+        ]
+      }
+    },
+    "sil_tools_of_the_trade": {
+      "name": "직업 도구",
+      "en": "Tools of the Trade",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "버림",
+        "흑마법"
+      ],
+      "desc": "카드를 1장 뽑고 마나 +2.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 1
+          },
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "sil_unload": {
+      "name": "일제 사격",
+      "en": "Unload",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "7 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 7
+          }
+        ]
+      }
+    },
+    "sil_wraith_form": {
+      "name": "망령 형상",
+      "en": "Wraith Form",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "회피",
+        "전체"
+      ],
+      "desc": "모든 열 방어 +3,\n낸 열 공격은 이번 턴 회피.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addAllColDef",
+            "amount": 3
+          },
+          {
+            "op": "evadeColumn"
+          }
+        ]
+      }
+    },
+    "sil_shiv": {
+      "name": "시브",
+      "en": "Shiv",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "시브",
+        "소멸"
+      ],
+      "desc": "3 피해. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "def_dualcast": {
+      "name": "이중 시전",
+      "en": "Dualcast",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "desc": "카드를 2장 뽑는다.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_zap": {
+      "name": "감전",
+      "en": "Zap",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "번개",
+        "흑마법"
+      ],
+      "desc": "마나 +2.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_ball_lightning": {
+      "name": "구형 번개",
+      "en": "Ball Lightning",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "번개"
+      ],
+      "desc": "4 피해, 마나 +1.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4
+          },
+          {
+            "op": "gainMana",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "def_barrage": {
+      "name": "탄막",
+      "en": "Barrage",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "연속"
+      ],
+      "desc": "3 피해를 두 번 준다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3,
+            "times": 2
+          }
+        ]
+      }
+    },
+    "def_beam_cell": {
+      "name": "빔 셀",
+      "en": "Beam Cell",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "밀어내기"
+      ],
+      "desc": "2 피해, 앞의 적을 밀어낸다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 2,
+            "pushBack": 1
+          }
+        ]
+      }
+    },
+    "def_charge_battery": {
+      "name": "배터리 충전",
+      "en": "Charge Battery",
+      "type": "def",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "번개"
+      ],
+      "desc": "방어 타일(2)을 놓고 마나 +2.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_claw": {
+      "name": "클로",
+      "en": "Claw",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "힘"
+      ],
+      "desc": "3 피해, 힘 +1 —\n모든 클로가 함께 강해진다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3
+          },
+          {
+            "op": "addStrength",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "def_cold_snap": {
+      "name": "한파",
+      "en": "Cold Snap",
+      "type": "atk",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "서리"
+      ],
+      "desc": "공격 타일(2)을 놓고 열 방어 +3.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "def_compile_driver": {
+      "name": "컴파일 드라이버",
+      "en": "Compile Driver",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [],
+      "desc": "4 피해, 카드를 1장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4
+          },
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "def_coolheaded": {
+      "name": "침착함",
+      "en": "Coolheaded",
+      "type": "def",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "서리"
+      ],
+      "desc": "방어 타일(2)을 놓고\n카드를 1장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "def_go_for_the_eyes": {
+      "name": "눈을 노려라",
+      "en": "Go for the Eyes",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "밀어내기"
+      ],
+      "desc": "2 피해, 앞의 적을 밀어낸다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 2,
+            "pushBack": 1
+          }
+        ]
+      }
+    },
+    "def_hologram": {
+      "name": "홀로그램",
+      "en": "Hologram",
+      "type": "def",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "방어 타일(2)을 놓고\n카드를 1장 뽑는다. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "def_leap": {
+      "name": "도약",
+      "en": "Leap",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "desc": "열 방어 +5.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "def_rebound": {
+      "name": "리바운드",
+      "en": "Rebound",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "desc": "4 피해, 카드를 1장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4
+          },
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "def_recursion": {
+      "name": "재귀",
+      "en": "Recursion",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "마나 +2, 카드를 1장 뽑는다.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 2
+          },
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "def_stack": {
+      "name": "스택",
+      "en": "Stack",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "desc": "열 방어 +6.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 6
+          }
+        ]
+      }
+    },
+    "def_steam_barrier": {
+      "name": "증기 장벽",
+      "en": "Steam Barrier",
+      "type": "def",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "서리"
+      ],
+      "desc": "방어 타일(2)을 놓고 열 방어 +3.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "def_streamline": {
+      "name": "유선형",
+      "en": "Streamline",
+      "type": "atk",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 4,
+      "icon": "lorc/campfire.svg",
+      "desc": "공격 타일(4)을 놓는다.",
+      "effect": {
+        "type": "simple",
+        "ops": []
+      }
+    },
+    "def_sweeping_beam": {
+      "name": "휩쓰는 광선",
+      "en": "Sweeping Beam",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 적에게 3 피해,\n카드를 1장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 3
+          },
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "def_turbo": {
+      "name": "터보",
+      "en": "TURBO",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "번개",
+        "상태",
+        "흑마법"
+      ],
+      "desc": "마나 +4.\n다음 턴 손에 공허가 추가된다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 4
+          },
+          {
+            "op": "addCardToHand",
+            "id": "void"
+          }
+        ]
+      }
+    },
+    "def_aggregate": {
+      "name": "집합",
+      "en": "Aggregate",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "마나 +3.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "def_auto_shields": {
+      "name": "자동 방패",
+      "en": "Auto-Shields",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 열 방어 +5.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addAllColDef",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "def_blizzard": {
+      "name": "눈보라",
+      "en": "Blizzard",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "서리",
+        "전체"
+      ],
+      "desc": "모든 적에게 4 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "def_boot_sequence": {
+      "name": "부팅 순서",
+      "en": "Boot Sequence",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "전체",
+        "소멸"
+      ],
+      "desc": "모든 열 방어 +5. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addAllColDef",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "def_bullseye": {
+      "name": "정조준",
+      "en": "Bullseye",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "연속"
+      ],
+      "desc": "4 피해를 두 번 준다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4,
+            "times": 2
+          }
+        ]
+      }
+    },
+    "def_capacitor": {
+      "name": "콘덴서",
+      "en": "Capacitor",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "마나 +3.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "def_chaos": {
+      "name": "혼돈",
+      "en": "Chaos",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "desc": "마나 +1, 카드를 1장 뽑는다.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 1
+          },
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "def_chill": {
+      "name": "서늘함",
+      "en": "Chill",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "서리",
+        "전체",
+        "소멸"
+      ],
+      "desc": "모든 열 방어 +4. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addAllColDef",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "def_consume": {
+      "name": "소모",
+      "en": "Consume",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "힘",
+        "흑마법"
+      ],
+      "desc": "힘 +2, 마나 +2.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addStrength",
+            "amount": 2
+          },
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_darkness": {
+      "name": "암흑",
+      "en": "Darkness",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [],
+      "desc": "5 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "def_defragment": {
+      "name": "조각 모음",
+      "en": "Defragment",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "힘"
+      ],
+      "desc": "힘 +1 (전투가 끝날 때까지).\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addStrength",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "def_doom_and_gloom": {
+      "name": "암담함",
+      "en": "Doom and Gloom",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 적에게 5 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "def_double_energy": {
+      "name": "이중 에너지",
+      "en": "Double Energy",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "흑마법",
+        "소멸"
+      ],
+      "desc": "마나 +4. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "def_equilibrium": {
+      "name": "균형",
+      "en": "Equilibrium",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "전체",
+        "유지"
+      ],
+      "desc": "모든 열 방어 +6,\n방어가 다음 턴에도 유지된다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addAllColDef",
+            "amount": 6
+          },
+          {
+            "op": "keepDefNextTurn",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "def_force_field": {
+      "name": "역장",
+      "en": "Force Field",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 열 방어 +6.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addAllColDef",
+            "amount": 6
+          }
+        ]
+      }
+    },
+    "def_ftl": {
+      "name": "초광속",
+      "en": "FTL",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "desc": "3 피해, 카드를 1장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3
+          },
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "def_fusion": {
+      "name": "융합",
+      "en": "Fusion",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "마나 +3.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "def_genetic_algorithm": {
+      "name": "유전 알고리즘",
+      "en": "Genetic Algorithm",
+      "type": "def",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 4,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "방어 타일(4)을 놓는다. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": []
+      }
+    },
+    "def_glacier": {
+      "name": "빙하",
+      "en": "Glacier",
+      "type": "def",
+      "cost": 2,
+      "coverNeed": 2,
+      "tile": 4,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "서리",
+        "전체"
+      ],
+      "desc": "방어 타일(4)을 놓고\n모든 열 방어 +3.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addAllColDef",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "def_heatsinks": {
+      "name": "방열판",
+      "en": "Heatsinks",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "desc": "덮은 타일을 태우고\n카드를 2장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_hello_world": {
+      "name": "헬로 월드",
+      "en": "Hello World",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "desc": "카드를 1장 뽑는다.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "def_loop": {
+      "name": "루프",
+      "en": "Loop",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "마나 +2.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_melter": {
+      "name": "용해로",
+      "en": "Melter",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "desc": "6 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 6
+          }
+        ]
+      }
+    },
+    "def_overclock": {
+      "name": "오버클럭",
+      "en": "Overclock",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "상태"
+      ],
+      "desc": "카드를 2장 뽑는다.\n다음 턴 손에 화상이 추가된다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          },
+          {
+            "op": "addCardToHand",
+            "id": "burn"
+          }
+        ]
+      }
+    },
+    "def_recycle": {
+      "name": "재활용",
+      "en": "Recycle",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "덮은 타일을 태우고 마나 +3.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "def_reinforced_body": {
+      "name": "강화된 몸체",
+      "en": "Reinforced Body",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 열 방어 +5.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addAllColDef",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "def_reprogram": {
+      "name": "재프로그래밍",
+      "en": "Reprogram",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "힘",
+        "흑마법"
+      ],
+      "desc": "체력을 2 잃고 힘 +2.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "loseHp",
+            "amount": 2
+          },
+          {
+            "op": "addStrength",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_rip_and_tear": {
+      "name": "찢어발기기",
+      "en": "Rip and Tear",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "연속"
+      ],
+      "desc": "4 피해를 두 번 준다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4,
+            "times": 2
+          }
+        ]
+      }
+    },
+    "def_scrape": {
+      "name": "긁어모으기",
+      "en": "Scrape",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "4 피해, 카드를 2장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4
+          },
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_self_repair": {
+      "name": "자가 수리",
+      "en": "Self Repair",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [],
+      "desc": "체력을 5 회복.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "healHp",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "def_skim": {
+      "name": "훑어보기",
+      "en": "Skim",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "desc": "카드를 2장 뽑는다.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_static_discharge": {
+      "name": "정전기 방출",
+      "en": "Static Discharge",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "번개",
+        "가시"
+      ],
+      "desc": "가시를 두른다 —\n이번 턴 막아낸 피해를 되돌린다.",
+      "effect": {
+        "type": "custom",
+        "handler": "thorns"
+      }
+    },
+    "def_storm": {
+      "name": "폭풍",
+      "en": "Storm",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "번개",
+        "흑마법"
+      ],
+      "desc": "마나 +2.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_sunder": {
+      "name": "쪼개기",
+      "en": "Sunder",
+      "type": "skill",
+      "cost": 3,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [],
+      "desc": "11 피해. 이로 적을 처치하면\n카드를 2장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 11,
+            "onKill": {
+              "draw": 2
+            }
+          }
+        ]
+      }
+    },
+    "def_tempest": {
+      "name": "폭풍우",
+      "en": "Tempest",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "번개",
+        "소멸",
+        "흑마법"
+      ],
+      "desc": "마나 +5. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "def_white_noise": {
+      "name": "백색 소음",
+      "en": "White Noise",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "소멸",
+        "흑마법"
+      ],
+      "desc": "마나 +1, 카드를 1장 뽑는다. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 1
+          },
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "def_all_for_one": {
+      "name": "전부 하나를 위해",
+      "en": "All for One",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "5 피해, 카드를 2장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 5
+          },
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_amplify": {
+      "name": "증폭",
+      "en": "Amplify",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "desc": "덮은 타일을 태우고\n카드를 2장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_biased_cognition": {
+      "name": "치우친 인지",
+      "en": "Biased Cognition",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "힘"
+      ],
+      "desc": "힘 +4 (전투가 끝날 때까지).\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addStrength",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "def_buffer": {
+      "name": "버퍼",
+      "en": "Buffer",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "회피",
+        "소멸"
+      ],
+      "desc": "낸 열 공격을 이번 턴 회피. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "evadeColumn"
+          }
+        ]
+      }
+    },
+    "def_core_surge": {
+      "name": "코어 쇄도",
+      "en": "Core Surge",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "6 피해. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 6
+          }
+        ]
+      }
+    },
+    "def_creative_ai": {
+      "name": "창조적 AI",
+      "en": "Creative AI",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "카드를 1장 뽑고 마나 +1.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 1
+          },
+          {
+            "op": "gainMana",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "def_echo_form": {
+      "name": "에코 형상",
+      "en": "Echo Form",
+      "type": "skill",
+      "cost": 3,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "카드를 2장 뽑고 마나 +3.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          },
+          {
+            "op": "gainMana",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "def_electrodynamics": {
+      "name": "전기역학",
+      "en": "Electrodynamics",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "번개",
+        "전체"
+      ],
+      "desc": "모든 적에게 5 피해, 마나 +2.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 5
+          },
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_fission": {
+      "name": "핵분열",
+      "en": "Fission",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "소멸",
+        "흑마법"
+      ],
+      "desc": "덮은 타일을 태우고 마나 +3,\n카드를 2장 뽑는다. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 3
+          },
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_hyperbeam": {
+      "name": "초광선",
+      "en": "Hyperbeam",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "전체",
+        "흑마법"
+      ],
+      "desc": "체력을 3 잃고 모든 적에게 12 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "loseHp",
+            "amount": 3
+          },
+          {
+            "op": "damageAll",
+            "amount": 12
+          }
+        ]
+      }
+    },
+    "def_machine_learning": {
+      "name": "기계 학습",
+      "en": "Machine Learning",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "desc": "카드를 2장 뽑는다.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_meteor_strike": {
+      "name": "운석 낙하",
+      "en": "Meteor Strike",
+      "type": "atk",
+      "cost": 4,
+      "coverNeed": 4,
+      "tile": 8,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "궁극"
+      ],
+      "desc": "공격 타일(8)을 놓는다 —\n매 턴 8+힘 피해."
+    },
+    "def_multi_cast": {
+      "name": "다중 시전",
+      "en": "Multi-Cast",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "연속"
+      ],
+      "desc": "5 피해를 두 번 준다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 5,
+            "times": 2
+          }
+        ]
+      }
+    },
+    "def_rainbow": {
+      "name": "무지개",
+      "en": "Rainbow",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "소멸",
+        "흑마법"
+      ],
+      "desc": "마나 +2, 카드를 1장 뽑고\n모든 열 방어 +2. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 2
+          },
+          {
+            "op": "draw",
+            "amount": 1
+          },
+          {
+            "op": "addAllColDef",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_reboot": {
+      "name": "재부팅",
+      "en": "Reboot",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "덮은 타일을 태우고 카드를 3장 뽑고\n마나 +2. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 3
+          },
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_seek": {
+      "name": "탐색",
+      "en": "Seek",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "카드를 2장 뽑는다. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "def_thunder_strike": {
+      "name": "천둥 일격",
+      "en": "Thunder Strike",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "번개",
+        "연속"
+      ],
+      "desc": "3 피해를 세 번 준다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3,
+            "times": 3
+          }
+        ]
+      }
+    },
+    "wat_eruption": {
+      "name": "분출",
+      "en": "Eruption",
+      "type": "atk",
+      "cost": 2,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "힘"
+      ],
+      "desc": "공격 타일(2)을 놓고\n이번 턴 힘 2배 (격노 진입)."
+    },
+    "wat_vigilance": {
+      "name": "경계",
+      "en": "Vigilance",
+      "type": "def",
+      "cost": 2,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "방어 타일(2)을 놓고 열 방어 +3,\n마나 +2 (평정 진입)."
+    },
+    "wat_bowling_bash": {
+      "name": "볼링 박치기",
+      "en": "Bowling Bash",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "연속"
+      ],
+      "desc": "4 피해를 두 번 준다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4,
+            "times": 2
+          }
+        ]
+      }
+    },
+    "wat_consecrate": {
+      "name": "축성",
+      "en": "Consecrate",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 적에게 3 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "wat_crescendo": {
+      "name": "점점 세게",
+      "en": "Crescendo",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "힘",
+        "소멸"
+      ],
+      "desc": "이번 턴 힘 2배. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "setTempStrMult",
+            "mult": 2
+          }
+        ]
+      }
+    },
+    "wat_crush_joints": {
+      "name": "관절 으깨기",
+      "en": "Crush Joints",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "밀어내기"
+      ],
+      "desc": "4 피해, 앞의 적을 밀어낸다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4,
+            "pushBack": 1
+          }
+        ]
+      }
+    },
+    "wat_empty_fist": {
+      "name": "빈 주먹",
+      "en": "Empty Fist",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "4 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "wat_empty_body": {
+      "name": "빈 몸",
+      "en": "Empty Body",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "desc": "열 방어 +4.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "wat_evaluate": {
+      "name": "평가",
+      "en": "Evaluate",
+      "type": "def",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "sbed/shield.svg",
+      "desc": "방어 타일(2)을 놓고\n카드를 1장 뽑는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "wat_follow_up": {
+      "name": "후속타",
+      "en": "Follow-Up",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "3 피해, 열 방어 +2.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3
+          },
+          {
+            "op": "addColDef",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "wat_justified": {
+      "name": "정당함",
+      "en": "Justified",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "desc": "3 피해, 열 방어 +3.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3
+          },
+          {
+            "op": "addColDef",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "wat_pressure_points": {
+      "name": "급소",
+      "en": "Pressure Points",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 적에게 4 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "wat_protect": {
+      "name": "수호",
+      "en": "Protect",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "desc": "열 방어 +4.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "wat_prostrate": {
+      "name": "복종",
+      "en": "Prostrate",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "열 방어 +2, 마나 +2.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 2
+          },
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "wat_sash_whip": {
+      "name": "띠 후리기",
+      "en": "Sash Whip",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "밀어내기"
+      ],
+      "desc": "3 피해, 앞의 적을 밀어낸다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3,
+            "pushBack": 1
+          }
+        ]
+      }
+    },
+    "wat_tantrum": {
+      "name": "발끈",
+      "en": "Tantrum",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "힘"
+      ],
+      "desc": "3 피해, 이번 턴 힘 2배 (격노 진입).",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3
+          },
+          {
+            "op": "setTempStrMult",
+            "mult": 2
+          }
+        ]
+      }
+    },
+    "wat_tranquility": {
+      "name": "평정",
+      "en": "Tranquility",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "마나 +2 (평정 진입).\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "wat_wallop": {
+      "name": "후려치기",
+      "en": "Wallop",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "4 피해, 열 방어 +4.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4
+          },
+          {
+            "op": "addColDef",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "wat_wave_of_the_hand": {
+      "name": "손바닥 파동",
+      "en": "Wave of the Hand",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "밀어내기"
+      ],
+      "desc": "2 피해, 앞의 적을 밀어낸다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 2,
+            "pushBack": 1
+          }
+        ]
+      }
+    },
+    "wat_worship": {
+      "name": "숭배",
+      "en": "Worship",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "힘",
+        "흑마법"
+      ],
+      "desc": "힘 +1 (전투가 끝날 때까지).\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addStrength",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "wat_battle_hymn": {
+      "name": "성가",
+      "en": "Battle Hymn",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [],
+      "desc": "다음 턴 손에 강림이 추가된다.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addCardToHand",
+            "id": "wat_smite"
+          }
+        ]
+      }
+    },
+    "wat_carve_reality": {
+      "name": "현실 조각",
+      "en": "Carve Reality",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "3 피해,\n다음 턴 손에 강림이 추가된다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3
+          },
+          {
+            "op": "addCardToHand",
+            "id": "wat_smite"
+          }
+        ]
+      }
+    },
+    "wat_collect": {
+      "name": "수집",
+      "en": "Collect",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "유지"
+      ],
+      "desc": "열 방어 +2,\n방어가 다음 턴에도 유지된다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 2
+          },
+          {
+            "op": "keepDefNextTurn",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "wat_conclude": {
+      "name": "마침표",
+      "en": "Conclude",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 적에게 6 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 6
+          }
+        ]
+      }
+    },
+    "wat_deceive_reality": {
+      "name": "현실 속이기",
+      "en": "Deceive Reality",
+      "type": "def",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 2,
+      "icon": "sbed/shield.svg",
+      "desc": "방어 타일(2)을 놓고\n다음 턴 손에 강림이 추가된다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addCardToHand",
+            "id": "wat_smite"
+          }
+        ]
+      }
+    },
+    "wat_empty_mind": {
+      "name": "빈 마음",
+      "en": "Empty Mind",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "desc": "카드를 2장 뽑는다.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "wat_fasting": {
+      "name": "단식",
+      "en": "Fasting",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "체력을 3 잃고 마나 +4.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "loseHp",
+            "amount": 3
+          },
+          {
+            "op": "gainMana",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "wat_fear_no_evil": {
+      "name": "공포 없는 자",
+      "en": "Fear No Evil",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "4 피해, 마나 +2.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 4
+          },
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "wat_foreign_influence": {
+      "name": "외세의 힘",
+      "en": "Foreign Influence",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "카드를 2장 뽑는다. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "wat_foresight": {
+      "name": "통찰",
+      "en": "Foresight",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "마나 +2, 카드를 1장 뽑는다.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 2
+          },
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "wat_indignation": {
+      "name": "분개",
+      "en": "Indignation",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "3 피해.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "wat_inner_peace": {
+      "name": "내적 평화",
+      "en": "Inner Peace",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "desc": "모든 열 방어 +3, 카드를 1장 뽑는다.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addAllColDef",
+            "amount": 3
+          },
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "wat_mental_fortress": {
+      "name": "멘탈 요새",
+      "en": "Mental Fortress",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "유지"
+      ],
+      "desc": "이번 턴 방어가 2턴 더 유지된다.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "keepDefNextTurn",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "wat_meditate": {
+      "name": "명상",
+      "en": "Meditate",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "카드를 2장 뽑고 마나 +2.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          },
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "wat_rushdown": {
+      "name": "돌진 계열",
+      "en": "Rushdown",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "desc": "카드를 3장 뽑는다.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "wat_windmill_strike": {
+      "name": "풍차 타격",
+      "en": "Windmill Strike",
+      "type": "atk",
+      "cost": 2,
+      "coverNeed": 2,
+      "tile": 4,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "공격 타일(4)을 놓는다.",
+      "effect": {
+        "type": "simple",
+        "ops": []
+      }
+    },
+    "wat_talk_to_the_hand": {
+      "name": "손에 대고 말하기",
+      "en": "Talk to the Hand",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "desc": "3 피해, 열 방어 +3.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3
+          },
+          {
+            "op": "addColDef",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "wat_wreath_of_flame": {
+      "name": "화염 화환",
+      "en": "Wreath of Flame",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "힘"
+      ],
+      "desc": "힘 +2 (전투가 끝날 때까지).\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addStrength",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "wat_vault": {
+      "name": "금고치기",
+      "en": "Vault",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "모든 열 방어 +4.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addAllColDef",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "wat_alpha": {
+      "name": "알파",
+      "en": "Alpha",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "소멸",
+        "흑마법"
+      ],
+      "desc": "카드를 2장 뽑고 마나 +2. 소멸.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          },
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "wat_blasphemy": {
+      "name": "신성 모독",
+      "en": "Blasphemy",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "힘",
+        "흑마법",
+        "소멸"
+      ],
+      "desc": "체력을 8 잃고 이번 턴 힘 3배 (신성).\n소멸. 타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "loseHp",
+            "amount": 8
+          },
+          {
+            "op": "setTempStrMult",
+            "mult": 3
+          }
+        ]
+      }
+    },
+    "wat_devotion": {
+      "name": "헌신",
+      "en": "Devotion",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "힘",
+        "흑마법"
+      ],
+      "desc": "힘 +2, 마나 +2.\n타일을 소모하지 않는다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addStrength",
+            "amount": 2
+          },
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "wat_judgment": {
+      "name": "심판",
+      "en": "Judgment",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "처형"
+      ],
+      "desc": "10 피해. 이로 적을 처치하면\n체력을 5 회복.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 10,
+            "onKill": {
+              "healHp": 5
+            }
+          }
+        ]
+      }
+    },
+    "wat_perseveration": {
+      "name": "되새김",
+      "en": "Perseveration",
+      "type": "def",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 4,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "유지"
+      ],
+      "desc": "방어 타일(4)을 놓고\n방어가 다음 턴에도 유지된다.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "keepDefNextTurn",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "wat_ragnarok": {
+      "name": "라그나로크",
+      "en": "Ragnarok",
+      "type": "skill",
+      "cost": 3,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "전체",
+        "연속"
+      ],
+      "desc": "모든 적에게 5 피해씩 두 번.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageAll",
+            "amount": 5
+          },
+          {
+            "op": "damageAll",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "wat_wish": {
+      "name": "소원",
+      "en": "Wish",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "전체"
+      ],
+      "desc": "체력을 5 회복하고\n모든 열 방어 +3.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "healHp",
+            "amount": 5
+          },
+          {
+            "op": "addAllColDef",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "wat_smite": {
+      "name": "강림",
+      "en": "Smite",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "6 피해. 소멸.",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 6
+          }
+        ]
+      }
+    },
+    "sword_boomerang": {
+      "name": "검 부메랑",
+      "en": "Sword Boomerang",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "연속"
+      ],
+      "desc": "2 피해를 두 번 준다.\n(원판: 무작위 적 3회 — 랜덤 타겟은 엔진에 없어 같은 열로 평탄화)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 2,
+            "times": 2
+          }
+        ]
+      }
+    },
+    "true_grit": {
+      "name": "불굴의 근성",
+      "en": "True Grit",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "열 방어 +5. 소멸.\n(원판: 블록 7 + 무작위 카드 1장 소멸)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 5
+          }
+        ]
+      },
+      "exhaust": true
+    },
+    "warcry": {
+      "name": "전투의 함성",
+      "en": "Warcry",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "카드를 1장 뽑고 마나 +1. 소멸.\n(원판: 덱 위 올리기는 불가)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 1
+          },
+          {
+            "op": "gainMana",
+            "amount": 1
+          }
+        ]
+      },
+      "exhaust": true
+    },
+    "evolve": {
+      "name": "진화",
+      "en": "Evolve",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "desc": "카드를 1장 뽑는다.\n타일을 소모하지 않는다.\n(원판: 상태 카드 뽑을 때마다 드로우)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "infernal_blade": {
+      "name": "지옥의 칼날",
+      "en": "Infernal Blade",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "다음 턴 손에 타격이 추가된다. 소멸.\n(원판: 무작위 공격 지급)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addCardToHand",
+            "id": "strike"
+          }
+        ]
+      },
+      "exhaust": true
+    },
+    "sever_soul": {
+      "name": "영혼 절단",
+      "en": "Sever Soul",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "8 피해. 소멸.\n(원판: 손의 비공격 전부 소멸 후 16 피해 — 손 소멸 op 부재로 평탄화)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 8
+          }
+        ]
+      },
+      "exhaust": true
+    },
+    "brutality": {
+      "name": "잔혹행위",
+      "en": "Brutality",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/blood.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "체력을 2 잃고 카드를 2장 뽑는다.\n타일을 소모하지 않는다.\n(원판: 매 턴 시작 시 1피해/1드로우)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "loseHp",
+            "amount": 2
+          },
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "double_tap": {
+      "name": "더블 탭",
+      "en": "Double Tap",
+      "type": "atk",
+      "cost": 1,
+      "coverNeed": 2,
+      "tile": 4,
+      "icon": "lorc/crossed-swords.svg",
+      "kw": [
+        "변환"
+      ],
+      "desc": "타일(2)을 공격 타일(4)로\n두 배로 교체한다.\n(원판: 다음 공격 2회 발동 — 타일 2배로 번역)",
+      "effect": {
+        "type": "simple",
+        "ops": []
+      }
+    },
+    "exhume": {
+      "name": "파묘",
+      "en": "Exhume",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "카드를 2장 뽑는다. 소멸.\n(원판: 소멸 더미에서 카드 회수 — op 부재로 드로우로 평탄화)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 2
+          }
+        ]
+      },
+      "exhaust": true
+    },
+    "wat_halt": {
+      "name": "멈춤",
+      "en": "Halt",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "열 방어 +3. 소멸.\n(원판 문구 일부 미확보 — 0코스트 방어로 보수 번역)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 3
+          }
+        ]
+      },
+      "exhaust": true
+    },
+    "wat_nirvana": {
+      "name": "열반",
+      "en": "Nirvana",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "kw": [
+        "유지"
+      ],
+      "desc": "열 방어 +3,\n방어가 다음 턴에도 유지된다.\n(원판: 가를 때마다 블록 3)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 3
+          },
+          {
+            "op": "keepDefNextTurn",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "wat_pray": {
+      "name": "기도",
+      "en": "Pray",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "힘"
+      ],
+      "desc": "힘 +1 (전투가 끝날 때까지).\n타일을 소모하지 않는다.\n(원판: 만트라 3 — 만트라를 영구 힘으로 번역)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addStrength",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "wat_sanctity": {
+      "name": "신성함",
+      "en": "Sanctity",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "desc": "열 방어 +4, 카드를 1장 뽑는다.\n(원판: 블록 6 + 마지막 카드가 스킬이면 2드로우 — 조건 평탄화)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 4
+          },
+          {
+            "op": "draw",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "wat_study": {
+      "name": "연구",
+      "en": "Study",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "desc": "카드를 1장 뽑고 마나 +1.\n타일을 소모하지 않는다.\n(원판: 턴 종료 시 통찰 섞기)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 1
+          },
+          {
+            "op": "gainMana",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "wat_swivel": {
+      "name": "돌아서기",
+      "en": "Swivel",
+      "type": "skill",
+      "cost": 2,
+      "coverNeed": 2,
+      "icon": "sbed/shield.svg",
+      "desc": "열 방어 +5.\n(원판: 블록 8 + 다음 공격 무료화)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "addColDef",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "wat_weave": {
+      "name": "엮기",
+      "en": "Weave",
+      "type": "skill",
+      "cost": 0,
+      "coverNeed": 2,
+      "icon": "lorc/pointy-sword.svg",
+      "kw": [
+        "연속"
+      ],
+      "desc": "3 피해.\n다음 턴 손에 다시 추가된다.\n(원판: 가를 때마다 버림패에서 회수 — 순환을 재사용으로 번역)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 3
+          },
+          {
+            "op": "addCardToHand",
+            "id": "wat_weave"
+          }
+        ]
+      }
+    },
+    "wat_brilliance": {
+      "name": "빛나는 지혜",
+      "en": "Brilliance",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "힘연동"
+      ],
+      "desc": "힘이 닿는 7 피해 (힘 1당 +1).\n(원판: 12 피해 + 만트라만큼 가산 — 만트라를 힘으로 번역)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "damageColumn",
+            "amount": 7,
+            "useStr": true
+          }
+        ]
+      }
+    },
+    "wat_establishment": {
+      "name": "확립",
+      "en": "Establishment",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "흑마법"
+      ],
+      "desc": "마나 +2.\n타일을 소모하지 않는다.\n(원판: 유지된 카드의 코스트 감소 — 코스트 시스템 부재로 마나로 번역)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "gainMana",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "wat_omniscience": {
+      "name": "전지",
+      "en": "Omniscience",
+      "type": "skill",
+      "cost": 4,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "카드를 3장 뽑고 마나 +3. 소멸.\n(원판: 덱의 카드를 2회 발동 — op 부재로 대량 드로우로 평탄화)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 3
+          },
+          {
+            "op": "gainMana",
+            "amount": 3
+          }
+        ]
+      },
+      "exhaust": true
+    },
+    "wat_scrawl": {
+      "name": "낙서",
+      "en": "Scrawl",
+      "type": "skill",
+      "cost": 1,
+      "coverNeed": 2,
+      "icon": "lorc/campfire.svg",
+      "kw": [
+        "소멸"
+      ],
+      "desc": "카드를 4장 뽑는다. 소멸.\n(원판: 손이 찰 때까지 드로우)",
+      "effect": {
+        "type": "simple",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 4
+          }
+        ]
+      },
+      "exhaust": true
+    }
+  }
+}
