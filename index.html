@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>2048 덱빌딩 던전</title>
+<title>Slider Spire — 2048 덱빌딩 던전</title>
 <link rel="stylesheet" href="style.css">
 <style>
 /* ===== 에러 팝업 (인라인) ===== */
@@ -15,6 +15,15 @@
 #errBox .errBtns{ display:flex; gap:10px; justify-content:flex-end; }
 #errBox button{ font-size:16px; padding:9px 16px; border-radius:8px; border:0; cursor:pointer; background:#3a3f4b; color:#fff; }
 #errBox button.primary{ background:#ff5a5a; }
+
+/* ===== 4클래스 아키타입 / 상태 카드 보조 스타일 ===== */
+#archRow{flex-wrap:wrap;justify-content:center}
+#archSelect{overflow-y:auto}
+.archCard.iron_strength,.archCard.iron_block,.archCard.iron_exhaust,.archCard.iron_blood{border-top:6px solid #c0392b}
+.archCard.sil_poison,.archCard.sil_shiv,.archCard.sil_discard,.archCard.sil_shadow{border-top:6px solid #27ae60}
+.archCard.def_frost,.archCard.def_lightning,.archCard.def_claw,.archCard.def_echo{border-top:6px solid #2f80ed}
+.archCard.wat_stance,.archCard.wat_mantra,.archCard.wat_block,.archCard.wat_rushdown{border-top:6px solid #8e44ad}
+.hcard.statusCard{filter:grayscale(.6) brightness(.75)}
 </style>
 </head>
 <body>
@@ -616,7 +625,7 @@ function activeBuffs(){
   const list=[];
   if(thornsOn) list.push({icon:"🌵", tip:"<b>가시</b><br>막아낸 데미지를 보스에게 반사합니다."});
   if(tempStrMult>1) list.push({icon:"⚡", tip:"<b>압도적인힘</b><br>이번 턴 힘 2배."});
-  if(keepDefNext>0) list.push({icon:"🏰", tip:"<b>탑 쌓기</b><br>다음 턴 방어도 유지 (x"+keepDefNext+")"});
+  if(keepDefNext>0) list.push({icon:"🏰", tip:"<b>탑 쌓기</b><br>방어 유지"+(keepDefNext>=99?" (상시)":" (x"+keepDefNext+")")});
   if(evadeCols.size>0) list.push({icon:"💨", tip:"<b>회피</b><br>지정 열 공격 무효."});
   if(capNextDmg!=null) list.push({icon:"🛑", tip:"<b>기합</b><br>다음 피해 "+capNextDmg+" 고정."});
   if(lifestealPct>0) list.push({icon:"🧛", tip:"<b>흡혈</b><br>턴 종료 시 딜의 "+lifestealPct+"% 회복."});
@@ -726,8 +735,17 @@ function battleLost(){
    [카드 보상] 3장 중 1택 (풀에서 랜덤)
 =================================================================== */
 function rewardPool(){
-  /* 스킬/공격/방어 전체 중 아무 카드나 (스타팅과 무관하게 풀 확장 가능) */
-  return Object.keys(CARDS);
+  /* 상태/저주 제외 + 클래스 순수성: 현재 아키타입의 클래스 카드만 보상 등장 */
+  const pre=(RUN.arch||"").split("_")[0];
+  return Object.keys(CARDS).filter(k=>{
+    const def=CARDS[k];
+    if(isStatusCard(def)) return false;
+    if(k==="strike"||k==="defend") return false;
+    const p=k.split("_")[0];
+    const cls=({sil:"sil",def:"def",wat:"wat"})[p];
+    if(pre==="sil"||pre==="def"||pre==="wat") return cls===pre;
+    return !cls; /* 접두사 없 = 아이언클래드 */
+  });
 }
 function openReward(canSkip){
   const pool=rewardPool(); shuffle(pool);
@@ -804,7 +822,7 @@ function drawOne(key){
     const def=CARDS[key];
     if(!def){ showError(`정의되지 않은 카드 key: "${key}"`); res(); return; }
     const cost=cardCost(def), el=document.createElement("div");
-    el.className="hcard "+def.type; el.dataset.cost=cost; el.dataset.key=key;
+    el.className="hcard "+def.type+(isStatusCard(def)?" statusCard":""); el.dataset.cost=cost; el.dataset.key=key;
     el.style.left="900px"; el.style.bottom="-300px"; el.style.opacity="0"; el.style.transform=`translateX(-${CARD_HALF}px)`;
     const kwStr=def.kw&&def.kw.length?def.kw.join(" · "):""; const tierLabel=def.type==="skill"?"스킬":def.tile; const tierCls=def.type==="skill"?"htier skill":"htier"; const fallbackIcon=def.type==="def"?SHIELD:SWORD;
     el.innerHTML=`<div class="hcost">${cost}</div><div class="${tierCls}">${tierLabel}</div><img class="hicon" src="${iconURL(def)}" onerror="this.src='${fallbackIcon}'"><div class="hname">${def.name}</div><div class="hdesc">${(def.desc||"").replace(/\n/g,"<br>")}</div>${kwStr?`<div class="hkw">${kwStr}</div>`:""}`;
@@ -1063,7 +1081,10 @@ addEventListener("keydown",e=>{ if(e.key==="ArrowLeft")slide('left'); else if(e.
     initArchSelect();
     showScreen("arch");
   }catch(err){ /* showLoadError 처리됨 */ }
+  /* 상태/저주(coverNeed 99)는 어떤 타일과도 매칭되지 않음 — 명시적 판별자 */
+  window.isStatusCard = function(def){ return !!def.status || def.coverNeed===99; };
 })();
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
