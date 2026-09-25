@@ -1,0 +1,76 @@
+file	korean	english	section	px
+card_strike.webp	타격	Strike	3.1. 시작	343x437
+card_neutralize.webp	무력화	Neutralize	3.1. 시작	343x437
+card_defend.webp	수비	Defend	3.1. 시작	343x437
+card_survivor.webp	생존자	Survivor	3.1. 시작	343x437
+card_bane.webp	파멸	Bane	3.2.1. 일반	343x437
+card_dagger_spray.webp	단검 분사	Dagger Spray	3.2.1. 일반	343x437
+card_dagger_throw.webp	단검 투척	Dagger Throw	3.2.1. 일반	343x437
+card_flying_knee.webp	플라잉 니킥	Flying Knee	3.2.1. 일반	343x437
+card_poisoned_stab.webp	독 찌르기	Poisoned Stab	3.2.1. 일반	343x437
+card_quick_slash.webp	전광석화	Quick Slash	3.2.1. 일반	343x437
+card_slice.webp	칼질	Slice	3.2.1. 일반	194x272
+card_sucker_punch.webp	불의의 일격	Sucker Punch	3.2.1. 일반	343x437
+card_sneaky_strike.webp	비타	Sneaky Strike	3.2.1. 일반	194x272
+card_all_out_attack.webp	총공격	All-Out Attack	3.2.2. 특별	343x437
+card_backstab.webp	배신	Backstab	3.2.2. 특별	343x437
+card_choke.webp	교살	Choke	3.2.2. 특별	343x437
+card_dash.webp	돌진	Dash	3.2.2. 특별	343x437
+card_endless_agony.webp	영원한 고통	Endless Agony	3.2.2. 특별	343x437
+card_eviscerate.webp	내장 해체	Eviscerate	3.2.2. 특별	194x272
+card_finisher.webp	마무리	Finisher	3.2.2. 특별	343x437
+card_flechettes.webp	프레췌	Flechettes	3.2.2. 특별	343x437
+card_heel_hook.webp	다리 꺾기	Heel Hook	3.2.2. 특별	343x437
+card_masterful_stab.webp	능숙한 찌르기	Masterful Stab	3.2.2. 특별	343x437
+card_predator.webp	천적	Predator	3.2.2. 특별	343x437
+card_riddle_with_holes.webp	벌집	Riddle with Holes	3.2.2. 특별	343x437
+card_skewer.webp	꼬챙이	Skewer	3.2.2. 특별	343x437
+card_die_die_die.webp	죽어 죽어 죽어	Die Die Die	3.2.3. 희귀	343x437
+card_glass_knife.webp	유리칼	Glass Knife	3.2.3. 희귀	343x437
+card_grand_finale.webp	머단원	Grand Finale	3.2.3. 희귀	343x437
+card_unload.webp	처분	Unload	3.2.3. 희귀	343x437
+card_acrobatics.webp	곡예	Acrobatics	3.3.1. 일반	343x437
+card_backflip.webp	공중제비	Backflip	3.3.1. 일반	343x437
+card_deadly_poison.webp	맹독	Deadly Poison	3.3.1. 일반	343x437
+card_deflect.webp	튕겨내기	Deflect	3.3.1. 일반	343x437
+card_dodge_and_roll.webp	구르기	Dodge and Roll	3.3.1. 일반	343x437
+card_outmaneuver.webp	압도	Outmaneuver	3.3.1. 일반	343x437
+card_piercing_wail.webp	귀찢비	Piercing Wail	3.3.1. 일반	343x437
+card_prepared.webp	예비	Prepared	3.3.1. 일반	343x437
+card_cloak_and_dagger.webp	망단	Cloak and Dagger	3.3.1. 일반	343x437
+card_blade_dance.webp	검무	Blade Dance	3.3.1. 일반	273x362
+card_blur.webp	흐릿함	Blur	3.3.2. 특별	343x437
+card_bouncing_flask.webp	탄플	Bouncing Flask	3.3.2. 특별	343x437
+card_calculated_gamble.webp	계산된 도박	Calculated Gamble	3.3.2. 특별	343x437
+card_catalyst.webp	촉매	Catalyst	3.3.2. 특별	343x437
+card_concentrate.webp	집중	Concentrate	3.3.2. 특별	343x437
+card_crippling_cloud.webp	신경독	Crippling Cloud	3.3.2. 특별	343x437
+card_distraction.webp	방해	Distraction	3.3.2. 특별	343x437
+card_escape_plan.webp	탈출구	Escape Plan	3.3.2. 특별	343x437
+card_leg_sweep.webp	다리 걸기	Leg Sweep	3.3.2. 특별	343x437
+card_reflex.webp	반사 신경	Reflex	3.3.2. 특별	270x350
+card_setup.webp	설치	Setup	3.3.2. 특별	343x437
+card_terror.webp	공포	Terror	3.3.2. 특별	343x437
+card_expertise.webp	전문성	Expertise	3.3.2. 특별	343x437
+card_tactician.webp	전략가	Tactician	3.3.2. 특별	343x437
+card_corpse_explosion.webp	시체 폭발	Corpse Explosion	3.3.3. 희귀	343x437
+card_adrenaline.webp	아드레날린	Adrenaline	3.3.3. 희귀	343x437
+card_alchemize.webp	연금	Alchemize	3.3.3. 희귀	343x437
+card_bullet_time.webp	불릿 타임	Bullet Time	3.3.3. 희귀	343x437
+card_burst.webp	폭주	Burst	3.3.3. 희귀	343x437
+card_doppelganger.webp	도플갱어	Doppelganger	3.3.3. 희귀	343x437
+card_nightmare.webp	악몽	Nightmare	3.3.3. 희귀	343x437
+card_phantasmal_killer.webp	환살	Phantasmal Killer	3.3.3. 희귀	280x359
+card_storm_of_steel.webp	강철의 폭풍	Storm of Steel	3.3.3. 희귀	273x358
+card_malaise.webp	불쾌	Malaise	3.3.3. 희귀	343x437
+card_caltrops.webp	마름쇠	Caltrops	3.4.1. 특별	343x437
+card_footwork.webp	발놀림	Footwork	3.4.1. 특별	343x437
+card_infinite_blades.webp	무한의 검날	Infinite Blades	3.4.1. 특별	343x437
+card_noxious_fumes.webp	유독 가스	Noxious Fumes	3.4.1. 특별	343x437
+card_well_laid_plans.webp	괜찮은 전략	Well-Laid Plans	3.4.1. 특별	276x359
+card_accuracy.webp	정밀	Accuracy	3.4.1. 특별	272x358
+card_a_thousand_cuts.webp	능지처참	A Thousand Cuts	3.4.2. 희귀	343x437
+card_afterimage.webp	잔상	Afterimage	3.4.2. 희귀	343x437
+card_envenom.webp	독 바르기	Envenom	3.4.2. 희귀	343x437
+card_tools_of_the_trade.webp	작업 도구	Tools of the Trade	3.4.2. 희귀	343x437
+card_wraith_form.webp	유령의 형상	Wraith Form	3.4.2. 희귀	343x437
