@@ -1,0 +1,76 @@
+filename,korean_name,english_name,source_file,pixels
+card_defend.webp,수비,Defend,Defend_B.png,678x874
+card_dualcast.webp,이중 시전,Dualcast,Dualcast.png,678x874
+card_strike.webp,타격,Strike,Strike_B.png,678x874
+card_zap.webp,파지직,Zap,Zap.png,678x874
+card_ball_lightning.webp,번개 구체,Ball Lightning,BallLightning.png,678x874
+card_barrage.webp,일제 사격,Barrage,Barrage.png,678x874
+card_beam_cell.webp,레이저 포인터,Beam Cell,BeamCell.png,678x874
+card_conserve_battery.webp,배터리 충전,Conserve Battery,ChargeBattery.png,678x874
+card_claw.webp,후벼 파기,Claw,Claw.png,678x874
+card_cold_snap.webp,꽃샘추위,Cold Snap,ColdSnap.png,678x874
+card_compile_driver.webp,컴파일 드라이버,Compile Driver,CompileDriver.png,678x874
+card_coolheaded.webp,냉정함,Coolheaded,Coolheaded.png,678x874
+card_go_for_the_eyes.webp,눈 할퀴기,Go for the Eyes,GofortheEyes.png,678x874
+card_hologram.webp,홀로그램,Hologram,Hologram-0.png,678x874
+card_leap.webp,도약,Leap,Leap.png,678x874
+card_rebound.webp,되돌리기,Rebound,Rebound.png,678x874
+card_recursion.webp,재귀,Recursion,Recursion.png,678x874
+card_stack.webp,스택,Stack,Stack.png,678x874
+card_steam_barrier.webp,증기 장벽,Steam Barrier,SteamBarrier.png,678x874
+card_streamline.webp,최적화,Streamline,Streamline.png,678x874
+card_sweeping_beam.webp,광선 휩쓸기,Sweeping Beam,SweepingBeam.png,678x874
+card_turbo.webp,터보,TURBO,TURBO.png,678x874
+card_aggregate.webp,합하기,Aggregate,Aggregate.png,678x874
+card_auto_shields.webp,자동 방패,Auto-Shields,Auto-Shields.png,678x874
+card_blizzard.webp,눈보라,Blizzard,Blizzard.png,678x874
+card_boot_sequence.webp,부팅 과정,Boot Sequence,BootSequence.png,678x874
+card_bullseye.webp,명중,Bullseye,BullsEye.png,678x874
+card_capacitor.webp,축전기,Capacitor,Capacitor.png,678x874
+card_chaos.webp,혼돈,Chaos,Chaos.png,678x874
+card_chill.webp,오한,Chill,Chill.png,678x874
+card_consume.webp,소비,Consume,Consume.png,678x874
+card_darkness.webp,어둠,Darkness,Darkness.png,678x874
+card_defragment.webp,조각모음,Defragment,Defragment.png,678x874
+card_doom_and_gloom.webp,암울한 전망,Doom and Gloom,DoomandGloom.png,678x874
+card_double_energy.webp,에너자이저,Double Energy,DoubleEnergy.png,678x874
+card_equilibrium.webp,평형,Equilibrium,Equilibrium.png,678x874
+card_ftl.webp,FTL,FTL,FTL.png,678x874
+card_force_field.webp,역장,Force Field,ForceField.png,678x874
+card_fusion.webp,융합,Fusion,Fusion.png,678x874
+card_genetic_algorithm.webp,유전 알고리즘,Genetic Algorithm,GeneticAlgorithm.png,678x874
+card_glacier.webp,빙하,Glacier,Glacier.png,678x874
+card_heatsinks.webp,방열판,Heatsinks,Heatsinks.png,678x874
+card_hello_world.webp,Hello World,Hello World,HelloWorld.png,678x874
+card_loop.webp,반복,Loop,Loop.png,678x874
+card_melter.webp,용해 장치,Melter,Melter.png,678x874
+card_overclock.webp,오버클럭,Overclock,Overclock.png,678x874
+card_recycle.webp,재활용,Recycle,Recycle.png,678x874
+card_reinforced_body.webp,강화된 몸체,Reinforced Body,ReinforcedBody.png,678x874
+card_reprogram.webp,재구성,Reprogram,Reprogram.png,678x874
+card_rip_and_tear.webp,날뛰기,Rip and Tear,RipandTear.png,678x874
+card_scrape.webp,긁어내기,Scrape,Scrape.png,678x874
+card_self_repair.webp,자가 수리,Self Repair,SelfRepair.png,678x874
+card_skim.webp,걷어내기,Skim,Skim.png,678x874
+card_static_discharge.webp,정전기 방전,Static Discharge,StaticDischarge.png,678x874
+card_storm.webp,폭풍,Storm,Storm.png,678x874
+card_sunder.webp,찢기,Sunder,Sunder.png,678x874
+card_tempest.webp,뇌우,Tempest,Tempest.png,678x874
+card_white_noise.webp,백색 소음,White Noise,WhiteNoise.png,678x874
+card_all_for_one.webp,하나를 위한 모두,All for One,AllforOne.png,678x874
+card_amplify.webp,증폭,Amplify,Amplify.png,678x874
+card_biased_cognition.webp,인지 편향,Biased Cognition,BiasedCognition.png,678x874
+card_buffer.webp,버퍼,Buffer,Buffer.png,678x874
+card_core_surge.webp,코어 서지,Core Surge,CoreSurge.png,678x874
+card_creative_ai.webp,창의적인 인공지능,Creative AI,CreativeAI.png,678x874
+card_echo_form.webp,메아리의 형상,Echo Form,EchoForm.png,678x874
+card_electrodynamics.webp,전기 역학,Electrodynamics,Electrodynamics.png,678x874
+card_fission.webp,핵분열,Fission,Fission.png,678x874
+card_hyperbeam.webp,파괴광선,Hyperbeam,Hyperbeam.png,678x874
+card_machine_learning.webp,기계학습,Machine Learning,MachineLearning.png,678x874
+card_meteor_strike.webp,유성 타격,Meteor Strike,MeteorStrike.png,678x874
+card_multi_cast.webp,다중 시전,Multi-Cast,Multi-Cast.png,678x874
+card_rainbow.webp,무지개,Rainbow,Rainbow.png,678x874
+card_reboot.webp,다시 시작,Reboot,Reboot.png,678x874
+card_seek.webp,탐색,Seek,Seek.png,678x874
+card_thunder_strike.webp,전류 타격,Thunder Strike,ThunderStrike.png,678x874
