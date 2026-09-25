@@ -1,0 +1,1288 @@
+{
+  "decks": {
+    "iron_strength": {
+      "label": "아이언클래드 · 힘 — 붉은 물결",
+      "icon": "💪",
+      "desc": "아이언클래드",
+      "cards": [
+        {
+          "id": "strike",
+          "count": 5
+        },
+        {
+          "id": "defend",
+          "count": 4
+        },
+        {
+          "id": "bash",
+          "count": 1
+        },
+        {
+          "id": "twin_strike",
+          "count": 2
+        },
+        {
+          "id": "heavy_blade",
+          "count": 2
+        },
+        {
+          "id": "inflame",
+          "count": 2
+        },
+        {
+          "id": "pommel_strike",
+          "count": 2
+        },
+        {
+          "id": "spot_weakness",
+          "count": 2
+        },
+        {
+          "id": "perfected_strike",
+          "count": 1
+        },
+        {
+          "id": "flex",
+          "count": 1
+        },
+        {
+          "id": "limit_break",
+          "count": 1
+        },
+        {
+          "id": "demon_form",
+          "count": 1
+        },
+        {
+          "id": "rampage",
+          "count": 1
+        },
+        {
+          "id": "rupture",
+          "count": 1
+        },
+        {
+          "id": "clash",
+          "count": 1
+        },
+        {
+          "id": "anger",
+          "count": 1
+        },
+        {
+          "id": "body_slam",
+          "count": 1
+        },
+        {
+          "id": "uppercut",
+          "count": 1
+        }
+      ]
+    },
+    "iron_block": {
+      "label": "아이언클래드 · 강철 요새",
+      "icon": "🏰",
+      "desc": "",
+      "cards": [
+        {
+          "id": "strike",
+          "count": 5
+        },
+        {
+          "id": "defend",
+          "count": 4
+        },
+        {
+          "id": "bash",
+          "count": 1
+        },
+        {
+          "id": "shrug_it_off",
+          "count": 3
+        },
+        {
+          "id": "iron_wave",
+          "count": 3
+        },
+        {
+          "id": "entrench",
+          "count": 2
+        },
+        {
+          "id": "sword_and_board",
+          "count": 2
+        },
+        {
+          "id": "armaments",
+          "count": 2
+        },
+        {
+          "id": "barricade",
+          "count": 1
+        },
+        {
+          "id": "impervious",
+          "count": 1
+        },
+        {
+          "id": "feel_no_pain",
+          "count": 1
+        },
+        {
+          "id": "metallicize",
+          "count": 1
+        },
+        {
+          "id": "flame_barrier",
+          "count": 1
+        },
+        {
+          "id": "ghostly_armor",
+          "count": 1
+        },
+        {
+          "id": "body_slam",
+          "count": 1
+        },
+        {
+          "id": "intimidate",
+          "count": 1
+        }
+      ]
+    },
+    "iron_exhaust": {
+      "label": "아이언클래드 · 재의 의식",
+      "icon": "🔥",
+      "desc": "",
+      "cards": [
+        {
+          "id": "strike",
+          "count": 5
+        },
+        {
+          "id": "defend",
+          "count": 4
+        },
+        {
+          "id": "bash",
+          "count": 1
+        },
+        {
+          "id": "burning_pact",
+          "count": 2
+        },
+        {
+          "id": "dark_embrace",
+          "count": 2
+        },
+        {
+          "id": "seeing_red",
+          "count": 2
+        },
+        {
+          "id": "second_wind",
+          "count": 2
+        },
+        {
+          "id": "iron_wave",
+          "count": 2
+        },
+        {
+          "id": "fiend_fire",
+          "count": 1
+        },
+        {
+          "id": "offering",
+          "count": 1
+        },
+        {
+          "id": "shockwave",
+          "count": 1
+        },
+        {
+          "id": "disarm",
+          "count": 1
+        },
+        {
+          "id": "reaper",
+          "count": 1
+        },
+        {
+          "id": "feed",
+          "count": 1
+        },
+        {
+          "id": "corruption",
+          "count": 1
+        },
+        {
+          "id": "limit_break",
+          "count": 1
+        },
+        {
+          "id": "impervious",
+          "count": 1
+        },
+        {
+          "id": "headbutt",
+          "count": 1
+        }
+      ]
+    },
+    "iron_blood": {
+      "label": "아이언클래드 · 핏빛 광기",
+      "icon": "🩸",
+      "desc": "",
+      "cards": [
+        {
+          "id": "strike",
+          "count": 5
+        },
+        {
+          "id": "defend",
+          "count": 4
+        },
+        {
+          "id": "bash",
+          "count": 1
+        },
+        {
+          "id": "bloodletting",
+          "count": 3
+        },
+        {
+          "id": "combust",
+          "count": 3
+        },
+        {
+          "id": "blood_for_blood",
+          "count": 2
+        },
+        {
+          "id": "hemokinesis",
+          "count": 2
+        },
+        {
+          "id": "rupture",
+          "count": 1
+        },
+        {
+          "id": "berserk",
+          "count": 1
+        },
+        {
+          "id": "offering",
+          "count": 1
+        },
+        {
+          "id": "reaper",
+          "count": 1
+        },
+        {
+          "id": "wild_strike",
+          "count": 1
+        },
+        {
+          "id": "reckless_charge",
+          "count": 1
+        },
+        {
+          "id": "whirlwind",
+          "count": 1
+        },
+        {
+          "id": "cleave",
+          "count": 1
+        },
+        {
+          "id": "carnage",
+          "count": 1
+        },
+        {
+          "id": "dropkick",
+          "count": 1
+        }
+      ]
+    },
+    "sil_poison": {
+      "label": "사일런트 · 맹독 늪",
+      "icon": "🐍",
+      "desc": "독 타일이 매 턴 갉아먹는다. 병합으로 독을 두 배로.",
+      "cards": [
+        {
+          "id": "strike",
+          "count": 4
+        },
+        {
+          "id": "defend",
+          "count": 4
+        },
+        {
+          "id": "sil_neutralize",
+          "count": 1
+        },
+        {
+          "id": "sil_deadly_poison",
+          "count": 3
+        },
+        {
+          "id": "sil_catalyst",
+          "count": 2
+        },
+        {
+          "id": "sil_noxious_fumes",
+          "count": 2
+        },
+        {
+          "id": "sil_bouncing_flask",
+          "count": 2
+        },
+        {
+          "id": "sil_bane",
+          "count": 2
+        },
+        {
+          "id": "sil_poisoned_stab",
+          "count": 2
+        },
+        {
+          "id": "sil_crippling_cloud",
+          "count": 1
+        },
+        {
+          "id": "sil_corpse_explosion",
+          "count": 1
+        },
+        {
+          "id": "sil_backflip",
+          "count": 2
+        },
+        {
+          "id": "sil_acrobatics",
+          "count": 1
+        },
+        {
+          "id": "sil_deflect",
+          "count": 1
+        },
+        {
+          "id": "sil_footwork",
+          "count": 1
+        },
+        {
+          "id": "sil_slice",
+          "count": 1
+        }
+      ]
+    },
+    "sil_shiv": {
+      "label": "사일런트 · 검무",
+      "icon": "🗡️",
+      "desc": "저코스트 연격 스킬로 타일을 태우며 갈아버린다.",
+      "cards": [
+        {
+          "id": "strike",
+          "count": 4
+        },
+        {
+          "id": "defend",
+          "count": 4
+        },
+        {
+          "id": "sil_neutralize",
+          "count": 1
+        },
+        {
+          "id": "sil_blade_dance",
+          "count": 2
+        },
+        {
+          "id": "sil_cloak_and_dagger",
+          "count": 2
+        },
+        {
+          "id": "sil_accuracy",
+          "count": 1
+        },
+        {
+          "id": "sil_backflip",
+          "count": 1
+        },
+        {
+          "id": "sil_all_out_attack",
+          "count": 1
+        },
+        {
+          "id": "sil_escape_plan",
+          "count": 3
+        },
+        {
+          "id": "sil_infinite_blades",
+          "count": 1
+        },
+        {
+          "id": "sil_eviscerate",
+          "count": 1
+        },
+        {
+          "id": "sil_finisher",
+          "count": 1
+        },
+        {
+          "id": "sil_flechettes",
+          "count": 1
+        },
+        {
+          "id": "sil_terror",
+          "count": 1
+        },
+        {
+          "id": "sil_adrenaline",
+          "count": 1
+        },
+        {
+          "id": "sil_prepared",
+          "count": 1
+        },
+        {
+          "id": "sil_deflect",
+          "count": 1
+        },
+        {
+          "id": "sil_quick_slash",
+          "count": 1
+        },
+        {
+          "id": "sil_storm_of_steel",
+          "count": 1
+        },
+        {
+          "id": "sil_nightmare",
+          "count": 1
+        }
+      ]
+    },
+    "sil_discard": {
+      "label": "사일런트 · 계산된 도박",
+      "icon": "♻️",
+      "desc": "타일을 태워 카드와 마나로 바꾸는 순환 엔진.",
+      "cards": [
+        {
+          "id": "strike",
+          "count": 4
+        },
+        {
+          "id": "defend",
+          "count": 4
+        },
+        {
+          "id": "sil_neutralize",
+          "count": 1
+        },
+        {
+          "id": "sil_survivor",
+          "count": 2
+        },
+        {
+          "id": "sil_calculated_gamble",
+          "count": 2
+        },
+        {
+          "id": "sil_acrobatics",
+          "count": 1
+        },
+        {
+          "id": "sil_prepared",
+          "count": 1
+        },
+        {
+          "id": "sil_concentrate",
+          "count": 2
+        },
+        {
+          "id": "sil_sneaky_strike",
+          "count": 2
+        },
+        {
+          "id": "sil_expertise",
+          "count": 1
+        },
+        {
+          "id": "sil_tactician",
+          "count": 1
+        },
+        {
+          "id": "sil_reflex",
+          "count": 1
+        },
+        {
+          "id": "sil_dagger_throw",
+          "count": 1
+        },
+        {
+          "id": "sil_choke",
+          "count": 1
+        },
+        {
+          "id": "sil_setup",
+          "count": 1
+        },
+        {
+          "id": "sil_doppelganger",
+          "count": 1
+        },
+        {
+          "id": "sil_tools_of_the_trade",
+          "count": 1
+        },
+        {
+          "id": "sil_adrenaline",
+          "count": 1
+        },
+        {
+          "id": "sil_slice",
+          "count": 1
+        },
+        {
+          "id": "sil_flying_knee",
+          "count": 1
+        }
+      ]
+    },
+    "sil_shadow": {
+      "label": "사일런트 · 안개의 무희",
+      "icon": "🌫️",
+      "desc": "흐려지고, 버티고, 회피한다. 방어 유지와 가시의 무희.",
+      "cards": [
+        {
+          "id": "strike",
+          "count": 4
+        },
+        {
+          "id": "defend",
+          "count": 4
+        },
+        {
+          "id": "sil_neutralize",
+          "count": 1
+        },
+        {
+          "id": "sil_blur",
+          "count": 2
+        },
+        {
+          "id": "sil_dodge_and_roll",
+          "count": 2
+        },
+        {
+          "id": "sil_leg_sweep",
+          "count": 2
+        },
+        {
+          "id": "sil_backflip",
+          "count": 1
+        },
+        {
+          "id": "sil_footwork",
+          "count": 2
+        },
+        {
+          "id": "sil_after_image",
+          "count": 1
+        },
+        {
+          "id": "sil_wraith_form",
+          "count": 1
+        },
+        {
+          "id": "sil_deflect",
+          "count": 1
+        },
+        {
+          "id": "sil_escape_plan",
+          "count": 1
+        },
+        {
+          "id": "sil_caltrops",
+          "count": 1
+        },
+        {
+          "id": "sil_piercing_wail",
+          "count": 1
+        },
+        {
+          "id": "sil_dash",
+          "count": 1
+        },
+        {
+          "id": "sil_masterful_stab",
+          "count": 1
+        },
+        {
+          "id": "sil_terror",
+          "count": 1
+        },
+        {
+          "id": "sil_all_out_attack",
+          "count": 1
+        },
+        {
+          "id": "sil_predator",
+          "count": 1
+        },
+        {
+          "id": "sil_slice",
+          "count": 1
+        }
+      ]
+    },
+    "def_frost": {
+      "label": "디펙트 · 절대 영도",
+      "icon": "❄️",
+      "desc": "서리 타일과 방어 스킬로 빙벽을 세운다.",
+      "cards": [
+        {
+          "id": "strike",
+          "count": 4
+        },
+        {
+          "id": "defend",
+          "count": 4
+        },
+        {
+          "id": "def_dualcast",
+          "count": 1
+        },
+        {
+          "id": "def_zap",
+          "count": 1
+        },
+        {
+          "id": "def_cold_snap",
+          "count": 3
+        },
+        {
+          "id": "def_coolheaded",
+          "count": 3
+        },
+        {
+          "id": "def_glacier",
+          "count": 2
+        },
+        {
+          "id": "def_stack",
+          "count": 2
+        },
+        {
+          "id": "def_steam_barrier",
+          "count": 2
+        },
+        {
+          "id": "def_leap",
+          "count": 1
+        },
+        {
+          "id": "def_auto_shields",
+          "count": 1
+        },
+        {
+          "id": "def_equilibrium",
+          "count": 1
+        },
+        {
+          "id": "def_force_field",
+          "count": 1
+        },
+        {
+          "id": "def_boot_sequence",
+          "count": 1
+        },
+        {
+          "id": "def_chill",
+          "count": 1
+        },
+        {
+          "id": "def_reinforced_body",
+          "count": 1
+        },
+        {
+          "id": "def_hologram",
+          "count": 1
+        }
+      ]
+    },
+    "def_lightning": {
+      "label": "디펙트 · 과전압",
+      "icon": "⚡",
+      "desc": "마나를 폭발시켜 즉발 딜로 돌진한다.",
+      "cards": [
+        {
+          "id": "strike",
+          "count": 4
+        },
+        {
+          "id": "defend",
+          "count": 4
+        },
+        {
+          "id": "def_dualcast",
+          "count": 1
+        },
+        {
+          "id": "def_zap",
+          "count": 1
+        },
+        {
+          "id": "def_ball_lightning",
+          "count": 3
+        },
+        {
+          "id": "def_turbo",
+          "count": 2
+        },
+        {
+          "id": "def_charge_battery",
+          "count": 2
+        },
+        {
+          "id": "def_streamline",
+          "count": 2
+        },
+        {
+          "id": "def_sweeping_beam",
+          "count": 2
+        },
+        {
+          "id": "def_hyperbeam",
+          "count": 1
+        },
+        {
+          "id": "def_thunder_strike",
+          "count": 1
+        },
+        {
+          "id": "def_electrodynamics",
+          "count": 1
+        },
+        {
+          "id": "def_double_energy",
+          "count": 1
+        },
+        {
+          "id": "def_tempest",
+          "count": 1
+        },
+        {
+          "id": "def_sunder",
+          "count": 1
+        },
+        {
+          "id": "def_compile_driver",
+          "count": 2
+        },
+        {
+          "id": "def_ftl",
+          "count": 1
+        }
+      ]
+    },
+    "def_claw": {
+      "label": "디펙트 · 클로 상승",
+      "icon": "🦾",
+      "desc": "힘을 쌓아 클로 연격을 무한히 상승시킨다.",
+      "cards": [
+        {
+          "id": "strike",
+          "count": 4
+        },
+        {
+          "id": "defend",
+          "count": 4
+        },
+        {
+          "id": "def_dualcast",
+          "count": 1
+        },
+        {
+          "id": "def_zap",
+          "count": 1
+        },
+        {
+          "id": "def_claw",
+          "count": 4
+        },
+        {
+          "id": "def_beam_cell",
+          "count": 2
+        },
+        {
+          "id": "def_barrage",
+          "count": 2
+        },
+        {
+          "id": "def_go_for_the_eyes",
+          "count": 2
+        },
+        {
+          "id": "def_rip_and_tear",
+          "count": 2
+        },
+        {
+          "id": "def_bullseye",
+          "count": 2
+        },
+        {
+          "id": "def_melter",
+          "count": 1
+        },
+        {
+          "id": "def_scrape",
+          "count": 2
+        },
+        {
+          "id": "def_all_for_one",
+          "count": 1
+        },
+        {
+          "id": "def_multi_cast",
+          "count": 1
+        },
+        {
+          "id": "def_core_surge",
+          "count": 1
+        }
+      ]
+    },
+    "def_echo": {
+      "label": "디펙트 · 에코 시뮬레이션",
+      "icon": "🔁",
+      "desc": "드로우와 마나로 굴러가는 자동 기계 덱.",
+      "cards": [
+        {
+          "id": "strike",
+          "count": 4
+        },
+        {
+          "id": "defend",
+          "count": 4
+        },
+        {
+          "id": "def_dualcast",
+          "count": 1
+        },
+        {
+          "id": "def_zap",
+          "count": 1
+        },
+        {
+          "id": "def_echo_form",
+          "count": 1
+        },
+        {
+          "id": "def_machine_learning",
+          "count": 1
+        },
+        {
+          "id": "def_skim",
+          "count": 2
+        },
+        {
+          "id": "def_overclock",
+          "count": 2
+        },
+        {
+          "id": "def_creative_ai",
+          "count": 1
+        },
+        {
+          "id": "def_hello_world",
+          "count": 1
+        },
+        {
+          "id": "def_seek",
+          "count": 1
+        },
+        {
+          "id": "def_reboot",
+          "count": 1
+        },
+        {
+          "id": "def_fission",
+          "count": 1
+        },
+        {
+          "id": "def_rainbow",
+          "count": 1
+        },
+        {
+          "id": "def_aggregate",
+          "count": 1
+        },
+        {
+          "id": "def_fusion",
+          "count": 1
+        },
+        {
+          "id": "def_recursion",
+          "count": 1
+        },
+        {
+          "id": "def_loop",
+          "count": 1
+        },
+        {
+          "id": "def_capacitor",
+          "count": 1
+        },
+        {
+          "id": "def_self_repair",
+          "count": 1
+        },
+        {
+          "id": "def_reprogram",
+          "count": 1
+        },
+        {
+          "id": "def_biased_cognition",
+          "count": 1
+        }
+      ]
+    },
+    "wat_stance": {
+      "label": "왓쳐 · 격노와 평정",
+      "icon": "🧘",
+      "desc": "격노(힘 2배)와 평정(마나)을 오가며 태세를 춤춘다.",
+      "cards": [
+        {
+          "id": "strike",
+          "count": 4
+        },
+        {
+          "id": "defend",
+          "count": 4
+        },
+        {
+          "id": "wat_eruption",
+          "count": 1
+        },
+        {
+          "id": "wat_vigilance",
+          "count": 1
+        },
+        {
+          "id": "wat_tantrum",
+          "count": 2
+        },
+        {
+          "id": "wat_crescendo",
+          "count": 2
+        },
+        {
+          "id": "wat_empty_fist",
+          "count": 2
+        },
+        {
+          "id": "wat_empty_body",
+          "count": 2
+        },
+        {
+          "id": "wat_mental_fortress",
+          "count": 1
+        },
+        {
+          "id": "wat_rushdown",
+          "count": 1
+        },
+        {
+          "id": "wat_inner_peace",
+          "count": 1
+        },
+        {
+          "id": "wat_empty_mind",
+          "count": 2
+        },
+        {
+          "id": "wat_wallop",
+          "count": 1
+        },
+        {
+          "id": "wat_sash_whip",
+          "count": 2
+        },
+        {
+          "id": "wat_crush_joints",
+          "count": 1
+        },
+        {
+          "id": "wat_indignation",
+          "count": 1
+        },
+        {
+          "id": "wat_tranquility",
+          "count": 1
+        },
+        {
+          "id": "wat_wave_of_the_hand",
+          "count": 1
+        }
+      ]
+    },
+    "wat_mantra": {
+      "label": "왓쳐 · 신성 강림",
+      "icon": "✨",
+      "desc": "만트라를 쌓아 신성(힘 3배)으로 강림한다.",
+      "cards": [
+        {
+          "id": "strike",
+          "count": 4
+        },
+        {
+          "id": "defend",
+          "count": 4
+        },
+        {
+          "id": "wat_eruption",
+          "count": 1
+        },
+        {
+          "id": "wat_vigilance",
+          "count": 1
+        },
+        {
+          "id": "wat_worship",
+          "count": 2
+        },
+        {
+          "id": "wat_devotion",
+          "count": 2
+        },
+        {
+          "id": "wat_prostrate",
+          "count": 2
+        },
+        {
+          "id": "wat_blasphemy",
+          "count": 1
+        },
+        {
+          "id": "wat_justified",
+          "count": 2
+        },
+        {
+          "id": "wat_consecrate",
+          "count": 1
+        },
+        {
+          "id": "wat_bowling_bash",
+          "count": 2
+        },
+        {
+          "id": "wat_fear_no_evil",
+          "count": 1
+        },
+        {
+          "id": "wat_foresight",
+          "count": 1
+        },
+        {
+          "id": "wat_carve_reality",
+          "count": 1
+        },
+        {
+          "id": "wat_deceive_reality",
+          "count": 1
+        },
+        {
+          "id": "wat_battle_hymn",
+          "count": 1
+        },
+        {
+          "id": "wat_judgment",
+          "count": 1
+        },
+        {
+          "id": "wat_ragnarok",
+          "count": 1
+        },
+        {
+          "id": "wat_wish",
+          "count": 1
+        }
+      ]
+    },
+    "wat_block": {
+      "label": "왓쳐 · 버티는 손바닥",
+      "icon": "🖐️",
+      "desc": "버티는 동시에 때린다. 손바닥 방어 덱.",
+      "cards": [
+        {
+          "id": "strike",
+          "count": 3
+        },
+        {
+          "id": "defend",
+          "count": 5
+        },
+        {
+          "id": "wat_vigilance",
+          "count": 1
+        },
+        {
+          "id": "wat_empty_body",
+          "count": 2
+        },
+        {
+          "id": "wat_protect",
+          "count": 2
+        },
+        {
+          "id": "wat_justified",
+          "count": 2
+        },
+        {
+          "id": "wat_wallop",
+          "count": 2
+        },
+        {
+          "id": "wat_talk_to_the_hand",
+          "count": 2
+        },
+        {
+          "id": "wat_collect",
+          "count": 2
+        },
+        {
+          "id": "wat_perseveration",
+          "count": 1
+        },
+        {
+          "id": "wat_vault",
+          "count": 1
+        },
+        {
+          "id": "wat_mental_fortress",
+          "count": 1
+        },
+        {
+          "id": "wat_evaluate",
+          "count": 1
+        },
+        {
+          "id": "wat_inner_peace",
+          "count": 1
+        },
+        {
+          "id": "wat_deceive_reality",
+          "count": 1
+        },
+        {
+          "id": "wat_meditate",
+          "count": 1
+        },
+        {
+          "id": "wat_sash_whip",
+          "count": 1
+        },
+        {
+          "id": "wat_fear_no_evil",
+          "count": 1
+        }
+      ]
+    },
+    "wat_rushdown": {
+      "label": "왓쳐 · 돌진 연계",
+      "icon": "💨",
+      "desc": "격노 진입마다 카드를 쏟아낸다.",
+      "cards": [
+        {
+          "id": "strike",
+          "count": 4
+        },
+        {
+          "id": "defend",
+          "count": 4
+        },
+        {
+          "id": "wat_eruption",
+          "count": 1
+        },
+        {
+          "id": "wat_vigilance",
+          "count": 1
+        },
+        {
+          "id": "wat_rushdown",
+          "count": 2
+        },
+        {
+          "id": "wat_empty_mind",
+          "count": 2
+        },
+        {
+          "id": "wat_tantrum",
+          "count": 1
+        },
+        {
+          "id": "wat_crescendo",
+          "count": 1
+        },
+        {
+          "id": "wat_inner_peace",
+          "count": 1
+        },
+        {
+          "id": "wat_foreign_influence",
+          "count": 1
+        },
+        {
+          "id": "wat_foresight",
+          "count": 1
+        },
+        {
+          "id": "wat_meditate",
+          "count": 1
+        },
+        {
+          "id": "wat_wreath_of_flame",
+          "count": 1
+        },
+        {
+          "id": "wat_carve_reality",
+          "count": 1
+        },
+        {
+          "id": "wat_bowling_bash",
+          "count": 1
+        },
+        {
+          "id": "wat_consecrate",
+          "count": 1
+        },
+        {
+          "id": "wat_indignation",
+          "count": 1
+        },
+        {
+          "id": "wat_tranquility",
+          "count": 1
+        },
+        {
+          "id": "wat_vault",
+          "count": 1
+        },
+        {
+          "id": "wat_devotion",
+          "count": 1
+        },
+        {
+          "id": "wat_alpha",
+          "count": 1
+        },
+        {
+          "id": "wat_windmill_strike",
+          "count": 1
+        }
+      ]
+    }
+  }
+}
