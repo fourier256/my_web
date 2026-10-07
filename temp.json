@@ -1,0 +1,98 @@
+{
+  "locationId": "scene01",
+  "name": "밀명",
+  "background": "s01_palace_night.png",
+  "entryNode": "cut_open",
+  "chapter": 1,
+  "bgmHint": "quiet_tension",
+  "actors": ["jeongjo"],
+  "onEnter": [
+    { "id": "oe_first", "when": "first_visit", "goto": "cut_open", "once": true }
+  ],
+  "nodes": {
+
+    "cut_open": {
+      "type": "dialogue",
+      "caption": "정조 19년, 겨울의 끝자락 — 창덕궁 편전",
+      "lines": [
+        { "slide": "눈 내린 창덕궁의 밤 전경, 처마마다 쌓인 눈, 자정의 짙푸른 어둠과 멀리 하나 켜진 편전의 등불, 고요하고 서늘한 분위기", "transition": "FO_FI", "speaker": "", "text": "" },
+        { "slide": "어두운 편전 내부, 등잔 하나만 켜진 넓은 방, 서안에 기대어 문서를 읽는 임금의 실루엣, 촛불의 미약한 빛과 긴 그림자", "transition": "DESOLVE", "speaker": "jeongjo", "text": "늦은 시각에 불렀다. 피곤할 터인데.", "sprite": "jeongjo_calm" },
+        { "speaker": "주인공", "text": "(전하께서 친히 사람을 물리고 부르셨다. 이런 일은 처음이다.)", "sprite": "me_think" },
+        { "speaker": "주인공", "text": "신, 장용영 종사관 서준. 명을 받자옵니다.", "sprite": "me_normal" },
+        { "slide": "고개를 든 정조의 얼굴 클로즈업, 30대 중반 단정한 용안, 평온하지만 서늘한 눈빛, 등잔불에 반쯤 물든 얼굴", "transition": "DESOLVE", "speaker": "jeongjo", "text": "종사관. 자네는 사람을 '읽는' 일에 능하다 들었네.", "sprite": "jeongjo_calm" },
+        { "speaker": "주인공", "text": "과찬이시옵니다.", "sprite": "me_normal" },
+        { "speaker": "jeongjo", "text": "과찬인지 아닌지는, 이 일을 맡아보면 알게 되겠지.", "sprite": "jeongjo_calm" },
+        { "slide": "정조가 읽던 문서를 천천히 덮는 손 클로즈업, 서안 위 교지와 붓, 흔들리는 촛불 그림자", "transition": "DESOLVE", "speaker": "jeongjo", "text": "보름 뒤, 과인은 화성으로 행차한다." },
+        { "speaker": "jeongjo", "text": "그 행차 중에…… 과인을 노리는 자가 있다." },
+        { "slide": "어둠 속에서 번지는 붉은 기운, 칼날에 반사된 희미한 핏빛 빛 한 줄기, 불길한 암시", "transition": "RED_FO_FI", "speaker": "주인공", "text": "……자객이옵니까.", "sprite": "me_serious" },
+        { "speaker": "jeongjo", "text": "그렇게 불러도 좋고. 역도라 불러도 좋지.", "sprite": "jeongjo_calm" },
+        { "speaker": "jeongjo", "text": "이름이 무엇이든, 과인의 숨을 끊으려는 자다." }
+      ],
+      "next": "cut_refuse_guard"
+    },
+
+    "cut_refuse_guard": {
+      "type": "dialogue",
+      "lines": [
+        { "slide": "정조의 정면 상반신, 어좌에 등을 기대고 서준을 응시하는 모습, 차분하면서 위엄 있는 표정", "transition": "DESOLVE", "speaker": "주인공", "text": "하오면 신이 당장 호위를 늘리고, 행차를 미루도록 주청을……", "sprite": "me_normal" },
+        { "speaker": "jeongjo", "text": "아니.", "sprite": "jeongjo_firm", "shake": true },
+        { "speaker": "jeongjo", "text": "행차는 예정대로 한다. 호위도 늘리지 않는다." },
+        { "speaker": "주인공", "text": "(무어라……?)", "sprite": "me_shock" },
+        { "speaker": "주인공", "text": "전하. 전하의 옥체가 위험하온데, 어찌……", "sprite": "me_serious" },
+        { "speaker": "jeongjo", "text": "종사관.", "sprite": "jeongjo_firm" },
+        { "speaker": "jeongjo", "text": "과인이 자네에게 명하는 것은 단 하나다." }
+      ],
+      "next": "cut_the_order"
+    },
+
+    "cut_the_order": {
+      "type": "dialogue",
+      "lines": [
+        { "slide": "정조의 눈 클로즈업, 등불이 반사된 깊고 흔들림 없는 눈동자, 무언가를 시험하는 듯한 시선", "transition": "DESOLVE", "speaker": "jeongjo", "text": "행차 중, 과인을 노리는 그 자를 찾아내라.", "sprite": "jeongjo_firm" },
+        { "speaker": "jeongjo", "text": "누구인지. 어떻게 하려는지. 하나도 빠짐없이." },
+        { "speaker": "주인공", "text": "……찾아내어, 어찌하오리까.", "sprite": "me_serious" },
+        { "speaker": "jeongjo", "text": "찾기만 하라. 그 다음은, 과인이 정한다." },
+        { "speaker": "주인공", "text": "(찾기만 하라……? 잡으라는 것이 아니라?)", "sprite": "me_think" },
+        { "speaker": "주인공", "text": "(전하의 말씀에는 늘 과인이 읽지 못하는 뒷면이 있다.)", "sprite": "me_think" }
+      ],
+      "next": "cut_give_edict"
+    },
+
+    "cut_give_edict": {
+      "type": "dialogue",
+      "lines": [
+        { "slide": "정조가 서안 위 교지 하나를 서준 쪽으로 밀어주는 손, 붉은 어보가 찍힌 밀명 교지", "transition": "DESOLVE", "speaker": "jeongjo", "text": "이 교지가 있으면 행궁 안 어디든 드나들 수 있다.", "sprite": "jeongjo_calm" },
+        { "speaker": "jeongjo", "text": "누구에게 묻든, 무엇을 뒤지든, 과인의 뜻으로 여겨라." },
+        { "speaker": "주인공", "text": "……삼가 받자옵니다.", "sprite": "me_normal" }
+      ],
+      "getItem": { "addEvidence": ["edict"], "popup": { "name": "밀명 교지", "desc": "임금의 수사권 증표. 행궁 어디든 출입할 수 있다." } },
+      "next": "cut_closing"
+    },
+
+    "cut_closing": {
+      "type": "dialogue",
+      "lines": [
+        { "slide": "어좌에 홀로 앉은 정조의 전신, 꺼져가는 등잔불, 넓고 어두운 편전에 혼자 남은 임금의 쓸쓸하고도 단단한 뒷모습", "transition": "DESOLVE", "speaker": "jeongjo", "text": "종사관.", "sprite": "jeongjo_calm" },
+        { "speaker": "주인공", "text": "예, 전하.", "sprite": "me_normal" },
+        { "speaker": "jeongjo", "text": "임금이란…… 죽지 않을 것처럼 행동해야 하는 자리다." },
+        { "speaker": "jeongjo", "text": "허나, 죽을 것을 알고 준비해야 하는 자리이기도 하지." },
+        { "speaker": "주인공", "text": "(그 말씀의 뜻을, 나는 그때 알지 못했다.)", "sprite": "me_think" },
+        { "speaker": "주인공", "text": "(보름 뒤, 화성에서 벌어질 모든 일을 겪기 전까지는.)", "sprite": "me_think" }
+      ],
+      "setFlags": { "received_edict": true, "ch1_prologue_done": true },
+      "next": "cut_title"
+    },
+
+    "cut_title": {
+      "type": "dialogue",
+      "lines": [
+        { "slide": "검은 화면에 붓글씨 제목 《암살자(들)》, 희미한 달빛 배경", "transition": "FO_FI", "speaker": "", "text": "" }
+      ],
+      "showTitle": true,
+      "next": "goto_scene02"
+    },
+
+    "goto_scene02": { "type": "move", "destination": "scene02", "next": "entryNode" }
+
+  }
+}
