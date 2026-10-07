@@ -1,0 +1,138 @@
+{
+  "locationId": "scene02",
+  "name": "출발 전 점검 — 돈화문 앞",
+  "background": "s02_donhwamun.png",
+  "entryNode": "hub_s02",
+  "chapter": 1,
+  "actors": ["yunbyeoljang"],
+  "onEnter": [
+    { "id": "oe_first", "when": "first_visit", "goto": "s02_intro", "once": true }
+  ],
+  "nodes": {
+
+    "s02_intro": {
+      "type": "dialogue",
+      "caption": "행차 당일 아침 — 돈화문 앞",
+      "lines": [
+        { "slide": "이른 아침 창덕궁 돈화문 앞 넓은 마당, 화성 행차를 위해 집결한 수백 명의 행렬, 깃발과 가마와 군마, 분주하지만 질서정연한 왕실 행렬 준비 풍경", "transition": "FO_FI", "speaker": "주인공", "text": "(보름이 지났다. 마침내 화성 행차의 날.)", "sprite": "me_think" },
+        { "speaker": "주인공", "text": "(겉으로는 더없이 성대한 왕실 행렬. 허나 이 행렬 어딘가에, 전하를 노리는 자가 섞여 있다.)", "sprite": "me_think" }
+      ],
+      "returnToLocation": true
+    },
+
+    "hub_s02": {
+      "type": "choice",
+      "text": "무엇을 할까?",
+      "options": [
+        { "label": "행렬을 둘러본다", "next": "investigate_s02" },
+        { "label": "별장 윤씨에게 말을 건다", "next": "talk_yun" },
+        { "label": "행차를 출발시킨다", "next": "to_scene03", "requires": { "flags": { "got_roster": true } } }
+      ]
+    },
+
+    "investigate_s02": {
+      "type": "investigate",
+      "background": "s02_donhwamun.png",
+      "text": "행렬을 살펴보자.",
+      "hotspots": [
+        { "id": "soldiers", "area": { "x": 80, "y": 300, "w": 140, "h": 120 }, "next": "look_soldiers" },
+        { "id": "palanquin", "area": { "x": 360, "y": 180, "w": 160, "h": 200 }, "next": "look_palanquin" }
+      ],
+      "exit": "hub_s02"
+    },
+
+    "look_soldiers": {
+      "type": "dialogue",
+      "lines": [
+        { "slide": "줄지어 선 호위 군졸들과 창검, 번쩍이는 갑주, 엄숙하게 도열한 장용영 군사들의 모습", "transition": "DESOLVE", "speaker": "주인공", "text": "(장용영의 정예들. 전하께서 손수 길러낸 친위 군사다.)", "sprite": "me_think" },
+        { "speaker": "주인공", "text": "(이들 중 누군가가 배신자라면…… 생각만 해도 서늘하다.)", "sprite": "me_think" }
+      ],
+      "next": "investigate_s02"
+    },
+
+    "look_palanquin": {
+      "type": "dialogue",
+      "lines": [
+        { "slide": "화려하게 장식된 임금의 어가(가마), 붉고 금빛 장식, 두꺼운 휘장, 주변을 둘러싼 경계 군졸들", "transition": "DESOLVE", "speaker": "주인공", "text": "(전하께서 타실 어가. 행차 내내 가장 많은 눈이 쏠릴 곳.)", "sprite": "me_think" },
+        { "speaker": "주인공", "text": "(정면으로 노리기엔 너무 위험하다. 암살을 꾸민다면, 다른 방법을 쓸 터.)", "sprite": "me_think" }
+      ],
+      "next": "investigate_s02"
+    },
+
+    "talk_yun": {
+      "type": "talk",
+      "speaker": "yunbyeoljang",
+      "variants": [
+        { "when": { "flags": { "got_roster": true } }, "goto": "yun_talk_after" },
+        { "when": "first", "goto": "yun_talk_first" },
+        { "when": true, "goto": "yun_talk_default" }
+      ],
+      "exit": "hub_s02"
+    },
+
+    "yun_talk_first": {
+      "type": "dialogue",
+      "lines": [
+        { "slide": "장용영 별장 윤씨의 상반신, 40대 무관, 다부진 체격과 날카로운 눈매, 갑주 차림, 무뚝뚝한 표정", "transition": "DESOLVE", "speaker": "yunbyeoljang", "text": "종사관 나리. 이 바쁜 아침에 무슨 일이시오.", "sprite": "yun_normal" },
+        { "speaker": "주인공", "text": "호위 배치를 좀 보고 싶소. 교대 명단을 보여줄 수 있겠소.", "sprite": "me_normal" },
+        { "speaker": "yunbyeoljang", "text": "……교대 명단을? 그건 어인 까닭으로.", "sprite": "yun_normal" },
+        { "speaker": "주인공", "text": "그저 점검이오. 전하의 행차이니, 만전을 기하려는 것뿐.", "sprite": "me_normal" },
+        { "slide": "윤별장이 두루마리 명단을 건네는 손, 빼곡히 적힌 군졸들의 이름과 교대 시각표", "transition": "DESOLVE", "speaker": "yunbyeoljang", "text": "여기 있소. 한 치의 어긋남도 없이 짜두었소.", "sprite": "yun_normal" },
+        { "speaker": "yunbyeoljang", "text": "밤 시각엔 내가 직접 초소를 돌 것이오. 염려 마시오." },
+        { "speaker": "주인공", "text": "(……지금은 아무 이상이 없다. 분명히 기억해두자.)", "sprite": "me_think" },
+        { "speaker": "주인공", "text": "(뒤틀린 것을 알아채려면, 먼저 바른 것을 알아야 하니.)", "sprite": "me_think" }
+      ],
+      "getItem": { "addEvidence": ["guard_roster"], "popup": { "name": "호위 교대 명단", "desc": "행차 각 시각의 호위 배치표. 지금은 이상이 없어 보인다." } },
+      "setFlags": { "got_roster": true, "normal_roster_confirmed": true },
+      "next": "yun_press_choice"
+    },
+
+    "yun_press_choice": {
+      "type": "choice",
+      "text": "무엇을 할까?",
+      "options": [
+        { "label": "윤별장을 더 추궁한다", "next": "yun_press_more" },
+        { "label": "이만 물러난다", "next": "hub_s02" }
+      ]
+    },
+
+    "yun_press_more": {
+      "type": "dialogue",
+      "lines": [
+        { "speaker": "주인공", "text": "혹…… 요 근래 수상한 자를 본 적은 없소.", "sprite": "me_normal" },
+        { "speaker": "yunbyeoljang", "text": "수상한 자라. ……글쎄.", "sprite": "yun_normal" },
+        { "slide": "잠시 시선을 피하는 윤별장의 옆얼굴, 미묘하게 굳은 표정", "transition": "DESOLVE", "speaker": "yunbyeoljang", "text": "없소. 있다 한들, 내 소관에서 벌어질 일은 없을 것이오.", "sprite": "yun_sweat" },
+        { "speaker": "주인공", "text": "(……방금, 눈을 피했다. 지금 캐물어도 더 나올 것은 없겠지만. 이 자, 기억해두자.)", "sprite": "me_think" }
+      ],
+      "setFlags": { "yun_suspect_1": true },
+      "returnToLocation": true
+    },
+
+    "yun_talk_default": {
+      "type": "dialogue",
+      "lines": [
+        { "speaker": "yunbyeoljang", "text": "볼일이 더 있으시오? 출발 준비로 바쁘오.", "sprite": "yun_normal" }
+      ],
+      "returnToLocation": true
+    },
+
+    "yun_talk_after": {
+      "type": "dialogue",
+      "lines": [
+        { "speaker": "yunbyeoljang", "text": "명단은 이미 드리지 않았소. 이제 그만 출발합시다.", "sprite": "yun_normal" }
+      ],
+      "returnToLocation": true
+    },
+
+    "to_scene03": {
+      "type": "dialogue",
+      "lines": [
+        { "slide": "행렬이 돈화문을 나서 길게 늘어서 출발하는 장관, 아침 햇살 아래 깃발의 물결", "transition": "FO_FI", "speaker": "", "text": "" }
+      ],
+      "next": "move_s03"
+    },
+
+    "move_s03": { "type": "move", "destination": "scene03", "next": "entryNode" }
+
+  }
+}
