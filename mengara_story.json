@@ -76,6 +76,40 @@
       ]
     },
     {
+      "id": "opening",
+      "action": "start_dialog__dlog_stage_1",
+      "cut": [
+        {"illust": "opening_01", "mix": "fade_out_in", "dialog": "아라는 그 간의 일을 털어 놓았다."},
+        {"illust": "opening_02", "mix": "dissolve", "dialog": "아빠의 불륜, 버려진 엄마와 나, 불행했던 시간들... 나는 묵묵히 그녀의 이야기를 들었다."},
+        {"illust": "opening_03", "mix": "dissolve", "dialog": "이야기를 끝 마친 아라는 잠시 생각에 잠겨있다 입을 열었다."},
+      ]
+    },
+    {
+      "id": "pet_me_01",
+      "action": "start_dialog__dlog_stage_1",
+      "cut": [
+        {"illust": "opening_01", "mix": "fade_out_in", "dialog": "나는 천천히 손을 뻗어 아라의 머리 위에 올리고 부드럽게 쓰다듬었다. 그녀의 머리는 떡져있었고, 기름기가 느껴졌다."},
+        {"illust": "opening_02", "mix": "dissolve", "dialog": "하아... 현우야..."},
+        {"illust": "opening_03", "mix": "dissolve", "dialog": "아라는 얼굴을 붉히며 기쁘다는 듯 나를 쳐다봤다."},
+        {"illust": "opening_04", "mix": "fade_out_in", "dialog": "이 게 뭘까, 아라는 뭘 느끼고 있는 걸까? 나로서는 이해 하기 힘들었다."}
+      ]
+    },
+    {
+      "id": "pet_me_02",
+      "action": "start_dialog__dlog_stage_1",
+      "cut": [
+        {"illust": "opening_01", "mix": "fade_out_in", "dialog": "나는 다시 한 번 손을 아라의 머리 위에 올리고 부드럽게 쓰다듬었다."},
+        {"illust": "opening_02", "mix": "dissolve", "dialog": "하아... 현우야... 나 어때?"},
+        {"illust": "opening_03", "mix": "dissolve", "dialog": "꼭 강아지 같아."},
+        {"illust": "opening_04", "mix": "fade_out_in", "dialog": "저... 정말? 현우가 좋아 해 주는 거야?"},
+        {"illust": "opening_04", "mix": "fade_out_in", "dialog": "이렇게 하면 어때? 더 좋아?"},
+        {"illust": "opening_02", "mix": "dissolve", "dialog": "나는 손길을 살짝 내려 아라의 뺨을 쓰다듬었다."},
+        {"illust": "opening_04", "mix": "fade_out_in", "dialog": "히, 히이익? 우...우우우..."},
+        {"illust": "opening_04", "mix": "fade_out_in", "dialog": "아라는 갑자기 울음을 터쯔렸다."},
+      ]
+    },
+
+    {
       "id": "makeover",
       "action": "start_dialog__dlog_stage_7",
       "cut": [
@@ -150,16 +184,21 @@
           "tier": "bright",
           "action": "start_game__stage_02",
           "dialogue": [
+            { "char": "me", "state": "", "talk": "<DAY 1>" },
             { "char": "me", "state": "", "talk": "시끌벅적한 오티 강당.\n구석에 <span style='font-size:1.15em'>검은 후드를 뒤집어쓴</span> 한 사람이 보였다." },
             { "char": "me", "state": "", "talk": "긴 앞머리 사이로 보이는 눈매…\n<span style='font-size:1.2em'>어? 저 얼굴, 어디서…</span>" },
             { "char": "me", "state": "", "talk": "저기, 혹시… 너,\n<span style='color:#C98FE0;font-size:1.15em'>박아라</span> 맞지?" },
-            { "char": "ara", "state": "fluster", "talk": "<span style='font-size:1.15em'>히끅?!</span>\n사, 사람 잘못 보셨는데요.\n저 그런 사람 아니거든요. 전혀. 1도." },
-            { "char": "me", "state": "", "talk": "(귀가 빨개지고, 눈이 사방으로 도망 다니고…)\n너… 여전히 <span style='font-size:1.15em'>거짓말을 1도 못 하는구나?</span>" },
-            { "char": "ara", "state": "pout", "talk": "<span style='font-size:1.2em'>으으…!</span>\n치, 치사하게.\n…그래서, 뭐. 뭐 어쩌라고." },
+            { "char": "ara", "state": "fluster", "talk": "<span style='font-size:1.15em'>히끅?!</span>\n사, 사람 잘못 보셨는데요.\n저 그런 사람 아니거든요." },
+            { "char": "me", "state": "", "talk": "(귀가 빨개지고, 눈이 사방으로 도망 다니고…)\n너… 여전히 <span style='font-size:1.15em'>거짓말을 전혀 못 하는구나?</span>" },
+            { "char": "ara", "state": "pout", "talk": "<span style='font-size:1.2em'>으으…!</span>\n치, 치사하게.\n…그래서, 뭐. 뭐 어쩌라고. 아무튼 난 너 몰라. 저리 가." },
             { "char": "me", "state": "", "talk": "오랜만에 한 판 두자.\n<span style='color:#e0c46b'>오목</span>. 우리 특기였잖아." },
             { "char": "ara", "state": "nervous", "talk": "…오목? <span style='font-size:0.85em'>(움찔)</span>\n하, 10년 전 실력일 거라 생각하면 오산이야." },
             { "char": "me", "state": "", "talk": "좋아. 대신 조건.\n<span style='color:#6EC6FF'>내가 이기면, 거짓말 그만하고 솔직하게 얘기하기.</span>" },
-            { "char": "ara", "state": "sulk", "talk": "…좋아. 어차피 질 리 없으니까.\n<span style='font-size:1.15em'>후회나 하지 마!</span>" }
+            { "char": "ara", "state": "nervous", "talk": "그럼 내가 이기면?" },
+            { "char": "me", "state": "explain", "talk": "음… 소원 하나 들어줄게." },
+            { "char": "ara", "state": "sulk", "talk": "소…소원? 히히히…우히… 조…좋아!\n<span style='font-size:1.15em'>후회나 하지 마!</span>" },
+            { "char": "me", "state": "neutral", "talk": "(소원이라는 말에 저렇게 까지? 그냥 아무렇게나 한 말인데 저렇게 기대 한다고? 뭐지…)" },
+            { "char": "me", "state": "neutral", "talk": "(분명 밝은 아이었는데 아라는… 어떻게 된 걸까?\n그녀의 이상한 행동… 원인을 알려면 역시 오목을 이기는 수 밖에 없어.)" },
           ]
         }
       ]
@@ -176,22 +215,44 @@
           "dialogue": [
             { "char": "ara", "state": "soft", "talk": "…졌네.\n하긴, 너한테는 한 번도 못 이겼지. 옛날에도." },
             { "char": "me", "state": "", "talk": "그래서, 약속. 이제 솔직하게.\n너 왜 이렇게… 됐어?" },
-            { "char": "ara", "state": "nervous", "talk": "…고등학교 때 이런저런 일이 있어서.\n사람 앞에 서는 게 무서워졌어." },
-            { "char": "me", "state": "", "talk": "그럼 딱 한 번만, 나랑 밖에 나가보자.\n<span style='color:#6EC6FF'>내가 이기면, 이번 주말에 외출.</span>" },
-            { "char": "ara", "state": "pout", "talk": "…또 내기야?\n<span style='font-size:0.85em'>(근데 왜 싫지가 않지, 이거.)</span>\n…좋아. 두자." }
+            { "char": "ara", "state": "nervous", "talk": "…고등학교 때 이런저런 일이 있어서.\n사람 앞에 서는 게 무서워졌어." },            
           ]
         },
         {
           "tier": "gloom",
           "action": "start_game__stage_03",
           "dialogue": [
-            { "char": "ara", "state": "nervous", "talk": "…이번엔 내가 이겼네.\n<span style='font-size:0.9em'>(근데 왜 하나도 안 기쁘지.)</span>" },
-            { "char": "me", "state": "", "talk": "졌지만 약속은 약속이지.\n얘기 좀 하자. 너 왜 이렇게 됐어?" },
-            { "char": "ara", "state": "hide", "talk": "…말해서 뭐 해.\n어차피 너도 조금 지나면\n<span style='font-size:0.9em'>나 같은 거 귀찮아질 텐데.</span>" },
-            { "char": "me", "state": "", "talk": "그럴 리 없잖아. 한 판 더.\n<span style='color:#6EC6FF'>내가 이기면, 주말에 나랑 밖에 나가기.</span>" },
-            { "char": "ara", "state": "hide", "talk": "…나 같은 애가 나가봤자 공기나 더럽히는데.\n<span style='font-size:0.85em'>…그래도, 네가 둔다면야.</span>" }
+            { "char": "ara", "state": "nervous", "talk": "…이번엔 내가 이겼네.\n<span style='font-size:0.9em'>히히히</span>" },
+            { "char": "me", "state": "", "talk": "약속은 약속이지.\n얘기 해 봐. 소원이 뭐야?" },
+            { "char": "ara", "state": "hide", "talk": "나 머리 쓰다듬어줘." },
+            { "char": "me", "state": "", "talk": "뭐? 고작 그런 거야?" },
+            { "char": "ara", "state": "hide", "talk": "나, 나 있지… 지금까지 너무 힘들었다?\n너를 만나서 너무 반가웠는데..." },
+            { "char": "ara", "state": "hide", "talk": "역시 너도 나 같은 건 싫은 거구나?" },
+            { "char": "me", "state": "", "talk": "아, 아니야! 그런거! 싫어하지 않아. 오히려…" },
+            { "char": "ara", "state": "hide", "talk": "오히려?…" },
+            { "char": "me", "state": "", "talk": "어휴, 됐다. 이리 와봐. 쓰다듬어줄게." },
           ]
         }
+      ]
+    },
+    
+    {
+      "id": "dlog_stage_3",
+      "location": "오티 강당 · 구석자리",
+      "bgm": "bgm_funny",
+      "action": "start_game__stage_03",
+      "variants": [
+        {
+          "tier": "bright",
+          "action": "start_game__stage_03",
+          "dialogue": [
+            { "char": "ara", "state": "soft", "talk": "현우야, 너를 다시 만나서 정말 다행이야." },
+            { "char": "ara", "state": "soft", "talk": "내게 남은 행복한 기억은 너와 헤어지기 전에 멈춰 있어." },
+            { "char": "me", "state": "", "talk": "아라야..." },
+            { "char": "ara", "state": "nervous", "talk": "부담스럽게 들리겠지만, 네가 구세주 처럼 느껴져." },
+            { "char": "ara", "state": "nervous", "talk": "그, 그치만 부담 주려는 건 아니야 정말! 그냥...\n고마워." }
+          ]
+        },
       ]
     },
     {
@@ -216,7 +277,8 @@
           "tier": "gloom",
           "action": "start_game__stage_04",
           "dialogue": [
-            { "char": "me", "state": "", "talk": "(나온 것만으로도 다행이다.\n아라는 고개를 푹 숙이고 있었다.)" },
+            { "char": "me", "state": "", "talk": "(아라는 이틀 째 학교에 나오지 않고 있다.)" },
+            { "char": "me", "state": "", "talk": "(나는 걱정되는 마음에 아라가 알려준 주소로 향했다.)" },
             { "char": "ara", "state": "hide", "talk": "…몇 년 만에 나온 거야.\n<span style='font-size:0.9em'>사람들이 다 날 보는 것 같아. 숨 막혀.</span>" },
             { "char": "me", "state": "", "talk": "아무도 널 안 봐. 내가 옆에 있잖아.\n<span style='color:#6EC6FF'>내가 이기면, 옷 한 벌만 입어보기.</span>" },
             { "char": "ara", "state": "nervous", "talk": "…밝은 옷은 안 돼. 더 이상하게 볼 거야.\n<span style='font-size:0.85em'>…그래도 네가 이기면, 할게.</span>" }
