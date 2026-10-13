@@ -255,6 +255,59 @@
         },
       ]
     },
+
+    {
+      "id": "dlog_stage_4",
+      "location": "주말 · 쇼핑몰 입구",
+      "bgm": "bgm_funny",
+      "action": "start_game__stage_04",
+      "variants": [
+        {
+          "tier": "bright",
+          "action": "start_game__stage_04",
+          "dialogue": [
+            { "char": "me", "state": "", "talk": "DAY 2" },
+            { "char": "me", "state": "", "talk": "오전 교양수업을 마친 나는 도시락을 들고 두리번거리며 화장실로 들어가려는 아라를 발견했다." },
+            { "char": "me", "state": "", "talk": "야, 박아라! 밥 먹었어?" },
+            { "char": "ara", "state": "nervous", "talk": "혀...현우야..." },
+            { "char": "ara", "state": "nervous", "talk": "점심, 안 먹었는데... 새, 생각 없어. 점심 맛있게 먹어. 이, 이따 전공수업때 보자." },
+            { "char": "me", "state": "", "talk": "(아라는 편의점 도시락을 등 뒤로 황급히 숨겼다.)" },
+            { "char": "me", "state": "", "talk": "그럼 나 혼자 밥 먹기 싫으니까 옆에 있어줘라." },
+            { "char": "ara", "state": "fluster", "talk": "그, 그치만 나랑 있는 거 과 사람들이 보면 싫어 할 거야..." },
+            { "char": "me", "state": "", "talk": "왜... 그렇게 생각 해?" },
+            { "char": "me", "state": "", "talk": "그야... 다들 나를 싫어 하니까. 그래서 아빠도 떠났고.. 또... 여자애들은 뒤에서 내가 음침하다고 욕하고..." },
+            { "char": "me", "state": "", "talk": "아라야, 세상에 좋은 사람만 있는 건 아니야. \n그리고 그런 사람들이 존재 하는 게 네 잘못은 아니야 절대로." },
+            { "char": "me", "state": "", "talk": "내 잘못이 아니야?" },
+            { "char": "me", "state": "", "talk": "이런 말을 할 정도로 내가 좋은 놈인지는 모르겠지만...\n 에잇, 어렵다. 일단 밥먹고 오목이나 한 판 두자." },
+            { "char": "ara", "state": "sulk", "talk": "…또 오목.\n좋아. 어차피 넌 못 이겨. 아마도. 어쩌면.\n우히히" },
+            { "char": "ara", "state": "sulk", "talk": "이번에도 내기 하는 거야?" },
+            { "char": "ara", "state": "sulk", "talk": "맞아. 이긴 사람 소원 하나 들어주기." },
+            { "char": "ara", "state": "sulk", "talk": "조, 좋아! 그럼 한 번 덤벼보시지!?" }
+          ]
+        },
+        {
+          "tier": "gloom",
+          "action": "start_game__stage_04",
+          "dialogue": [
+            { "char": "me", "state": "", "talk": "DAY 2" },
+            { "char": "me", "state": "", "talk": "오전 교양수업을 마친 나는 도시락을 들고 두리번거리며 화장실로 들어가려는 아라를 발견했다." },
+            { "char": "me", "state": "", "talk": "야, 박아라! 밥 먹었어?" },
+            { "char": "ara", "state": "nervous", "talk": "혀...현우야..." },
+            { "char": "ara", "state": "nervous", "talk": "점심, 안 먹었는데... 새, 생각 없어. 점심 맛있게 먹어. 이, 이따 전공수업때 보자." },
+            { "char": "me", "state": "", "talk": "(아라는 편의점 도시락을 등 뒤로 황급히 숨겼다.)" },
+            { "char": "me", "state": "", "talk": "그럼 나 혼자 밥 먹기 싫으니까 옆에 있어줘라." },
+            { "char": "ara", "state": "fluster", "talk": "그, 그치만 나랑 있는 거 과 사람들이 보면 싫어 할 거야..." },
+            { "char": "ara", "state": "", "talk": "호, 혹시 현우도 나 싫어해? 아니지? 나는 현우만 안 싫어하면 괜찮은데." },
+            { "char": "ara", "state": "fluster", "talk": "아니. 싫어하지 않아.\n 다른 사람들도 마찬가지야. 아마도." },
+            { "char": "ara", "state": "", "talk": "시... 싫지 않다는 거지? 정말이지? \n그럼 나 소원 하나만 들어줘." },
+            { "char": "me", "state": "", "talk": "(또 이상한 소원을... 나는 핑계 거리를 생각 했다.)" },
+            { "char": "me", "state": "", "talk": "그냥 들어주기는 좀 그렇고, 내기 오목 할까? 이기는 사람 소원 들어 주기로." },
+            { "char": "ara", "state": "sulk", "talk": "…또 오목.\n좋아. 어차피 넌 못 이겨. 아마도. 어쩌면.\n우히히" }
+          ]
+        }
+      ]
+    },
+    
     {
       "id": "dlog_stage_4",
       "location": "주말 · 쇼핑몰 입구",
@@ -266,22 +319,28 @@
           "action": "start_game__stage_04",
           "dialogue": [
             { "char": "me", "state": "", "talk": "(약속 장소에 나타난 아라는\n온몸을 감싼 <span style='font-size:1.15em'>새까만 옷</span>에 마스크, 후드까지.)" },
-            { "char": "ara", "state": "nervous", "talk": "…사람 너무 많아. 집에 가고 싶은데." },
+            { "char": "ara", "state": "nervous", "talk": "쇼핑몰 가는 게 소원이라고? …사람 너무 많아. 집에 가고 싶은데." },
             { "char": "me", "state": "", "talk": "너 지금 내 등 뒤에 완전히 숨어 있는 거 알아?" },
             { "char": "ara", "state": "fluster", "talk": "수, 숨은 거 아니야!\n<span style='font-size:0.9em'>보폭을 맞추다 보니</span> 이렇게 된 거라고." },
-            { "char": "me", "state": "", "talk": "옷이라도 하나 보자.\n<span style='color:#6EC6FF'>내가 이기면, 내가 고른 옷 한 벌 입어보기.</span>" },
-            { "char": "ara", "state": "sulk", "talk": "…또 오목.\n좋아. 어차피 넌 못 이겨. 아마도. 어쩌면." }
+            { "char": "me", "state": "", "talk": "그리고 쇼핑몰 가는 게 소원이 아니야. 내가 골라준 옷 입기. 이게 내 소원이야." },
+            { "char": "ara", "state": "sulk", "talk": "오, 옷이라고? 그치만 나 밝은 옷 입으면 더 눈에 띌텐데, 사람들이 싫어 할 거야." },
+            { "char": "ara", "state": "sulk", "talk": "다, 다른 소원은 안될까? 현우가 시키는 건 뭐든지 다 할게." },
+            { "char": "me", "state": "", "talk": "음, 그럼 언제까지라고는 안 할게. 네가 괜찮아지면 그 때는 입어볼래?" },
+            { "char": "ara", "state": "sulk", "talk": "아, 알겠어. 고마워..." },
+            { "char": "ara", "state": "sulk", "talk": "있잖아 현우야, 너랑 있으면 그 때로 돌아가는 것 같아." },
+            { "char": "ara", "state": "sulk", "talk": "나도... 나도 원래 이러지 않았는데..." },
+            { "char": "ara", "state": "sulk", "talk": "(나는 떨리는 아라의 손을 조심스레 잡아 주었다.)" }
           ]
         },
         {
           "tier": "gloom",
           "action": "start_game__stage_04",
           "dialogue": [
-            { "char": "me", "state": "", "talk": "(아라는 이틀 째 학교에 나오지 않고 있다.)" },
-            { "char": "me", "state": "", "talk": "(나는 걱정되는 마음에 아라가 알려준 주소로 향했다.)" },
-            { "char": "ara", "state": "hide", "talk": "…몇 년 만에 나온 거야.\n<span style='font-size:0.9em'>사람들이 다 날 보는 것 같아. 숨 막혀.</span>" },
-            { "char": "me", "state": "", "talk": "아무도 널 안 봐. 내가 옆에 있잖아.\n<span style='color:#6EC6FF'>내가 이기면, 옷 한 벌만 입어보기.</span>" },
-            { "char": "ara", "state": "nervous", "talk": "…밝은 옷은 안 돼. 더 이상하게 볼 거야.\n<span style='font-size:0.85em'>…그래도 네가 이기면, 할게.</span>" }
+            { "char": "me", "state": "", "talk": "(아라는 내 손을 끌고 인적이 드문 기계실로 들어갔다.)" },
+            { "char": "ara", "state": "hide", "talk": "우히히... 그, 있지. \n저번에 해 준거. 그 거 또 해줘." },
+            { "char": "me", "state": "", "talk": "머리 쓰다듬기?" },
+            { "char": "ara", "state": "nervous", "talk": "시, 싫어?" }
+            { "char": "me", "state": "", "talk": "아니야. 해 줄게. 자 이리 와 봐. 착하지?" },
           ]
         },
         {
