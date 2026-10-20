@@ -1,0 +1,85 @@
+{
+  "list": [
+    { "type": "fed", "target": 1, "desc": "부캉이에게 1번 먹이주기", "reward": { "coins": 300 },
+      "orderSlots": 1, "orderMin": 1, "orderMax": 2,
+      "initMap": [null,null,null,null,null,null, null,null,"fish1",null,"fish1",null, null,null,null,null,null,null, null,"crab1",null,null,"crab1",null, null,null,null,null,null,null] },
+
+    { "type": "merge", "target": 3, "desc": "먹이 3번 합성하기", "reward": { "coins": 360 },
+      "orderSlots": 1, "orderMin": 1, "orderMax": 2,
+      "initMap": [null,null,null,null,null,null, null,"fish1",null,"fish1",null,null, null,null,"meat1",null,"meat1",null, null,"fish1",null,"fish1",null,null, null,null,null,null,null,null] },
+
+    { "type": "seal", "target": 2, "desc": "봉인 2개 풀기", "reward": { "coins": 420 },
+      "orderSlots": 1, "orderMin": 2, "orderMax": 3,
+      "initMap": [null,null,null,null,null,null, null,"fish2",null,null,"crab2",null, null,null,null,null,null,null, null,"fish2",null,null,"crab2",null, null,null,null,null,null,null] },
+
+    { "type": "fed", "target": 3, "desc": "부캉이에게 3번 먹이주기", "reward": { "coins": 480 },
+      "orderSlots": 2, "orderMin": 2, "orderMax": 3,
+      "initMap": [null,null,null,null,null,null, null,"fish2",null,"meat2",null,null, null,null,"crab2",null,null,null, null,"fish2",null,"meat2",null,null, null,null,"crab2",null,null,null] },
+
+    { "type": "tier", "target": 4, "desc": "T4 먹이 1개 만들기", "reward": { "gems": 3 },
+      "orderSlots": 2, "orderMin": 2, "orderMax": 4,
+      "initMap": [null,null,null,null,null,null, null,"fish3",null,null,"fish3",null, null,null,null,null,null,null, null,"crab3",null,null,"crab3",null, null,null,null,null,null,null] },
+
+    { "type": "merge", "target": 6, "desc": "먹이 6번 합성하기", "reward": { "coins": 560 },
+      "orderSlots": 2, "orderMin": 2, "orderMax": 3,
+      "initMap": [null,null,null,null,null,null, null,"fish2",null,"meat2",null,"crab2", null,null,null,null,null,null, "fish2",null,"meat2",null,"crab2",null, null,null,null,null,null,null] },
+
+    { "type": "seal", "target": 3, "desc": "봉인 3개 풀기", "reward": { "coins": 620 },
+      "orderSlots": 2, "orderMin": 3, "orderMax": 4,
+      "initMap": [null,null,null,null,null,null, null,"fish3",null,"meat3",null,"crab3", null,null,null,null,null,null, null,"fish3",null,"meat3",null,"crab3", null,null,null,null,null,null] },
+
+    { "type": "fed", "target": 5, "desc": "부캉이에게 5번 먹이주기", "reward": { "coins": 700 },
+      "orderSlots": 2, "orderMin": 3, "orderMax": 4,
+      "initMap": [null,null,null,null,null,null, null,"fish3",null,"meat3",null,null, null,"crab3",null,null,"fish3",null, null,"meat3",null,"crab3",null,null, null,null,null,null,null,null] },
+
+    { "type": "tier", "target": 5, "desc": "T5 먹이 1개 만들기", "reward": { "gems": 4 },
+      "orderSlots": 2, "orderMin": 3, "orderMax": 5,
+      "initMap": [null,null,null,null,null,null, null,"fish4",null,null,"fish4",null, null,null,null,null,null,null, null,"crab4",null,null,"crab4",null, null,null,null,null,null,null] },
+
+    { "type": "merge", "target": 10, "desc": "먹이 10번 합성하기", "reward": { "coins": 880 },
+      "orderSlots": 3, "orderMin": 3, "orderMax": 4,
+      "initMap": [null,null,null,null,null,null, "fish3",null,"meat3",null,"crab3",null, null,null,null,null,null,null, "fish3",null,"meat3",null,"crab3",null, null,null,null,null,null,null] },
+
+    { "type": "seal", "target": 4, "desc": "봉인 4개 풀기", "reward": { "coins": 980 },
+      "orderSlots": 2, "orderMin": 4, "orderMax": 5,
+      "initMap": [null,null,null,null,null,null, null,"fish4",null,"meat4",null,null, null,"crab4",null,null,"fish4",null, null,"meat4",null,"crab4",null,null, null,null,null,null,null,null] },
+
+    { "type": "fed", "target": 7, "desc": "부캉이에게 7번 먹이주기", "reward": { "coins": 1080 },
+      "orderSlots": 3, "orderMin": 3, "orderMax": 5,
+      "initMap": [null,null,null,null,null,null, "fish4",null,"meat4",null,"crab4",null, null,null,null,null,null,null, "fish4",null,"meat4",null,"crab4",null, null,null,null,null,null,null] },
+
+    { "type": "tier", "target": 6, "desc": "T6 먹이 1개 만들기", "reward": { "gems": 5 },
+      "orderSlots": 2, "orderMin": 4, "orderMax": 6,
+      "initMap": [null,null,null,null,null,null, null,"fish5",null,null,"fish5",null, null,null,null,null,null,null, null,"crab5",null,null,"crab5",null, null,null,null,null,null,null] },
+
+    { "type": "merge", "target": 14, "desc": "먹이 14번 합성하기", "reward": { "coins": 1280 },
+      "orderSlots": 3, "orderMin": 4, "orderMax": 5,
+      "initMap": ["fish4",null,"meat4",null,"crab4",null, null,null,null,null,null,null, "fish4",null,"meat4",null,"crab4",null, null,null,null,null,null,null, "fish4",null,"meat4",null,"crab4",null] },
+
+    { "type": "seal", "target": 5, "desc": "봉인 5개 풀기", "reward": { "coins": 1420 },
+      "orderSlots": 3, "orderMin": 4, "orderMax": 6,
+      "initMap": [null,null,null,null,null,null, "fish5",null,"meat5",null,"crab5",null, null,null,null,null,null,null, "fish5",null,"meat5",null,"crab5","fish5", null,null,null,null,null,null] },
+
+    { "type": "fed", "target": 9, "desc": "부캉이에게 9번 먹이주기", "reward": { "coins": 1560 },
+      "orderSlots": 3, "orderMin": 4, "orderMax": 6,
+      "initMap": [null,null,null,null,null,null, "fish5",null,"meat5",null,"crab5",null, null,null,null,null,null,null, "fish5",null,"meat5",null,"crab5",null, null,null,null,null,null,null] },
+
+    { "type": "tier", "target": 7, "desc": "T7 먹이 1개 만들기", "reward": { "gems": 6 },
+      "orderSlots": 3, "orderMin": 5, "orderMax": 7,
+      "initMap": [null,null,null,null,null,null, null,"fish6",null,null,"fish6",null, null,null,null,null,null,null, null,"crab6",null,null,"crab6",null, null,null,null,null,null,null] },
+
+    { "type": "merge", "target": 18, "desc": "먹이 18번 합성하기", "reward": { "coins": 1820 },
+      "orderSlots": 3, "orderMin": 5, "orderMax": 6,
+      "initMap": ["fish5",null,"meat5",null,"crab5",null, null,null,null,null,null,null, "fish5",null,"meat5",null,"crab5",null, null,null,null,null,null,null, "fish5",null,"meat5",null,"crab5",null] },
+
+    { "type": "seal", "target": 6, "desc": "봉인 6개 풀기", "reward": { "coins": 2000 },
+      "orderSlots": 3, "orderMin": 5, "orderMax": 7,
+      "initMap": [null,null,null,null,null,null, "fish6",null,"meat6",null,"crab6",null, null,null,null,null,null,null, "fish6",null,"meat6",null,"crab6",null, null,null,null,null,null,null] },
+
+    { "type": "tier", "target": 8, "desc": "T8 전설의 먹이 만들기", "reward": { "gems": 10 },
+      "orderSlots": 3, "orderMin": 6, "orderMax": 8,
+      "initMap": [null,null,null,null,null,null, null,"fish7",null,null,"fish7",null, null,null,"meat7",null,"meat7",null, null,"crab7",null,null,"crab7",null, null,null,null,null,null,null] }
+  ]
+}
+
+

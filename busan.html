@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>/* ERR-BANNER */window.addEventListener("error",function(e){var b=document.createElement("div");b.style.cssText="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#a00;color:#fff;font-size:11px;padding:6px;white-space:pre-wrap;max-height:30%;overflow:auto";b.textContent="ERR: "+(e.message||e.type)+" @"+(e.filename||"").split("/").pop()+":"+(e.lineno||"");document.body?document.body.appendChild(b):addEventListener("DOMContentLoaded",function(){document.body.appendChild(b)});});</script>
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta http-equiv="cache-control" content="no-store" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<title>부캉이키우기 - Shark Merge</title>
+<link rel="stylesheet" href="style.css" />
+
+<script>
+/* =========================================================
+   브라우저 기본 줌/제스처 전면 차단 (게임 내부 제스처는 유지)
+   ========================================================= */
+(function () {
+  'use strict';
+  for (const ev of ['gesturestart', 'gesturechange', 'gestureend']) {
+    document.addEventListener(ev, function (e) { e.preventDefault(); }, { passive: false });
+  }
+  document.addEventListener('touchstart', function (e) {
+    if (e.touches && e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
+  document.addEventListener('touchmove', function (e) {
+    if (e.touches && e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', function (e) {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 350) e.preventDefault();
+    lastTouchEnd = now;
+  }, { passive: false });
+  document.addEventListener('dblclick', function (e) { e.preventDefault(); }, { passive: false });
+  document.addEventListener('wheel', function (e) {
+    if (e.ctrlKey || e.metaKey) e.preventDefault();
+  }, { passive: false });
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].includes(e.key)) e.preventDefault();
+  }, { passive: false });
+  document.addEventListener('contextmenu', function (e) { e.preventDefault(); }, { passive: false });
+})();
+</script>
+</head>
+<body>
+<div id="app">
+  <div id="nightVeil"></div>
+  <div id="flash"></div>
+
+  <!-- 상단 HUD -->
+  <div id="topHud" class="no-sel">
+    <div class="profile panel" id="profileBox">
+      <div class="avatar"><img id="avatarImg" src="assets/ic_avatar.png" alt="부캉이"></div>
+      <div class="pinfo">
+        <div class="pname">부캉이</div>
+        <div class="plvl" id="lvlTxt">Lv.1</div>
+        <div class="xpbar"><div id="xpFill"></div></div>
+        <div class="xptxt" id="xpTxt">0 / 100</div>
+      </div>
+    </div>
+    <div class="currencies">
+      <div id="dayPlate" class="panel"><span class="di">☀️</span><span id="dayTxt">DAY 1</span></div>
+      <div class="cur panel" id="coinBox">
+        <img class="ico" src="assets/ic_coin.png" alt="">
+        <span id="coinVal">0</span>
+        <div class="plus" id="coinPlus"><img src="assets/ic_plus.png" alt="+"></div>
+        <span class="shine"></span>
+      </div>
+      <div class="cur panel" id="gemBox">
+        <img class="ico" src="assets/ic_gem.png" alt="">
+        <span id="gemVal">0</span>
+        <div class="plus" id="gemPlus"><img src="assets/ic_plus.png" alt="+"></div>
+        <span class="shine"></span>
+      </div>
+      <div class="menuBtn panel" id="menuBtn"><img src="assets/ic_menu.png" alt="메뉴"></div>
+    </div>
+  </div>
+
+  <!-- 왼쪽 세로 버튼 -->
+  <div id="leftCol" class="no-sel">
+    <div class="sideBtn btn-face" id="questBtn"><img class="bi" src="assets/ic_mission.png" alt=""><span class="lbl">퀘스트</span><span class="badge" id="questBadge" style="display:none">!</span></div>
+    <div class="sideBtn btn-face" id="eventBtn"><img class="bi" src="assets/ic_event.png" alt=""><span class="lbl">이벤트</span><span class="badge">!</span></div>
+  </div>
+
+  <!-- ===== 하단 2/3 통짜 콘솔 (머지보드 + 트레이가 그려진 아트 한 장) ===== -->
+  <!-- boardCanvas: 배경 + 칸 내용물을 캔버스로 렌더 -->
+  <!-- overlay: 아트풍 둥근 버튼 바를 얹는 투명 DOM 레이어 -->
+  <div id="console" class="no-sel">
+    <canvas id="boardCanvas"></canvas>
+    <div id="overlay"></div>
+  </div>
+
+  <!-- 이펙트 / 파티클 / 글라이드 캔버스 -->
+  <canvas id="uiCanvas"></canvas>
+
+  <div id="toast"></div>
+  <div id="modalRoot"></div>
+  <div id="fader"><div id="fadeTxt">배부른 부캉이는 잠이 들었다.</div></div>
+</div>
+
+<script type="importmap">
+{ "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+} }
+</script>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>
