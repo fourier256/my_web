@@ -225,4 +225,30 @@ function makePerson(kind) {
   };
 }
 
+// ===== 콘텐츠/에셋 데이터 (main.js에서 이동) =====
+// 아트 에셋 개수와 연동된 상수 + 아이템 이름/경로 헬퍼 + 콘솔 아트 좌표
+export const MAXT = 8;        // assets/f_{tech}_{tier}.png 개수
+export const MAX_GEN = 8;     // assets/g_{tech}_{glv}.png 개수
+export const TECHS = {
+  fish: { label: '물고기', names: ['멸치', '꽁치', '고등어', '방어', '참치', '연어', '고래상어', '황금상어'] },
+  meat: { label: '육고기', names: ['소시지', '치킨너겟', '돈까스', '후라이드치킨', '삼겹살', '갈비', '돼지국밥', '황금스테이크'] },
+  crab: { label: '갑각류', names: ['새우', '참게', '꽃게', '대게', '랍스터', '킹크랩', '대왕게', '황금왕게'] },
+};
+export const TECH_KEYS = Object.keys(TECHS);
+export const itemName = (it) => TECHS[it.tech].names[it.tier - 1];
+export const imgOf = (tech, tier) => `assets/f_${tech}_${tier}.png`;
+export const GEN_NAMES = {
+  fish: ['낚시줄','낚싯대','좋은낚싯대','어망','큰어망','양동이','녹색양동이','금빛양동이'],
+  crab: ['뜰채','곡괭이','큰곡괭이','통발','큰통발','톱밥상자','녹색톱밥상자','금빛톱밥상자'],
+  meat: ['나무상자','얼음상자','아이스박스','간이냉장고','냉장고','냉동고','녹색냉장고','금빛냉장고'],
+};
+export const genImg = (tech, glv) => `assets/g_${tech}_${glv}.png`;
+export const CONSOLE_IMG = 'assets/console_bg.png'; // 통짜 배경(머지보드+트레이)
+export const WEB_IMG = 'assets/web.png';            // 256x256 봉인 거미줄 오버레이
+export const PLATE_RECTS = [
+  { left: 0.1, top: 0.035, right: 0.325, bottom: 0.108 },
+  { left: 0.385, top: 0.035, right: 0.615, bottom: 0.108 },
+  { left: 0.675, top: 0.035, right: 0.9, bottom: 0.108 },
+];
+
 export { BALLOON, BOTTOMS, GRAY, HAIR, HATC, PERSON_SCALE, SHOES, SKIN, TOPS, buildSharkGeometry, cpart, hairParts, hatParts, makePerson, pBox, pCyl, pDod, pMesh, personMat, wpick };
