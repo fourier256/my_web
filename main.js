@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { BALLOON, BOTTOMS, GRAY, HAIR, HATC, PERSON_SCALE, SHOES, SKIN, TOPS, buildSharkGeometry, cpart, hairParts, hatParts, makePerson, pBox, pCyl, pDod, pMesh, personMat, wpick } from './models.js';
+import { BALLOON, BOTTOMS, GRAY, HAIR, HATC, PERSON_SCALE, SHOES, SKIN, TOPS, buildSharkGeometry, cpart, hairParts, hatParts, makePerson, pBox, pCyl, pDod, pMesh, personMat, wpick, MAXT, MAX_GEN, TECHS, TECH_KEYS, itemName, GEN_NAMES, imgOf, genImg, CONSOLE_IMG, WEB_IMG, PLATE_RECTS } from './models.js';
+import { startTutorial } from './tutorial.js';
 
 const V3 = THREE.Vector3, MU = THREE.MathUtils;
 const G = 9.8, SHARK_SCALE = 1.2, MOUTH_LOCAL = new V3(1.85, -0.02, 0);
@@ -10,6 +11,8 @@ const $ = (id) => document.getElementById(id);
 
 // ===== JUICE / 에셋 폴백 헬퍼 =====
 function juiceTap(el) { if (!el) return; el.classList.remove('squash'); void el.offsetWidth; el.classList.add('squash'); }
+function replay(el, cls) { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+function nope(el) { replay(el, 'nope'); }   // macOS식 도리도리 거절 피드백
 function fitText(el, minScale = 0.6) {
   if (!el || !el.parentElement) return;
   el.style.transform = 'scaleX(1)';
@@ -27,11 +30,6 @@ const CAM_PITCH = MU.degToRad(25);
 const CAM_TARGET = new V3(0, -1.3, -0.5);
 const ANCHOR = 0.27;
 const VIEW_HW = 9.6, VIEW_UP = 9.3, VIEW_DN = 7.6;
-const PLATE_RECTS = [
-  { left: 0.1, top: 0.035, right: 0.325, bottom: 0.108 },
-  { left: 0.385, top: 0.035, right: 0.615, bottom: 0.108 },
-  { left: 0.675, top: 0.035, right: 0.9, bottom: 0.108 },
-];
 
 
 const app = $('app');
@@ -295,7 +293,7 @@ function crowdTarget() { const tot = beatCount(); return Math.min(people.length,
 function syncCrowd() {
   const n = crowdTarget();
   for (let i = 0; i < people.length; i++) { const p = people[i], vis = i < n; if (vis && !p.root.visible && !crowdBooted) { p.root.visible = true; p.root.scale.set(0.001, 0.001, 0.001); growing.push({ p, t: 0, sx: p.baseScale.x, sy: p.baseScale.y, sz: p.baseScale.z }); } else p.root.visible = vis; }
-  if (crowdBooted && n > crowdShown) toast(`소문이 퍼져 구경꾼이 늘어났어요! (+${n - crowdShown}명)`);
+  // 소문 토스트 제거
   crowdShown = n; crowdBooted = true;
 }
 const crowd = { hype: 0, target: 0.08, hold: 0, burst: 0 };
@@ -486,30 +484,24 @@ function worldToScreen(world) { const rect = renderer.domElement.getBoundingClie
 // ===================================================================
 const LS = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }, del(k) { try { localStorage.removeItem(k); } catch (e) {} } };
 const SAVE_KEY = 'bukangi_v6';
-const MAXT = 8;
-const TECHS = {
-  fish: { label: '물고기', names: ['멸치', '꽁치', '고등어', '방어', '참치', '연어', '고래상어', '황금상어'] },
-  meat: { label: '육고기', names: ['소시지', '치킨너겟', '돈까스', '후라이드치킨', '삼겹살', '갈비', '돼지국밥', '황금스테이크'] },
-  crab: { label: '갑각류', names: ['새우', '참게', '꽃게', '대게', '랍스터', '킹크랩', '대왕게', '황금왕게'] },
-};
-const TECH_KEYS = Object.keys(TECHS);
-const imgOf = (tech, tier) => `assets/f_${tech}_${tier}.png`;
 const fmt = (n) => Math.round(n).toLocaleString('ko-KR');
-const itemName = (it) => TECHS[it.tech].names[it.tier - 1];
-
-const GEN_NAMES = {
-  fish: ['낚시줄','낚싯대','좋은낚싯대','어망','큰어망','양동이','녹색양동이','금빛양동이'],
-  crab: ['뜰채','곡괭이','큰곡괭이','통발','큰통발','톱밥상자','녹색톱밥상자','금빛톱밥상자'],
-  meat: ['나무상자','얼음상자','아이스박스','간이냉장고','냉장고','냉동고','녹색냉장고','금빛냉장고'],
-};
-const MAX_GEN = 8;
-const BAG_CAP = 9;
-const genImg  = (tech, glv) => `assets/g_${tech}_${glv}.png`;
+const BAG_CAP = 16;
 const genName = (tech, glv) => GEN_NAMES[tech][glv - 1];
-const genMaxStore = (glv) => 3 + glv;
-const genRegenSec = (glv) => Math.max(8, 46 - glv * 5);
-const genMaxTier  = (glv) => Math.min(MAXT, 1 + Math.ceil(glv / 2));
+const genMaxStore = (glv) => balAt(BAL.gen.store, glv);
+const genRegenSec = (glv) => balAt(BAL.gen.regenSec, glv);
 const PLATE_COUNT = 3;
+const plateWigAt = [-9, -9, -9];   // 주문 실패 도리도리 타이머
+
+// ---- 외부 밸런스 파일 (balance.json) ----
+let BAL = {
+  gen:  { produceTier: 1, buyCost: [120], regenSec: [41], store: [4] },
+  sell: { gen: [30], food: [4] },
+  shop: { adStock: 1, goldStock: 3, foodGoldPrice: [150], foodGemPrice: [2] },
+  goldDeal: { adStock: 1, adCoins: 1000, gemPrice: 1, gemCoins: 1000, gemPrice10: 10, gemCoins10: 12000 },
+  event:{ adGems: 10 },
+};
+const balAt = (arr, i) => arr[Math.max(0, Math.min(arr.length - 1, (i | 0) - 1))];
+function loadBalance() { return fetch('balance.json?v=' + Date.now()).then(r => r.json()).then(j => { for (const k in j) BAL[k] = Object.assign({}, BAL[k] || {}, j[k]); }).catch(() => {}); }
 
 const DEF = () => ({
   v: 6, coins: 800, gems: 5, level: 1, xp: 0,
@@ -517,7 +509,8 @@ const DEF = () => ({
   bag: [],
   plates: [],
   stage: 0, beat: 0, inf: false,
-  auto: false, sellMode: false,
+  auto: false, sellMode: false, tutDone: false,
+  adDay: '', adUsed: {}, evDay: '', evClaimed: {},
   stageLoaded: -1,
   stageStats: { fed: 0, merged: 0, sealsBroken: 0, maxTierMade: 0 },
   earned: 0, totalFed: 0, totalMerged: 0,
@@ -525,7 +518,7 @@ const DEF = () => ({
 let S = DEF();
 {
   const raw = LS.get(SAVE_KEY);
-  if (raw) { try { const d = JSON.parse(raw); if (d && d.v === 6) { S = { ...DEF(), ...d }; if (!Array.isArray(S.cells) || S.cells.length !== 30) S.cells = Array(30).fill(null); if (!Array.isArray(S.bag)) S.bag = []; if (!Array.isArray(S.plates)) S.plates = []; if (!S.stageStats) S.stageStats = { fed: 0, merged: 0, sealsBroken: 0, maxTierMade: 0 }; S.sellMode = false; } } catch (e) { S = DEF(); } }
+  if (raw) { try { const d = JSON.parse(raw); if (d && d.v === 6) { S = { ...DEF(), ...d }; if (!Array.isArray(S.cells) || S.cells.length !== 30) S.cells = Array(30).fill(null); if (!Array.isArray(S.bag)) S.bag = []; if (!Array.isArray(S.plates)) S.plates = []; if (!S.stageStats) S.stageStats = { fed: 0, merged: 0, sealsBroken: 0, maxTierMade: 0 }; S.sellMode = false; S.bag.forEach(g => { if (!g.kind) g.kind = 'gen'; }); if (!S.adUsed) S.adUsed = {}; if (!S.evClaimed) S.evClaimed = {}; if (S.tutDone === undefined) S.tutDone = true; } } catch (e) { S = DEF(); } }
 }
 
 let suppressSave = false;
@@ -534,21 +527,28 @@ addEventListener('visibilitychange', () => { if (document.hidden && !suppressSav
 addEventListener('pagehide', () => { if (!suppressSave) save(); });
 
 // ---- 밸런스 ----
-const genBuyCost  = () => Math.round(120 * Math.pow(1.6, (S.bag.length)));
+const ownedGens = () => S.bag.length + S.cells.reduce((n, c) => n + (c && c.kind === 'gen' ? 1 : 0), 0);
+const genBuyCost  = () => balAt(BAL.gen.buyCost, ownedGens() + 1);
 const xpNeed = (l) => Math.round(100 * Math.pow(1.5, l - 1));
-const sellVal = (it) => it.kind === 'gen' ? Math.round(30 * Math.pow(it.glv, 1.5)) : Math.round(4 * Math.pow(it.tier, 1.6));
+const sellVal = (it) => it.kind === 'gen' ? balAt(BAL.sell.gen, it.glv) : balAt(BAL.sell.food, it.tier);
 const levelMult = () => 1 + 0.08 * (S.level - 1);
 
 // ---- 보드 헬퍼 ----
 const emptyCells = () => { const o = []; for (let i = 0; i < 30; i++) if (!S.cells[i]) o.push(i); return o; };
+function nearestEmpty(idx) {   // idx에서 가장 가까운 빈칸 (그리드 거리, 동률이면 작은 인덱스)
+  const c0 = idx % GRID.cols, r0 = (idx / GRID.cols) | 0;
+  let best = -1, bd = Infinity;
+  for (const i of emptyCells()) {
+    const dc = (i % GRID.cols) - c0, dr = ((i / GRID.cols) | 0) - r0, d = dc * dc + dr * dr;
+    if (d < bd || (d === bd && i < best)) { bd = d; best = i; }
+  }
+  return best;
+}
 function countItem(tech, tier) { let n = 0; for (let i = 0; i < 30; i++) { const c = S.cells[i]; if (c && c.kind === 'food' && c.tech === tech && c.tier === tier && !c.sealed) n++; } return n; }
 
 // ===================================================================
 // ===== 콘솔(통짜 배경) + 보드 좌표 레이어 =====
 // ===================================================================
-const CONSOLE_IMG = 'assets/console_bg.png'; // 업로드한 통짜 배경(머지보드+트레이)
-const WEB_IMG = 'assets/web.png';            // 256x256 봉인 거미줄 오버레이
-
 const BOARD_RECT = { left: 0.1, top: 0.165, right: 0.9, bottom: 0.765 };
 const GRID = { cols: 6, rows: 5 };
 
@@ -690,6 +690,8 @@ function drawPlates() {
     const gap = r.w * 0.04;
     const slotW = (r.w - gap * (n + 1)) / n;
     const slotH = Math.min(slotW, r.h * 0.9);
+    const wk = (simT - plateWigAt[pi]) / 0.4;
+    const wig = (wk >= 0 && wk < 1) ? Math.sin(wk * Math.PI * 3) * 0.09 * (1 - wk) : 0;
     for (let si = 0; si < n; si++) {
       const s = p.slots[si];
       const ok = slotPresent(s);
@@ -698,6 +700,7 @@ function drawPlates() {
       const img = getImg(imgOf(s.tech, s.tier));
       bctx.save();
       bctx.translate(sx, sy);
+      if (wig) bctx.rotate(wig);
       if (ready) {
         const pulse = 1 + Math.sin(simT * 4) * 0.1;
         bctx.scale(pulse, pulse);
@@ -767,9 +770,16 @@ function currentStageDef() {
 }
 function initStage() {
   const def = currentStageDef();
-  for (let i = 0; i < 30; i++) { const c = S.cells[i]; if (c && c.kind === 'gen') { if (S.bag.length < BAG_CAP) S.bag.push({ tech: c.tech, glv: c.glv, count: c.count || 0, nextAt: c.nextAt || 0 }); } }
+  // 생산블록은 스테이지가 바뀌어도 제자리 유지 (가방으로 회수하지 않음)
+  const keptGens = [];
+  for (let i = 0; i < 30; i++) { const c = S.cells[i]; if (c && c.kind === 'gen') keptGens.push([i, c]); }
   S.cells = Array(30).fill(null);
   if (def && Array.isArray(def.initMap)) { for (let i = 0; i < 30 && i < def.initMap.length; i++) { const it = parseMapToken(def.initMap[i]); if (it) S.cells[i] = it; } }
+  for (const [i, g] of keptGens) {
+    if (!S.cells[i]) { S.cells[i] = g; continue; }        // 자리가 비었으면 그대로 유지
+    const dst = nearestEmpty(i);                           // 봉인 아이템 등이 있으면 가장 가까운 공란으로
+    if (dst >= 0) S.cells[dst] = g; else S.bag.push(g);    // 공란이 전혀 없으면 가방으로
+  }
   S.stageStats = { fed: 0, merged: 0, sealsBroken: 0, maxTierMade: 0 };
   S.stageLoaded = S.stage;
   S.plates = []; refillPlates();
@@ -789,7 +799,7 @@ function openGenRefill(idx) {
   const g = S.cells[idx]; if (!g || g.kind !== 'gen') return;
   const max = genMaxStore(g.glv), c = genRefillCost(g);
   openModal(`<div class="mTitle">생산량 꽉 채우기</div><div class="mBucket"><img src="${genImg(g.tech, g.glv)}" alt=""></div><div class="mRow"><span>${genName(g.tech, g.glv)}</span><b>(0/${max}) → (${max}/${max})</b></div><button class="btn blue" id="mGRefill"><img src="assets/ic_gem.png" alt="">${c}로 꽉 채우기</button><button class="btn gray" id="mGNo">아니오</button>`);
-  $('mGRefill').addEventListener('click', () => { const gg = S.cells[idx]; if (!gg || gg.kind !== 'gen') { closeModal(); return; } if (S.gems < c) { toast('젬이 부족해요!'); return; } S.gems -= c; gg.count = genMaxStore(gg.glv); gg.nextAt = Date.now() + genRegenSec(gg.glv) * 1000; updateHud(); save(); closeModal(); toast(`${genName(gg.tech, gg.glv)} 생산량을 꽉 채웠어요!`); });
+  $('mGRefill').addEventListener('click', () => { const gg = S.cells[idx]; if (!gg || gg.kind !== 'gen') { closeModal(); return; } if (S.gems < c) { nope($('gemBox')); return; } S.gems -= c; gg.count = genMaxStore(gg.glv); gg.nextAt = Date.now() + genRegenSec(gg.glv) * 1000; updateHud(); save(); closeModal(); });
   $('mGNo').addEventListener('click', closeModal);
 }
 function genTick() {
@@ -799,33 +809,40 @@ function genTick() {
 function genTap(idx) {
   const g = S.cells[idx];
   if (g.count <= 0) { openGenRefill(idx); return; }
-  const empties = emptyCells();
-  if (!empties.length) { toast('빈 칸이 없어요! 먹이를 합성하거나 판매해요.'); return; }
+  const dst = nearestEmpty(idx);
+  if (dst < 0) { repunch(idx, 'wig'); return; }
   const wasFull = g.count >= genMaxStore(g.glv); g.count--; if (wasFull) g.nextAt = Date.now() + genRegenSec(g.glv) * 1000;
-  const tier = 1 + Math.floor(Math.random() * genMaxTier(g.glv));
-  const dst = pick(empties); const item = { kind: 'food', tech: g.tech, tier };
+  const tier = BAL.gen.produceTier;   // 항상 최하티어 생산
+  const item = { kind: 'food', tech: g.tech, tier };
   S.cells[dst] = item; resv.add(dst); repunch(idx, 'wig');
   const s0 = cellCenterApp(idx), s1 = cellCenterApp(dst);
   uiGlides.push({ img: getImg(imgOf(item.tech, item.tier)), x0: s0.x, y0: s0.y, x1: s1.x, y1: s1.y, t: 0, dur: 0.34, dst, item });
   refreshPlates(); save();
 }
 function openGenShop() {
-  const cost = genBuyCost(); const full = S.bag.length >= BAG_CAP;
+  const cost = genBuyCost();
   openModal(`<div class="mTitle">생성기 구매</div>
     <div class="mRow"><span>가격</span><b style="display:flex;align-items:center;gap:4px"><img src="assets/ic_coin.png" style="width:15px;height:15px">${fmt(cost)}</b></div>
-    <div class="mRow"><span>가방 보관</span><b>${S.bag.length} / ${BAG_CAP}</b></div>
-    <div style="font-size:10.5px;color:#7a8a9a;text-align:center;margin:2px 0 4px">${full ? '가방이 가득 찼어요! 생성기를 합성해 공간을 비워요.' : '구매하면 가방에 보관돼요. 가방에서 꺼내 보드에 놓고 탭하면 먹이가 나와요.'}</div>
-    <button class="btn ${full ? 'gray' : ''}" id="gbFish" ${full ? 'disabled' : ''}>🎣 ${genName('fish',1)} (물고기)</button>
-    <button class="btn ${full ? 'gray' : 'blue'}" id="gbCrab" ${full ? 'disabled' : ''}>🦀 ${genName('crab',1)} (갑각류)</button>
-    <button class="btn ${full ? 'gray' : 'red'}" id="gbMeat" ${full ? 'disabled' : ''}>🥩 ${genName('meat',1)} (육고기)</button>`);
-  const buy = (tech) => {
-    if (S.bag.length >= BAG_CAP) { toast('가방이 가득 찼어요!'); return; }
-    const c = genBuyCost(); if (S.coins < c) { toast('코인이 부족해요!'); return; }
-    S.coins -= c; S.bag.push({ tech, glv: 1, count: 0, nextAt: Date.now() + genRegenSec(1) * 1000 });
-    updateBagBtn(); updateHud(); checkQuest(); save(); closeModal();
-    toast(`${genName(tech,1)}을(를) 가방에 넣었어요! 가방에서 꺼내 보드에 놓아요.`);
+    <div style="font-size:10.5px;color:#6a7885;text-align:center;margin:2px 0 4px">구매한 생성기는 보드의 빈 칸으로 들어가요. (빈 칸 필요)</div>
+    <button class="btn" id="gbFish">🎣 ${genName('fish',1)} (물고기)</button>
+    <button class="btn blue" id="gbCrab">🦀 ${genName('crab',1)} (갑각류)</button>
+    <button class="btn red" id="gbMeat">🥩 ${genName('meat',1)} (육고기)</button>`, 'tone');
+  const buy = (tech, btnId) => {
+    const btn = $(btnId);
+    const empties = emptyCells();
+    if (!empties.length) { nope(btn); nope(btnEls.genShop); return; }
+    const c = genBuyCost();
+    if (S.coins < c) { nope(btn); nope($('coinBox')); return; }
+    S.coins -= c; updateHud(); closeModal();
+    const dst = pick(empties);
+    S.cells[dst] = { kind: 'gen', tech, glv: 1, count: 0, nextAt: Date.now() + genRegenSec(1) * 1000 };
+    resv.add(dst); checkQuest(); save();
+    const br = btnEls.genShop.getBoundingClientRect(), ar = app.getBoundingClientRect();
+    uiGlides.push({ img: getImg(genImg(tech, 1)), x0: br.left - ar.left + br.width / 2, y0: br.top - ar.top + br.height / 2, x1: cellCenterApp(dst).x, y1: cellCenterApp(dst).y, t: 0, dur: 0.42, dst, item: { kind: 'gen', tech, glv: 1 }, isGen: true });
   };
-  if (!full) { $('gbFish').onclick = () => buy('fish'); $('gbCrab').onclick = () => buy('crab'); $('gbMeat').onclick = () => buy('meat'); }
+  $('gbFish').onclick = () => buy('fish', 'gbFish');
+  $('gbCrab').onclick = () => buy('crab', 'gbCrab');
+  $('gbMeat').onclick = () => buy('meat', 'gbMeat');
 }
 
 // ===================================================================
@@ -837,35 +854,34 @@ function updateBagBtn() {
 }
 
 function openBag() {
-  if (!S.bag.length) { toast('가방이 비어 있어요. 생성기를 구매해 보관해요!'); return; }
-  let html = `<div class="mTitle">가방 (생성기 보관함)</div><div class="bagGrid">`;
+  if (!S.bag.length) { nope(btnEls.bag); return; }
+  let html = `<div class="mTitle">가방 (생성기 보관함)</div><div class="bagGrid" style="grid-template-columns:repeat(4,1fr)">`;
   for (let i = 0; i < BAG_CAP; i++) {
     const g = S.bag[i];
-    html += `<div class="bagSlot${g ? ' has' : ''}" data-bi="${i}">${g ? `<img src="${genImg(g.tech, g.glv)}" alt=""><span class="bagLv">Lv.${g.glv}</span>` : ''}</div>`;
+    html += `<div class="bagSlot${g ? ' has' : ''}" data-bi="${i}">${g ? `<img src="${g.kind === 'food' ? imgOf(g.tech, g.tier) : genImg(g.tech, g.glv)}" alt=""><span class="bagLv">${g.kind === 'food' ? 'T.' + g.tier : 'Lv.' + g.glv}</span>` : ''}</div>`;
   }
   html += `</div><div style="font-size:10.5px;color:#7a8a9a;text-align:center;margin-top:4px">꺼낼 생성기를 탭하면 보드로 날아가요. 빈 칸이 없으면 꺼낼 수 없어요.</div>`;
-  openModal(html);
+  openModal(html, 'tone');
   modalRoot.querySelectorAll('.bagSlot.has').forEach(el => el.addEventListener('click', () => takeFromBag(+el.dataset.bi)));
 }
 function takeFromBag(bi) {
   const g = S.bag[bi]; if (!g) return;
   const empties = emptyCells();
   if (!empties.length) {
-    const btn = btnEls.bag;
-    if (btn) { btn.classList.remove('nope'); void btn.offsetWidth; btn.classList.add('nope'); }
-    toast('빈 칸이 없어요! 먼저 보드를 정리해요.');
+    nope(btnEls.bag);
     return;
   }
   S.bag.splice(bi, 1);
   const dst = pick(empties);
-  S.cells[dst] = { kind: 'gen', tech: g.tech, glv: g.glv, count: g.count || 0, nextAt: g.nextAt || (Date.now() + genRegenSec(g.glv) * 1000) };
+  const item = g.kind === 'food' ? { kind: 'food', tech: g.tech, tier: g.tier } : { kind: 'gen', tech: g.tech, glv: g.glv, count: g.count || 0, nextAt: g.nextAt || (Date.now() + genRegenSec(g.glv) * 1000) };
+  S.cells[dst] = item;
   resv.add(dst);
   closeModal();
   updateBagBtn(); save();
   const bagR = btnEls.bag.getBoundingClientRect(), ar = app.getBoundingClientRect();
   const s0 = { x: bagR.left - ar.left + bagR.width / 2, y: bagR.top - ar.top + bagR.height / 2 };
   const s1 = cellCenterApp(dst);
-  uiGlides.push({ img: getImg(genImg(g.tech, g.glv)), x0: s0.x, y0: s0.y, x1: s1.x, y1: s1.y, t: 0, dur: 0.42, dst, item: { kind: 'gen', tech: g.tech, glv: g.glv }, isGen: true });
+  uiGlides.push({ img: getImg(g.kind === 'food' ? imgOf(g.tech, g.tier) : genImg(g.tech, g.glv)), x0: s0.x, y0: s0.y, x1: s1.x, y1: s1.y, t: 0, dur: 0.42, dst, item, isGen: g.kind !== 'food' });
 }
 
 // ===================================================================
@@ -911,8 +927,8 @@ function hitPlate(clientX, clientY) {
 }
 function servePlate(pi) {
   const plate = S.plates[pi]; if (!plate) return;
-  if (!plateSatisfied(plate)) { toast('아직 재료가 부족해요!'); return; }
-  if (throwBusy()) { toast('부캉이가 아직 먹이를 먹는 중이에요!'); return; }
+  if (!plateSatisfied(plate)) { plateWigAt[pi] = simT; return; }
+  if (throwBusy()) { plateWigAt[pi] = simT; return; }
   const toRemove = []; const need = {};
   for (const s of plate.slots) { const key = s.tech + '_' + s.tier; need[key] = (need[key] || 0) + 1; }
   for (const key in need) { const [tech, tier] = key.split('_'); let cnt = need[key]; for (let i = 0; i < 30 && cnt > 0; i++) { const c = S.cells[i]; if (c && c.kind === 'food' && !c.sealed && c.tech === tech && c.tier === +tier) { toRemove.push(i); cnt--; } } }
@@ -921,7 +937,7 @@ function servePlate(pi) {
   const targetWorld = new V3(rnd(-3, 3), 0.2, rnd(-2, 2));
   const fed = { kind: 'food', tech: lead.tech, tier: lead.tier, _reward: plate.reward };
   const ok = throwSardine(targetWorld.clone(), startWorld, fed);
-  if (!ok) { toast('부캉이가 아직 먹이를 먹는 중이에요!'); return; }
+  if (!ok) { plateWigAt[pi] = simT; return; }
   for (const i of toRemove) { const c = cellCenterApp(i); burst(c.x, c.y, 10, false); S.cells[i] = null; }
   S.plates.splice(pi, 1); S.plates.push(makePlate());
   refreshPlates(); save();
@@ -980,7 +996,7 @@ function mergeGen(src, dst) {
   S.stageStats.merged++; S.totalMerged++;
   repunch(dst, 'pop');
   const c = cellCenterApp(dst); burst(c.x, c.y, 16, a.glv + 1 >= 5);
-  toast(`${genName(a.tech, a.glv + 1)} 완성!`); checkQuest(); save();
+  checkQuest(); save();
 }
 function breakSeal(src, dst) {
   const a = S.cells[src];
@@ -992,7 +1008,6 @@ function breakSeal(src, dst) {
   S.stageStats.maxTierMade = Math.max(S.stageStats.maxTierMade, ni.tier);
   repunch(dst, 'pop');
   const c = cellCenterApp(dst); burst(c.x, c.y, 18, true); screenFlashA = Math.max(screenFlashA, 0.2);
-  toast('봉인 해제!');
   if (ni.tier >= 5) celebrate(dst, ni.tier);
   checkQuest(); refreshPlates(); save();
 }
@@ -1007,12 +1022,45 @@ let drag = null;
 let uiGhost = null;
 function handleTap(idx) {
   const it = S.cells[idx]; if (!it) return;
-  if (it.sealed) { repunch(idx, 'wig'); toast('봉인된 아이템이에요. 같은 아이템과 합성해 풀어요!'); return; }
+  if (it.sealed) { repunch(idx, 'wig'); return; }
   if (it.kind === 'gen') { genTap(idx); return; }
   if (S.sellMode) { S.cells[idx] = null; addCoins(sellVal(it), cellCenterApp(idx)); refreshPlates(); save(); return; }
   repunch(idx, 'wig');
 }
 
+
+function hitBtn(clientX, clientY) {
+  for (const id of ['sell', 'bag']) {
+    const b = btnEls[id]; if (!b) continue;
+    const r = b.getBoundingClientRect();
+    if (clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom) return id;
+  }
+  return null;
+}
+function dropToButton(idx, id) {
+  const it = S.cells[idx];
+  if (!it || it.sealed) { if (it) repunch(idx, 'wig'); return; }
+  const btn = btnEls[id];
+  const br = btn.getBoundingClientRect(), ar = app.getBoundingClientRect();
+  const p1 = { x: br.left - ar.left + br.width / 2, y: br.top - ar.top + br.height / 2 };
+  const p0 = cellCenterApp(idx);
+  const src = it.kind === 'gen' ? genImg(it.tech, it.glv) : imgOf(it.tech, it.tier);
+  if (id === 'sell') {
+    const val = sellVal(it);
+    S.cells[idx] = null; refreshPlates(); save();
+    uiGlides.push({ img: getImg(src), x0: p0.x, y0: p0.y, x1: p1.x, y1: p1.y, t: 0, dur: 0.36, absorb: true, onDone() {
+      addCoins(val, null); floatNum(p1.x, p1.y - 10, '+' + fmt(val), '');
+      replay(btn, 'pop'); save();
+    } });
+  } else {
+    if (S.bag.length >= BAG_CAP) { nope(btn); return; }
+    S.cells[idx] = null; refreshPlates(); save();
+    uiGlides.push({ img: getImg(src), x0: p0.x, y0: p0.y, x1: p1.x, y1: p1.y, t: 0, dur: 0.36, absorb: true, onDone() {
+      S.bag.push(it.kind === 'gen' ? { kind: 'gen', tech: it.tech, glv: it.glv, count: it.count || 0, nextAt: it.nextAt || 0 } : { kind: 'food', tech: it.tech, tier: it.tier });
+      updateBagBtn(); replay(btn, 'pop'); save();
+    } });
+  }
+}
 
 consoleEl.addEventListener('pointerdown', (e) => {
   if (hitCell(e.clientX, e.clientY) < 0) {
@@ -1020,7 +1068,7 @@ consoleEl.addEventListener('pointerdown', (e) => {
     if (ppi >= 0) {
       const p = S.plates[ppi];
       if (p && plateSatisfied(p)) servePlate(ppi);
-      else toast('아직 재료가 부족해요!');
+      else plateWigAt[ppi] = simT;
       return;
     }
   }
@@ -1044,12 +1092,21 @@ addEventListener('pointermove', (e) => {
   if (drag.moved && drag.ghost) {
     const ar = app.getBoundingClientRect(); drag.ghost.x = e.clientX - ar.left; drag.ghost.y = e.clientY - ar.top;
     drag.over = hitCell(e.clientX, e.clientY);
+    const ob = hitBtn(e.clientX, e.clientY);
+    if (ob !== drag.overBtn) {
+      if (drag.overBtn && btnEls[drag.overBtn]) btnEls[drag.overBtn].classList.remove('dropHot');
+      drag.overBtn = (ob === 'sell' || ob === 'bag') ? ob : null;
+      if (drag.overBtn) btnEls[drag.overBtn].classList.add('dropHot');
+    }
   }
 });
 addEventListener('pointerup', (e) => {
   if (!drag) return;
   const d = drag; drag = null; uiGhost = null;
+  if (d.overBtn && btnEls[d.overBtn]) btnEls[d.overBtn].classList.remove('dropHot');
   if (!d.moved) { handleTap(d.idx); return; }
+  const ob = hitBtn(e.clientX, e.clientY);
+  if (ob === 'sell' || ob === 'bag') { dropToButton(d.idx, ob); return; }
   const dst = hitCell(e.clientX, e.clientY);
   if (dst < 0 || dst === d.idx || resv.has(dst)) return;
   const a = S.cells[d.idx], b = S.cells[dst];
@@ -1059,7 +1116,7 @@ addEventListener('pointerup', (e) => {
   }
   else if (b.sealed) {
     if (a.kind === 'food' && b.kind === 'food' && a.tech === b.tech && a.tier === b.tier && a.tier < MAXT) { breakSeal(d.idx, dst); }
-    else { toast('봉인은 같은 아이템과 합성해야 풀려요!'); }
+    else { repunch(dst, 'wig'); }
   }
   else if (a.kind === 'gen' && b.kind === 'gen' && a.tech === b.tech && a.glv === b.glv && a.glv < MAX_GEN) { mergeGen(d.idx, dst); }
   else if (a.kind === 'food' && b.kind === 'food' && a.tech === b.tech && a.tier === b.tier && a.tier < MAXT) { doMerge(d.idx, dst); }
@@ -1102,7 +1159,6 @@ function buildButtons() {
     juiceTap(e.currentTarget);
     S.sellMode = !S.sellMode;
     btnEls.sell.classList.toggle('active', S.sellMode);
-    toast(S.sellMode ? '판매 모드 — 팔고 싶은 먹이를 눌러요' : '판매 모드 종료');
   });
 
   updateBagBtn();
@@ -1129,7 +1185,7 @@ function crowdFloatBurst(total, small) {
 function addCoins(n, fromCell) { S.coins += n; const cb = $('coinBox'); if (cb) { cb.classList.remove('bump'); void cb.offsetWidth; cb.classList.add('bump'); } if (fromCell) floatNum(fromCell.x, fromCell.y - 14, '+' + fmt(n), 'cell'); }
 function gainXp(g) {
   S.xp += g; let guard = 0; while (S.xp >= xpNeed(S.level) && guard++ < 20) { S.xp -= xpNeed(S.level); S.level++; }
-  if (guard > 0) { const pb = $('profileBox'); if (pb) { const pr = pb.getBoundingClientRect(), ar = app.getBoundingClientRect(); floatNum(pr.left - ar.left + 42, pr.top - ar.top + 46, 'LV UP!', ''); burst(pr.left - ar.left + 52, pr.top - ar.top + 20, 18, true); pb.classList.remove('lvPunch', 'glowGold'); void pb.offsetWidth; pb.classList.add('lvPunch', 'glowGold'); setTimeout(() => pb.classList.remove('lvPunch', 'glowGold'), 1300); } toast(`부캉이가 Lv.${S.level}(으)로 레벨업! 수입이 증가해요.`); }
+  if (guard > 0) { const pb = $('profileBox'); if (pb) { const pr = pb.getBoundingClientRect(), ar = app.getBoundingClientRect(); floatNum(pr.left - ar.left + 42, pr.top - ar.top + 46, 'LV UP!', ''); burst(pr.left - ar.left + 52, pr.top - ar.top + 20, 18, true); pb.classList.remove('lvPunch', 'glowGold'); void pb.offsetWidth; pb.classList.add('lvPunch', 'glowGold'); setTimeout(() => pb.classList.remove('lvPunch', 'glowGold'), 1300); } }
 }
 function celebrate(idx, tier) { const c = cellCenterApp(idx); const strong = tier >= 5; burst(c.x, c.y, Math.min(34, 10 + tier * 3), strong); if (strong) { app.classList.remove('shake'); void app.offsetWidth; app.classList.add('shake'); screenFlashA = Math.max(screenFlashA, 0.28); } }
 function throwBusy() { return !!(sardine || hunt || (mode !== 'path' && mode !== 'rejoin')); }
@@ -1156,9 +1212,9 @@ function updateUiCanvas(dt, t) {
     uctx.globalAlpha = 1;
     for (let i = uiGlides.length - 1; i >= 0; i--) {
       const f = uiGlides[i]; f.t += dt; const u = MU.clamp(f.t / f.dur, 0, 1); const e = 1 - (1 - u) * (1 - u);
-      const x = MU.lerp(f.x0, f.x1, e), y = MU.lerp(f.y0, f.y1, e) - Math.sin(u * Math.PI) * 26; const im = f.img;
-      if (im.complete && im.naturalWidth) { const sc = MU.lerp(1.25, 1, u); const k = (34 * sc) / Math.max(im.naturalWidth, im.naturalHeight); uctx.save(); uctx.shadowColor = 'rgba(0,0,0,.3)'; uctx.shadowBlur = 3; uctx.drawImage(im, x - im.naturalWidth * k / 2, y - im.naturalHeight * k / 2, im.naturalWidth * k, im.naturalHeight * k); uctx.restore(); }
-      if (u >= 1) { uiGlides.splice(i, 1); resv.delete(f.dst); repunch(f.dst, 'pop'); refreshPlates(); if (!f.isGen && f.item.tier >= 5) celebrate(f.dst, f.item.tier); }
+      const x = MU.lerp(f.x0, f.x1, e), y = MU.lerp(f.y0, f.y1, e) - Math.sin(u * Math.PI) * (f.absorb ? 10 : 26); const im = f.img;
+      if (im.complete && im.naturalWidth) { const sc = f.absorb ? MU.lerp(1.1, 0.12, u) : MU.lerp(1.25, 1, u); const k = (34 * sc) / Math.max(im.naturalWidth, im.naturalHeight); uctx.save(); uctx.shadowColor = 'rgba(0,0,0,.3)'; uctx.shadowBlur = 3; uctx.drawImage(im, x - im.naturalWidth * k / 2, y - im.naturalHeight * k / 2, im.naturalWidth * k, im.naturalHeight * k); uctx.restore(); }
+      if (u >= 1) { uiGlides.splice(i, 1); if (f.absorb) { if (f.onDone) f.onDone(); } else { resv.delete(f.dst); repunch(f.dst, 'pop'); refreshPlates(); if (!f.isGen && f.item.tier >= 5) celebrate(f.dst, f.item.tier); } }
     }
     if (uiGhost && uiGhost.img.complete && uiGhost.img.naturalWidth) { const im = uiGhost.img; const k = 46 / Math.max(im.naturalWidth, im.naturalHeight); uctx.save(); uctx.globalAlpha = 0.92; uctx.shadowColor = 'rgba(0,0,0,.4)'; uctx.shadowBlur = 5; uctx.drawImage(im, uiGhost.x - im.naturalWidth * k / 2, uiGhost.y - im.naturalHeight * k / 2, im.naturalWidth * k, im.naturalHeight * k); uctx.restore(); }
   } catch (e) { if (!uiWarned) { uiWarned = true; console.warn('uiCanvas', e); } }
@@ -1223,14 +1279,14 @@ function kTap() {
 }
 function dayLabel() { return S.inf ? '∞ 기억의 수로' : 'DAY ' + (1 + Math.floor(S.beat / 2)); }
 function isNight() { return !S.inf && S.beat % 2 === 1; }
-function updateDayUI() { const dt = $('dayTxt'); if (dt) { dt.textContent = dayLabel(); fitText(dt); } const n = isNight(); const dp = $('dayPlate'); if (dp) dp.querySelector('.di').textContent = n ? '🌙' : '☀️'; if (dt) dt.classList.toggle('dnight', n); const nv = $('nightVeil'); if (nv) nv.style.opacity = n ? '0.45' : '0'; }
+function updateDayUI() { const dt = $('dayTxt'); if (dt) { dt.textContent = dayLabel(); fitText(dt); } const n = isNight(); const dp = $('dayPlate'); if (dp) dp.querySelector('.di').textContent = n ? '🌙' : '☀️'; const nv = $('nightVeil'); if (nv) nv.style.opacity = n ? '0.45' : '0'; }
 function advanceStory(onDone) {
   if (!STORY) { if (onDone) onDone(); return; }
   const idx = Math.min(S.beat, STORY.beats.length - 1);
   storyFade(() => openBeat(idx, () => { updateDayUI(); if (onDone) onDone(); if (S.beat >= STORY.beats.length && !S.inf) unlockInfinite(); }));
   S.storyShown = true;
 }
-function unlockInfinite() { S.inf = true; updateDayUI(); syncCrowd(); save(); toast('무한모드 해금! 수로의 기억 속 부캉이와 계속 함께할 수 있어요.', 4200); }
+function unlockInfinite() { S.inf = true; updateDayUI(); syncCrowd(); save(); }
 
 function checkQuestType(type, target) {
   switch (type) {
@@ -1255,7 +1311,7 @@ function openQuest() {
   const rw = q.reward.coins ? `<img src="assets/ic_coin.png" alt="">${fmt(q.reward.coins)}` : `<img src="assets/ic_gem.png" alt="">${fmt(q.reward.gems)}`;
   openModal(`<div class="mTitle">스테이지 ${S.stage + 1}</div><div class="questBox"><div class="qd">${q.desc}</div><div class="qp">진행 ${S.stage + 1} / ${QCFG.list.length}</div></div><div class="mRow"><span>보상</span><b style="display:flex;align-items:center;gap:4px">${rw}</b></div><button class="btn ${done ? '' : 'gray'}" id="qClaim">${done ? '완료하고 다음 스테이지로' : '아직 완료되지 않았어요'}</button>`);
   $('qClaim').onclick = () => {
-    if (!q.check()) { toast('아직 조건을 달성하지 못했어요.'); return; }
+    if (!q.check()) { nope($('qClaim')); return; }
     if (q.reward.coins) addCoins(q.reward.coins);
     if (q.reward.gems) S.gems += q.reward.gems;
     S.stage++;
@@ -1273,18 +1329,109 @@ const modalRoot = $('modalRoot');
 const faderEl = $('fader');
 function fadeSwap(mid) { if (!faderEl) { mid(); return; } faderEl.classList.add('on'); setTimeout(() => { mid(); faderEl.classList.remove('on'); }, 1020); }
 function storyFade(mid) { const txt = $('fadeTxt'); if (!faderEl) { mid(); return; } if (txt) txt.classList.remove('vis'); faderEl.classList.add('on'); if (txt) { setTimeout(() => txt.classList.add('vis'), 1020); setTimeout(() => txt.classList.remove('vis'), 2820); } setTimeout(() => mid(), 3720); setTimeout(() => faderEl.classList.remove('on'), 3820); }
-function openModal(html) { const kakao = html.includes('class="kWrap"'); modalRoot.innerHTML = `<div class="mDim"></div><div class="mPanel${kakao ? ' kakao' : ''}"><button class="mClose"${kakao ? ' style="display:none"' : ''}>✕</button>${html}</div>`; modalRoot.classList.add('open'); modalRoot.querySelector('.mClose').addEventListener('click', closeModal); if (kakao) modalRoot.querySelector('.mPanel').addEventListener('click', (e) => { if (!e.target.closest('.mClose')) kTap(); }); }
+function openModal(html, tone) { const kakao = html.includes('class="kWrap"'); modalRoot.innerHTML = `<div class="mDim"></div><div class="mPanel${kakao ? ' kakao' : (tone ? ' ' + tone : '')}"><button class="mClose"${kakao ? ' style="display:none"' : ''}>✕</button>${html}</div>`; modalRoot.classList.add('open'); modalRoot.querySelector('.mClose').addEventListener('click', closeModal); if (kakao) modalRoot.querySelector('.mPanel').addEventListener('click', (e) => { if (!e.target.closest('.mClose')) kTap(); }); }
 function closeModal() { modalRoot.classList.remove('open'); modalRoot.innerHTML = ''; }
-function openShop() { openModal(`<div class="mTitle">상점</div><div class="mRow"><span>보유 젬</span><b style="display:flex;align-items:center;gap:4px"><img src="assets/ic_gem.png" style="width:15px;height:15px" alt="">${fmt(S.gems)}</b></div><button class="btn" id="mBuy1"><img src="assets/ic_gem.png" alt="">1 <span style="opacity:.7">→</span> <img src="assets/ic_coin.png" alt="">1,000</button><button class="btn blue" id="mBuy10"><img src="assets/ic_gem.png" alt="">10 <span style="opacity:.7">→</span> <img src="assets/ic_coin.png" alt="">12,000</button><div style="font-size:11px;color:#7a8a9a;text-align:center;margin-top:6px">더 많은 상품은 준비 중이에요!</div>`); $('mBuy1').addEventListener('click', () => buyGems(1, 1000)); $('mBuy10').addEventListener('click', () => buyGems(10, 12000)); }
-function buyGems(g, coins) { if (S.gems < g) { toast('젬이 부족해요!'); return; } S.gems -= g; addCoins(coins); updateHud(); save(); toast(`코인 ${fmt(coins)}를 구매했어요!`); }
+function shopTopTier() { const def = currentStageDef(); return MU.clamp(def?.orderMax ?? 3, 1, MAXT); }
+function openShop() {
+  const topT = shopTopTier();
+  const day = dayLabel() + '#' + S.stage;
+  if (S.adDay !== day) { S.adDay = day; S.adUsed = {}; }
+  const gP = balAt(BAL.shop.foodGoldPrice, topT), gG = balAt(BAL.shop.foodGemPrice, topT);
+  let rows = '';
+  for (const tech of TECH_KEYS) {
+    const adN = S.adUsed['ad_' + tech] || 0, goldN = S.adUsed['gold_' + tech] || 0;
+    rows += `<div class="shopRow"><img class="si" src="${imgOf(tech, topT)}" alt=""><div class="shopInfo"><div class="shopName">${TECHS[tech].names[topT - 1]} <span class="shopTier">T.${topT}</span></div><div class="shopBtns"><button class="sBtn ad" data-k="ad" data-tech="${tech}" ${adN >= BAL.shop.adStock ? 'disabled' : ''}>▶ 광고 ${BAL.shop.adStock - adN}</button><button class="sBtn gold" data-k="gold" data-tech="${tech}" ${goldN >= BAL.shop.goldStock ? 'disabled' : ''}><img src="assets/ic_coin.png" alt="">${fmt(gP)} ×${BAL.shop.goldStock - goldN}</button><button class="sBtn gem" data-k="gem" data-tech="${tech}"><img src="assets/ic_gem.png" alt="">${fmt(gG)} ∞</button></div></div></div>`;
+  }
+  const gAd = BAL.goldDeal.adStock - (S.adUsed.goldAd || 0);
+  rows += `<div class="shopSec">골드 환전</div><div class="shopRow"><div class="shopInfo"><div class="shopBtns"><button class="sBtn ad" data-gk="ad" ${gAd <= 0 ? 'disabled' : ''}>▶ 광고 ${fmt(BAL.goldDeal.adCoins)}${gAd > 0 ? ' ×' + gAd : ''}</button><button class="sBtn gem" data-gk="gem1"><img src="assets/ic_gem.png" alt="">${BAL.goldDeal.gemPrice} → ${fmt(BAL.goldDeal.gemCoins)}</button><button class="sBtn gem" data-gk="gem10"><img src="assets/ic_gem.png" alt="">${BAL.goldDeal.gemPrice10} → ${fmt(BAL.goldDeal.gemCoins10)}</button></div></div></div>`;
+  openModal(`<div class="mTitle">상점</div><div class="mRow"><span>보유</span><b style="display:flex;gap:12px;align-items:center"><span style="display:flex;gap:3px;align-items:center"><img src="assets/ic_coin.png" alt="">${fmt(S.coins)}</span><span style="display:flex;gap:3px;align-items:center"><img src="assets/ic_gem.png" alt="">${fmt(S.gems)}</span></b></div>${rows}<div style="font-size:10px;color:#6a7885;text-align:center;margin-top:8px">구매한 식재료는 보드의 빈 칸에 담겨요 · 광고/골드 한정 구매는 매일 초기화</div>`, 'tone');
+  modalRoot.querySelectorAll('.sBtn[data-k]').forEach(b => b.addEventListener('click', () => shopBuy(b.dataset.k, b.dataset.tech, b)));
+  modalRoot.querySelectorAll('.sBtn[data-gk]').forEach(b => b.addEventListener('click', () => buyGoldDeal(b.dataset.gk, b)));
+}
+function shopBuy(kind, tech, btn) {
+  const empties = emptyCells();
+  if (!empties.length) { nope(btn); nope(btnEls.shop); return; }
+  const topT = shopTopTier();
+  const day = dayLabel() + '#' + S.stage;
+  if (S.adDay !== day) { S.adDay = day; S.adUsed = {}; }
+  if (kind === 'ad') {
+    if ((S.adUsed['ad_' + tech] || 0) >= BAL.shop.adStock) { nope(btn); return; }
+    S.adUsed['ad_' + tech] = (S.adUsed['ad_' + tech] || 0) + 1;
+  } else if (kind === 'gold') {
+    if ((S.adUsed['gold_' + tech] || 0) >= BAL.shop.goldStock) { nope(btn); return; }
+    const price = balAt(BAL.shop.foodGoldPrice, topT);
+    if (S.coins < price) { nope(btn); nope($('coinBox')); return; }
+    S.coins -= price;
+    S.adUsed['gold_' + tech] = (S.adUsed['gold_' + tech] || 0) + 1;
+  } else {
+    const price = balAt(BAL.shop.foodGemPrice, topT);
+    if (S.gems < price) { nope(btn); nope($('gemBox')); return; }
+    S.gems -= price;
+  }
+  updateHud(); closeModal(); save();
+  const dst = pick(empties);
+  const item = { kind: 'food', tech, tier: topT };
+  S.cells[dst] = item; resv.add(dst);
+  const br = btnEls.shop.getBoundingClientRect(), ar = app.getBoundingClientRect();
+  uiGlides.push({ img: getImg(imgOf(tech, topT)), x0: br.left - ar.left + br.width / 2, y0: br.top - ar.top + br.height / 2, x1: cellCenterApp(dst).x, y1: cellCenterApp(dst).y, t: 0, dur: 0.42, dst, item });
+}
+// ===== 골드 환전 =====
+function grantGold(n) {
+  addCoins(n);
+  const cb = $('coinBox');
+  if (cb) { const r = cb.getBoundingClientRect(), ar = app.getBoundingClientRect(); floatNum(r.left - ar.left + r.width / 2, r.top - ar.top + 30, '+' + fmt(n), 'small'); burst(r.left - ar.left + r.width / 2, r.top - ar.top + 14, 8, false); }
+}
+function buyGoldDeal(kind, btn) {
+  const day = dayLabel() + '#' + S.stage;
+  if (S.adDay !== day) { S.adDay = day; S.adUsed = {}; }
+  if (kind === 'ad') {
+    if ((S.adUsed.goldAd || 0) >= BAL.goldDeal.adStock) { nope(btn); return; }
+    S.adUsed.goldAd = (S.adUsed.goldAd || 0) + 1;
+    grantGold(BAL.goldDeal.adCoins);
+  } else if (kind === 'gem1') {
+    if (S.gems < BAL.goldDeal.gemPrice) { nope(btn); nope($('gemBox')); return; }
+    S.gems -= BAL.goldDeal.gemPrice; grantGold(BAL.goldDeal.gemCoins);
+  } else {
+    if (S.gems < BAL.goldDeal.gemPrice10) { nope(btn); nope($('gemBox')); return; }
+    S.gems -= BAL.goldDeal.gemPrice10; grantGold(BAL.goldDeal.gemCoins10);
+  }
+  updateHud(); save();
+  if (modalRoot.classList.contains('open')) openShop();   // 잔여 횟수 갱신
+}
+// ===== 이벤트 우편함 =====
+const EVENTS = [
+  { id: 'adGems', icon: 'assets/ic_gem.png', title: '광고 보고 젬 받기', desc: '광고를 시청하고 젬을 받으세요', gems: () => BAL.event.adGems },
+];
+function openEvent() {
+  const day = dayLabel();
+  if (S.evDay !== day) { S.evDay = day; S.evClaimed = {}; }
+  let rows = '';
+  for (const ev of EVENTS) {
+    const done = !!S.evClaimed[ev.id];
+    rows += `<div class="mailRow${done ? ' done' : ''}"><div class="mi"><img src="${ev.icon}" alt=""></div><div class="shopInfo"><div class="mt">${ev.title}</div><div class="md">${ev.desc} · +${ev.gems()} 젬</div></div><button class="sBtn gem" data-ev="${ev.id}" ${done ? 'disabled' : ''}>${done ? '수령 완료' : '받기'}</button></div>`;
+  }
+  openModal(`<div class="mTitle">📬 이벤트 우편함</div>${rows}<div style="font-size:10px;color:#6a7885;text-align:center;margin-top:8px">이벤트는 매일 초기화돼요</div>`, 'tone');
+  modalRoot.querySelectorAll('.mailRow button').forEach(b => b.addEventListener('click', () => {
+    const ev = EVENTS.find(x => x.id === b.dataset.ev);
+    if (!ev || S.evClaimed[ev.id]) { nope(b); return; }
+    const g = ev.gems();
+    S.gems += g; S.evClaimed[ev.id] = 1;
+    const gb = $('gemBox'); if (gb) { gb.classList.remove('bump'); void gb.offsetWidth; gb.classList.add('bump'); }
+    const er = $('eventBtn').getBoundingClientRect(), ar = app.getBoundingClientRect();
+    floatNum(er.left - ar.left + er.width / 2, er.top - ar.top + 20, '+' + g, 'small');
+    burst(er.left - ar.left + er.width / 2, er.top - ar.top + 14, 10, false);
+    updateHud(); save();
+    openEvent();
+  }));
+}
+function buyGems(g, coins) { if (S.gems < g) { nope($('gemBox')); return; } S.gems -= g; addCoins(coins); updateHud(); save(); }
 function openMenu() {
   openModal(`<div class="mTitle">부캉이키우기</div><div class="mRow"><span>스테이지</span><b>${S.stage + 1}</b></div><div class="mRow"><span>총 주문 완료</span><b>${fmt(S.totalFed)}회</b></div><div class="mRow"><span>총 합성</span><b>${fmt(S.totalMerged)}회</b></div><div class="mRow"><span>누적 수입</span><b>${fmt(S.earned)}</b></div><div class="mRow"><span>자동 머지</span><button class="btn ${S.auto ? '' : 'gray'}" id="mAuto" style="min-width:86px;padding:6px 10px;font-size:11px">${S.auto ? 'ON' : 'OFF'}</button></div><button class="btn red" id="mReset">게임 초기화</button><div style="font-size:10px;color:#9aa8b5;text-align:center;margin-top:6px">진행 상황은 자동 저장돼요</div>`);
-  $('mAuto').addEventListener('click', () => { S.auto = !S.auto; save(); $('mAuto').textContent = S.auto ? 'ON' : 'OFF'; $('mAuto').classList.toggle('gray', !S.auto); toast(S.auto ? '자동 머지 ON' : '자동 머지 OFF'); });
+  $('mAuto').addEventListener('click', () => { S.auto = !S.auto; save(); $('mAuto').textContent = S.auto ? 'ON' : 'OFF'; $('mAuto').classList.toggle('gray', !S.auto); });
   $('mReset').addEventListener('click', function () { if (this.dataset.armed) { suppressSave = true; LS.del(SAVE_KEY); location.reload(); } else { this.dataset.armed = '1'; this.textContent = '정말 초기화할까요? 다시 눌러 확인'; } });
 }
 
-let toastTimer = 0;
-function toast(msg, dur = 1800) { const t = $('toast'); if (!t) return; t.textContent = msg; t.style.opacity = '1'; clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.style.opacity = '0'; }, dur); }
+// 토스트 제거 — 거절/실패 피드백은 대상 UI의 도리도리(nope)로 대체
 
 // ===================================================================
 // ===== 상단/왼쪽 HUD 버튼 바인딩 =====
@@ -1293,14 +1440,61 @@ $('coinPlus')?.addEventListener('click', openShop);
 $('gemPlus')?.addEventListener('click', () => {
   S.gems += 100;
   const gb = $('gemBox'); if (gb) { gb.classList.remove('bump'); void gb.offsetWidth; gb.classList.add('bump'); }
-  toast('젬 +100'); save();
+  save();
 });
 $('menuBtn')?.addEventListener('click', (e) => { juiceTap(e.currentTarget); openMenu(); });
 $('questBtn')?.addEventListener('click', (e) => { juiceTap(e.currentTarget); openQuest(); });
-$('eventBtn')?.addEventListener('click', (e) => { juiceTap(e.currentTarget); toast('이벤트는 준비 중이에요!'); });
+$('eventBtn')?.addEventListener('click', (e) => { juiceTap(e.currentTarget); openEvent(); });
 
 const _origGetId = $;
 function $$bagBtn() { return btnEls.bag; }
+
+// ===================================================================
+// ===== 튜토리얼 데모 API (tutorial.js에서 호출) =====
+function tutGenTap(idx) {
+  const g = S.cells[idx]; if (!g || g.kind !== 'gen') return -1;
+  const had = S.cells.map(c => !!c);
+  g.count = Math.max(g.count, 1);
+  genTap(idx);
+  for (let i = 0; i < 30; i++) if (!had[i] && S.cells[i]) return i;
+  return -1;
+}
+function tutSpawnAt(idx, tech, tier, fromIdx) {
+  if (idx == null || idx < 0 || S.cells[idx]) idx = nearestEmpty(fromIdx);
+  if (idx < 0) return -1;
+  const item = { kind: 'food', tech, tier };
+  S.cells[idx] = item; resv.add(idx);
+  const s0 = cellCenterApp(fromIdx), s1 = cellCenterApp(idx);
+  uiGlides.push({ img: getImg(imgOf(tech, tier)), x0: s0.x, y0: s0.y, x1: s1.x, y1: s1.y, t: 0, dur: 0.34, dst: idx, item });
+  return idx;
+}
+function tutMerge(src, dst) {
+  const a = S.cells[src]; if (!a || !S.cells[dst] || src === dst) return;
+  S.cells[src] = null;
+  const s0 = cellCenterApp(src), s1 = cellCenterApp(dst);
+  uiGlides.push({ img: getImg(imgOf(a.tech, a.tier)), x0: s0.x, y0: s0.y, x1: s1.x, y1: s1.y, t: 0, dur: 0.3, absorb: true, onDone() {
+    const ni = { kind: 'food', tech: a.tech, tier: a.tier + 1 };
+    S.cells[dst] = ni; repunch(dst, 'pop');
+    S.stageStats.merged++; S.totalMerged++; S.stageStats.maxTierMade = Math.max(S.stageStats.maxTierMade, ni.tier);
+    const c = cellCenterApp(dst); burst(c.x, c.y, 14, ni.tier >= 5);
+    checkQuest(); refreshPlates(); save();
+  } });
+}
+function tutFeed(tech, tier) {
+  S.plates[0] = { slots: [{ tech, tier }], reward: 30, id: 'tut', _wasReady: false };
+  servePlate(0);
+}
+function tutShopDemo() { openShop(); setTimeout(() => closeModal(), 2400); }
+function buildTutApi() {
+  return {
+    app, btnEls,
+    cellRectApp(idx) { const r = cellRect(idx), c = consoleToApp(r.x, r.y); return { x: c.x, y: c.y, w: r.w, h: r.h }; },
+    plateRectApp(pi) { const r = plateRect(pi), c = consoleToApp(r.x, r.y); return { x: c.x, y: c.y, w: r.w, h: r.h }; },
+    tutGenTap, tutSpawnAt, tutMerge, tutFeed, tutShopDemo, dropToButton,
+    freeCellNear: nearestEmpty,
+    finish() { S.tutDone = true; save(); },
+  };
+}
 
 // ===================================================================
 // ===== 메인 틱 =====
@@ -1374,24 +1568,10 @@ function preloadAssets() {
       'assets/ic_sell.png', 'assets/ic_shop.png', 'assets/ic_unlock.png'
     );
 
-    // 대화 이벤트 씬 (scene_01 ~ scene_10)
-    for (let i = 1; i <= 10; i++) {
-      srcs.push('assets/scene_' + String(i).padStart(2, '0') + '.jpg');
-    }
-
-    // 스토리 아바타(story.json chars[].avatar)
-    if (STORY && STORY.chars) {
-      for (const key in STORY.chars) {
-        const av = STORY.chars[key] && STORY.chars[key].avatar;
-        if (av) srcs.push(av);
-      }
-    } else {
-      srcs.push(
-        'assets/ava_shark.png', 'assets/ava_inner.png', 'assets/ava_mom.png',
-        'assets/ava_friend.png', 'assets/ava_kid.jpg', 'assets/ava_mother.jpg', 'assets/ava_father.jpg',
-        'assets/ava_cafe.jpg', 'assets/ava_reporter.jpg', 'assets/ava_expert.jpg',
-        'assets/ava_elder.jpg', 'assets/ava_rescue.jpg', 'assets/ava_trio.jpg'
-      );
+    // 스토리 리소스 — story.json에서 수집 (아바타 + 대화 중 삽입 이미지)
+    if (STORY) {
+      for (const key in (STORY.chars || {})) { const av = STORY.chars[key] && STORY.chars[key].avatar; if (av) srcs.push(av); }
+      for (const b of (STORY.beats || [])) for (const L of (b.lines || [])) if (L && L.t === 'img' && L.src) srcs.push(L.src);
     }
 
     // 중복 제거
@@ -1416,16 +1596,22 @@ function bootGame() {
   if (S.sellMode && btnEls.sell) btnEls.sell.classList.add('active');
   updateBagBtn(); updateHud(); checkQuest();
   disp.coins = S.coins; disp.dlevel = S.level; disp.dxp = S.xp;
-  if (!LS.get(SAVE_KEY)) setTimeout(() => toast('가방에서 생성기를 꺼내 보드에 놓고, 탭해 먹이를 꺼내요. 합성해 주문을 맞추면 부캉이가 받아먹어요!', 5000), 900);
   setInterval(save, 5000);
+  { const uiq = new URLSearchParams(location.search).get('ui'); if (uiq === 'bag') openBag(); else if (uiq === 'shop') openShop(); else if (uiq === 'event') openEvent(); }
 }
-Promise.all([loadStory().catch(() => null), loadQuests()]).then(() => Promise.race([preloadAssets(), new Promise((r) => setTimeout(r, 3500))])).then(() => {
-  if (!LS.get(SAVE_KEY) && S.bag.length === 0) S.bag = [{ tech: 'fish', glv: 1, count: 2, nextAt: Date.now() + genRegenSec(1) * 1000 }];
+Promise.all([loadStory().catch(() => null), loadQuests(), loadBalance()]).then(() => Promise.race([preloadAssets(), new Promise((r) => setTimeout(r, 3500))])).then(() => {
+  if (!LS.get(SAVE_KEY)) {
+    S.bag = [];
+    const seed = [['fish', 0], ['crab', 1], ['meat', 2]];
+    for (const [tech, idx] of seed) if (!S.cells[idx]) S.cells[idx] = { kind: 'gen', tech, glv: 1, count: 0, nextAt: Date.now() + genRegenSec(1) * 1000 };
+  }
   bootGame();
   const qn = new URLSearchParams(location.search).get('stage');
   if (qn !== null && QCFG.list.length) { const i = Math.max(0, Math.min(QCFG.list.length - 1, parseInt(qn, 10) || 0)); S.stage = i; S.beat = Math.max(S.beat, i); initStage(); save(); }
   else if (S.inf) { updateDayUI(); syncCrowd(); }
-}).catch(e => { console.warn('로드 실패', e); bootGame(); toast('데이터 파일 로드 실패', 3000); });
+  const uidbg = new URLSearchParams(location.search).get('ui');
+  if (!S.tutDone && qn === null && !uidbg) startTutorial(buildTutApi());
+}).catch(e => { console.warn('로드 실패', e); bootGame(); });
 
 // 레이아웃은 부팅 전에도 1회 필요
 layout();
