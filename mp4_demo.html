@@ -20,7 +20,6 @@
   }
   video.active { opacity:1; }
 
-  /* 콤보박스: 영상 가리지 않게 하단에 작게, 반투명 */
   #bar {
     position:fixed; z-index:20;
     right: calc(env(safe-area-inset-right, 0px) + 12px);
@@ -30,10 +29,9 @@
     font-size:14px; padding:6px 8px;
     background:rgba(0,0,0,.35); color:#fff;
     border:1px solid rgba(255,255,255,.3); border-radius:8px;
-    opacity:.45;
-    transition: opacity .2s;
+    opacity:.45; transition: opacity .2s;
   }
-  #folderSel:focus { opacity:1; }   /* 조작할 때만 선명하게 */
+  #folderSel:focus { opacity:1; }
 
   #msg { position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
          color:#888; font:14px monospace; text-align:center; padding:20px; z-index:10; }
@@ -50,13 +48,17 @@
     <select id="folderSel"></select>
   </div>
 
-  <div id="msg">폴더 목록 읽는 중...</div>
+  <div id="msg">목록 읽는 중...</div>
 
 <script>
   const ROOT = "./mp4/";
+  const LIST = ROOT + "list.json";    // 폴더/파일 목록 JSON
   const vids = [document.getElementById("vidA"), document.getElementById("vidB")];
   const msg  = document.getElementById("msg");
   const sel  = document.getElementById("folderSel");
+
+  let data = {};          // { 폴더명: [파일명...] }
+  let folderNames = [];
 
   function shuffle(arr){
     const a = arr.slice();
@@ -65,45 +67,6 @@
       [a[i],a[j]]=[a[j],a[i]];
     }
     return a;
-  }
-
-  // 디렉토리 인덱스 HTML을 파싱해서 링크 목록 추출
-  async function listLinks(path){
-    const res = await fetch(path);
-    const html = await res.text();
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    return [...doc.querySelectorAll("a")]
-      .map(a => a.getAttribute("href"))
-      .filter(Boolean);
-  }
-
-  // href를 파일/폴더명으로 (URL 인코딩된 한글도 복원)
-  function baseName(href){
-    let h = href.replace(/\/$/, "");      // 끝 슬래시 제거
-    h = h.split("/").pop();               // 마지막 조각
-    try { h = decodeURIComponent(h); } catch(e) {}
-    return h;
-  }
-
-  // ./mp4/ 안의 하위 폴더 목록
-  async function listFolders(){
-    const links = await listLinks(ROOT);
-    return [...new Set(
-      links
-        .filter(h => h.endsWith("/") && !h.startsWith("..") && !h.startsWith("/") && !h.startsWith("?"))
-        .map(baseName)
-        .filter(h => h)
-    )];
-  }
-
-  // 특정 폴더 안의 mp4 목록
-  async function listMp4(folder){
-    const links = await listLinks(ROOT + encodeURIComponent(folder) + "/");
-    return [...new Set(
-      links
-        .filter(h => /\.mp4$/i.test(h))
-        .map(baseName)
-    )];
   }
 
   // ===== 재생 상태 =====
@@ -116,7 +79,6 @@
     if(index >= queue.length) buildQueue();
     return queue[index++];
   }
-
   function srcOf(name){
     return ROOT + encodeURIComponent(currentFolder) + "/" + encodeURIComponent(name);
   }
@@ -127,7 +89,7 @@
       video.load();
       const ok = () => { video.removeEventListener("canplaythrough", ok); resolve(); };
       video.addEventListener("canplaythrough", ok);
-      setTimeout(ok, 1500);   // 이벤트 누락 대비
+      setTimeout(ok, 1500);
     });
   }
 
@@ -147,21 +109,14 @@
 
   async function playFolder(folder){
     currentFolder = folder;
-    msg.classList.remove("hidden");
-    msg.textContent = "영상 목록 읽는 중...";
+    files = (data[folder] || []).slice();
 
-    try{
-      files = await listMp4(folder);
-    }catch(e){
-      msg.textContent = "폴더를 읽을 수 없습니다.";
-      return;
-    }
     if(files.length === 0){
+      msg.classList.remove("hidden");
       msg.textContent = "이 폴더에 mp4가 없습니다.";
       return;
     }
 
-    // 상태 초기화
     vids.forEach(v => { v.pause(); v.removeAttribute("src"); v.load(); v.classList.remove("active"); });
     cur = 0;
     buildQueue();
@@ -175,48 +130,46 @@
       vids.forEach(v => { v.addEventListener("ended", onEnded); v.addEventListener("error", onError); });
       handlersBound = true;
     }
-
     msg.classList.add("hidden");
   }
 
   (async function init(){
-    let folders = [];
     try{
-      folders = await listFolders();
+      const res = await fetch(LIST, { cache: "no-store" });
+      if(!res.ok) throw new Error("list.json 없음");
+      data = await res.json();
     }catch(e){
-      msg.textContent = "폴더 목록을 읽을 수 없습니다.\n(로컬 서버로 실행하세요)";
-      return;
-    }
-    if(folders.length === 0){
-      msg.textContent = "mp4 아래에 하위 폴더가 없습니다.";
+      msg.textContent = "mp4/list.json 을 읽을 수 없습니다.";
       return;
     }
 
-    // 콤보박스 채우기: 라벨은 번호(idx), 값은 실제 폴더명
-    folders.forEach((f, i) => {
+    folderNames = Object.keys(data);
+    if(folderNames.length === 0){
+      msg.textContent = "list.json 에 폴더가 없습니다.";
+      return;
+    }
+
+    // 콤보박스: 라벨은 번호, 값은 실제 폴더명
+    folderNames.forEach((f, i) => {
       const opt = document.createElement("option");
-      opt.value = f;                // 재생에 쓰는 실제 폴더명
-      opt.textContent = (i + 1);    // 화면에는 번호만
+      opt.value = f;
+      opt.textContent = (i + 1);
       sel.appendChild(opt);
     });
 
-    sel.addEventListener("change", () => {
-      playFolder(sel.value);
-      sel.blur();                   // 선택 후 다시 흐리게
-    });
+    sel.addEventListener("change", () => { playFolder(sel.value); sel.blur(); });
 
-    await playFolder(folders[0]);   // 첫 폴더 자동 재생
+    await playFolder(folderNames[0]);
   })();
 
-  // iOS 자동재생 대응: 첫 터치 시 재생 보장
   document.addEventListener("touchstart", function once(){
     if(vids[cur] && vids[cur].paused) vids[cur].play().catch(()=>{});
   }, { once:true });
 
-  // ===== 제스처: 핀치줌/드래그 허용, 더블탭/롱프레스 차단 =====
+  // 제스처: 핀치줌/드래그 허용, 더블탭/롱프레스 차단
   let lastTouchEnd = 0;
   document.addEventListener("touchend", function(e){
-    if(e.target.closest("#bar")) return;   // 콤보박스 조작은 예외
+    if(e.target.closest("#bar")) return;
     const now = Date.now();
     if(now - lastTouchEnd <= 300) e.preventDefault();
     lastTouchEnd = now;
